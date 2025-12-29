@@ -1,0 +1,15 @@
+tests_local/
+build/
+_data/
+tmp/
+__pycache__/
+*.pyc
+logs/
+*.log
+Downloads/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/

@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "vidownloader"
+version = "1.0.0"
+description = "A modern YouTube video downloader with a beautiful PyQt5 interface"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Farhan Ali", email = "i.farhanali.de@gmail.com" }
+]
+keywords = ["youtube", "downloader", "video", "pyqt5", "yt-dlp"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "PyQt5>=5.15.11",
+    "yt-dlp",
+    "curl_cffi",
+]
+
+[project.urls]
+Homepage = "https://github.com/farhaanaliii/vidownloader"
+Repository = "https://github.com/farhaanaliii/vidownloader"
+Issues = "https://github.com/farhaanaliii/vidownloader/issues"
+
+[project.scripts]
+vidownloader = "vidownloader.main:main"
+
+[project.gui-scripts]
+vidownloader-gui = "vidownloader.main:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["vidownloader"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "vidownloader/**",
+    "README.md",
+    "LICENSE",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-qt>=4.2.0",
+    "pytest-cov>=7.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
