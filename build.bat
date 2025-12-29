@@ -60,8 +60,11 @@ for /f "tokens=1-5 delims=|" %%a in ('python -c "import sys; from datetime impor
 )
 set TOOL_DESC=%TOOL_NAME% - A modern YouTube video downloader
 
+REM Extract numeric version for Windows (e.g., 1.0.0-beta -> 1.0.0)
+for /f "tokens=1 delims=-" %%v in ("%TOOL_VERSION%") do set FILE_VERSION=%%v
+
 echo       Name: %TOOL_NAME%
-echo       Version: %TOOL_VERSION%
+echo       Version: %TOOL_VERSION% (File Version: %FILE_VERSION%)
 echo       Author: %ORG_NAME%
 echo.
 
@@ -99,8 +102,8 @@ python -m nuitka ^
     %ICON_OPT% ^
     --company-name="%ORG_NAME%" ^
     --product-name="%TOOL_NAME%" ^
-    --file-version="%TOOL_VERSION%" ^
-    --product-version="%TOOL_VERSION%" ^
+    --file-version="%FILE_VERSION%" ^
+    --product-version="%FILE_VERSION%" ^
     --copyright="Copyright %CURRENT_YEAR% %ORG_NAME%, %ORG_URL%" ^
     --file-description="%TOOL_DESC%" ^
     --output-dir="%OUTPUT_DIR%" ^
