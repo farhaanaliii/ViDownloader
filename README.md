@@ -107,8 +107,16 @@ Working with a large channel? Export your video list as a `.viio` file, close th
 - **PyQt5** (≥ 5.15.11)
 - **yt-dlp** (latest recommended)
 - **curl_cffi**
+- **FFmpeg** – Required by yt-dlp for video/audio processing ([download](https://github.com/yt-dlp/FFmpeg-Builds/releases/tag/latest))
+- **JavaScript Runtime** – yt-dlp needs a JS engine to handle some videos. Install one of:
+  - [Deno](https://deno.land/)
+  - [Node.js](https://nodejs.org/)
+  - [Bun](https://bun.sh/)
 
-All dependencies install automatically via `pip`.
+Python dependencies install automatically via `pip`. You'll need to install FFmpeg and a JS runtime separately.
+
+> [!TIP]
+> **One-click installer coming soon!** A standalone installer that bundles all dependencies is in development.
 
 ---
 
