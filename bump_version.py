@@ -4,6 +4,8 @@ Updates version in both pyproject.toml and Constants.py
 
 Usage:
     python bump_version.py 1.2.0
+    python bump_version.py 1.0.0-beta
+    python bump_version.py v1.0.0-rc.1
     python bump_version.py --show  # Show current version
 """
 
@@ -24,8 +26,8 @@ def get_current_version() -> str:
 
 
 def validate_version(version: str) -> bool:
-    """Validate semantic version format (X.Y.Z)"""
-    return bool(re.match(r'^\d+\.\d+\.\d+$', version))
+    """Validate semantic version format (X.Y.Z or X.Y.Z-prerelease)"""
+    return bool(re.match(r'^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$', version))
 
 
 def update_constants(new_version: str) -> bool:
@@ -56,7 +58,8 @@ def main():
     if len(sys.argv) < 2:
         print(f"Current version: {get_current_version()}")
         print("\nUsage: python bump_version.py <new_version>")
-        print("Example: python bump_version.py 1.2.0")
+        print("Examples: python bump_version.py 1.2.0")
+        print("          python bump_version.py 1.0.0-beta")
         sys.exit(0)
 
     if sys.argv[1] == "--show":
@@ -65,9 +68,12 @@ def main():
 
     new_version = sys.argv[1]
     
+    if new_version.startswith('v'):
+        new_version = new_version[1:]
+    
     if not validate_version(new_version):
         print(f"[ERROR] Invalid version format: {new_version}")
-        print("Version must be in format X.Y.Z (e.g., 1.2.0)")
+        print("Version must be in format X.Y.Z or X.Y.Z-prerelease (e.g., 1.2.0, 1.0.0-beta)")
         sys.exit(1)
 
     current = get_current_version()
