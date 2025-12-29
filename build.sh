@@ -69,12 +69,9 @@ python3 -m nuitka \
     --standalone \
     --enable-plugin=pyqt5 \
     --include-package=vidownloader \
-    --include-data-dir="$PACKAGE_DIR/icons"=icons \
-    --include-data-dir="$PACKAGE_DIR/fonts"=fonts \
     --linux-icon="$ICON_FILE" \
     --output-dir="$OUTPUT_DIR" \
     --output-filename="$TOOL_NAME" \
-    --remove-output \
     --assume-yes-for-downloads \
     "$MAIN_FILE"
 
