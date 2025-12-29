@@ -51,7 +51,7 @@ echo       Dependencies installed
 
 REM Step 3: Extract metadata from Constants.py
 echo [3/4] Extracting project metadata...
-for /f "tokens=1-5 delims=|" %%a in ('python -c "import sys; from datetime import datetime; sys.path.insert(0, '.'); from vidownloader.core.Constants import App, Author; print(f'{App.NAME}|{App.VERSION}|{Author.NAME}|{Author.ORG_URL}|{datetime.now().year}')"') do (
+for /f "tokens=1-5 delims=|" %%a in ('python -c "import sys; from datetime import datetime; sys.path.insert(0, chr(46)); from vidownloader.core.Constants import App, Author; print(App.NAME + chr(124) + App.VERSION + chr(124) + Author.NAME + chr(124) + Author.GITHUB_URL + chr(124) + str(datetime.now().year))"') do (
     set TOOL_NAME=%%a
     set TOOL_VERSION=%%b
     set ORG_NAME=%%c
