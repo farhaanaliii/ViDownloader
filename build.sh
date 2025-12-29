@@ -134,20 +134,3 @@ echo " Archives:  $RELEASE_ZIP"
 echo "            $RELEASE_TAR"
 echo "=========================================="
 
-# Create .desktop file for Linux
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo ""
-    echo "Creating .desktop file..."
-    cat > "$OUTPUT_DIR/$TOOL_NAME.desktop" <<EOF
-[Desktop Entry]
-Name=$TOOL_NAME
-Comment=$TOOL_DESC
-Exec=$OUTPUT_DIR/main.dist/$TOOL_NAME
-Icon=$PACKAGE_DIR/icons/icon.png
-Terminal=false
-Type=Application
-Categories=AudioVideo;Video;
-EOF
-    chmod +x "$OUTPUT_DIR/$TOOL_NAME.desktop"
-    echo "Desktop file created: $OUTPUT_DIR/$TOOL_NAME.desktop"
-fi
