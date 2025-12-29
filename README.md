@@ -15,6 +15,10 @@
 > [!WARNING]
 > **Heads up**: This is currently in **Beta** phase. It works, but there might be rough edges and unexpected behavior. Your feedback will help shape the stable release.
 
+<p align="center">
+  <img src="assets/image1.png" alt="ViDownloader Screenshot">
+</p>
+
 ---
 
 ## What This Is
