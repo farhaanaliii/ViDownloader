@@ -35,9 +35,9 @@ class Downloader(QThread):
         logger.debug(f"Downloading to: {file_path}")
         
         ydl_opts = {
-            'format': 'bv*+ba/b',
+            'format': 'bv*+ba/b', # TODO: Make format configurable
             'outtmpl': file_path.__fspath__(),
-            'merge_output_format': 'mp4',
+            'merge_output_format': 'mp4', # TODO: Make format configurable
             'progress_hooks': [self._progress_hook],
             'quiet': True,
             'no_warnings': True,
