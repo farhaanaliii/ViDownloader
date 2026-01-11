@@ -71,10 +71,22 @@ class Downloader(QThread):
                 return False
         
     def emit_progress(self, progress: str):
-        self._event.emit(DownloaderEvent(event=EventType.PROGRESS, progress=progress, video_id=self.link.video_id))
+        self._event.emit(
+            DownloaderEvent(
+                event=EventType.PROGRESS,
+                progress=progress,
+                video_id=self.link.video_id
+            )
+        )
 
     def emit_status(self, status: Status):
-        self._event.emit(DownloaderEvent(event=EventType.STATUS, status=status, video_id=self.link.video_id))
+        self._event.emit(
+            DownloaderEvent(
+                event=EventType.STATUS,
+                status=status,
+                video_id=self.link.video_id
+            )
+        )
 
     def _progress_hook(self, d: dict):
         if d['status'] == 'downloading':
