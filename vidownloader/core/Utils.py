@@ -326,3 +326,11 @@ def generate_export_filename() -> str:
     """Generate a default filename for exporting videos."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{App.NAME}_exports_{timestamp}{VIIO.EXTENSION}"
+
+def format_size(size_bytes: int) -> str:
+    """Format size in bytes to human-readable"""
+    for unit in ('B', 'KB', 'MB', 'GB'):
+        if size_bytes < 1024:
+            return f"{size_bytes:.2f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.2f} GB"

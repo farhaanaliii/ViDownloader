@@ -1,4 +1,5 @@
 from dataclasses import dataclass, asdict
+from pathlib import Path
 
 from vidownloader.core.Constants import BridgeType, EventType, VideoType
 
@@ -53,6 +54,7 @@ class Bridge:
 class DownloaderEvent:
     event: EventType
     video_id: int = None
+    video_path: Path = None
     progress: str = None
     status: str = None
 

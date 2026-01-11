@@ -54,7 +54,7 @@ class Downloader(QThread):
                     ydl.download([self.link.url])
                 
                 self.emit_progress("100%")
-                self.emit_status(Status.COMPLETED)
+                self.emit_status(Status.COMPLETED, file_path)
                 return True
                 
             except Exception as e:
@@ -79,12 +79,13 @@ class Downloader(QThread):
             )
         )
 
-    def emit_status(self, status: Status):
+    def emit_status(self, status: Status, video_path: Path = None):
         self._event.emit(
             DownloaderEvent(
                 event=EventType.STATUS,
                 status=status,
-                video_id=self.link.video_id
+                video_id=self.link.video_id,
+                video_path=video_path
             )
         )
 
