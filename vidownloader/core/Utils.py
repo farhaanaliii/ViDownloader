@@ -17,6 +17,7 @@ from vidownloader.core import VSettings, Logger
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QMessageBox
 from PyQt5.QtGui import QFontDatabase
+from PyQt5.QtCore import Qt
 
 
 logger = Logger.get_logger("Utils")
@@ -95,8 +96,8 @@ def treeitem_to_link(item: QTreeWidgetItem) -> Link:
     # visible caption is truncated, so use tooltip for full caption
     # which is set when creating the item
     caption = item.toolTip(TreeViewColumns.CAPTION)
-    vtype: VideoType = item.data(TreeViewColumns.TYPE, 0)
-    url = item.data(TreeViewColumns.ID, 0)
+    vtype: VideoType = item.data(TreeViewColumns.SELECT, Qt.UserRole)[0]
+    url: str = item.data(TreeViewColumns.SELECT, Qt.UserRole)[1]
 
     return Link(
         url=url,
@@ -119,8 +120,7 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
         ""
     ])
     
-    item.setData(TreeViewColumns.TYPE, 0, video._type)
-    item.setData(TreeViewColumns.ID, 0, video.url)
+    item.setData(TreeViewColumns.SELECT, Qt.UserRole, (video._type, video.url))
     item.setToolTip(TreeViewColumns.CAPTION, video.caption)
     return item
 
@@ -128,7 +128,7 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
     """
     Convert a QTreeWidgetItem row back into a Video object.
     """
-    vtype: VideoType = item.data(TreeViewColumns.TYPE, 0)
+    vtype: VideoType = item.data(TreeViewColumns.SELECT, Qt.UserRole)[0]
     
     # Get full caption from tooltip (visible text is truncated)
     caption = item.toolTip(TreeViewColumns.CAPTION)
