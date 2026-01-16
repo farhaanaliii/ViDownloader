@@ -83,7 +83,9 @@ class DownloaderWorker(Worker):
             time.sleep(0.1)
         
         logger.info("DownloadProcess run method completed.")
-        self._event.emit(DownloaderEvent(event=EventType.STATUS, status="Completed"))
+        # Individual threads emit their own completion events with video_id
+        # No need to emit a generic event here
+        self.on_finish.emit("Download completed.", WorkerType.DOWNLOADER)
 
     def _start_next_batch(self):
         if self.is_paused:
