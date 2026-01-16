@@ -155,7 +155,8 @@ class MainWindow(main_ui.MAIN_UI):
                 self.set_video_progress(item, event.progress)
             elif event.event == Constants.EventType.STATUS and event.status is not None:
                 self.set_video_status(item, event.status)
-                self.set_video_size(item, event.video_path)
+                if event.video_path is not None:
+                    self.set_video_size(item, event.video_path)
         
         # scraper events
         elif event.event == Constants.EventType.VIDEOS:
@@ -292,9 +293,10 @@ class MainWindow(main_ui.MAIN_UI):
         super().closeEvent(event)
     
     def set_video_size(self, item: QTreeWidgetItem, video_path: Path):
-        if item and video_path and video_path.exists():
+        if video_path.exists():
             size_str = Utils.format_size(video_path.stat().st_size)
             item.setText(Constants.TreeViewColumns.SIZE, size_str)
         else:
-            logger.warning(f"Could not find ({video_path}) item to update size")
+            video_id = item.text(Constants.TreeViewColumns.ID)
+            logger.warning(f"Video file for {video_id} does not exist: {video_path}")
     
