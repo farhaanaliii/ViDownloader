@@ -145,11 +145,17 @@ class MainWindow(main_ui.MAIN_UI):
     
     def signal_event(self, event: DownloaderEvent | ScraperEvent):
         # downloader events
-        if event.event == Constants.EventType.PROGRESS and event.progress is not None:
-            self.set_video_progress(event.video_id, event.progress)
-        elif event.event == Constants.EventType.STATUS and event.status is not None:
-            self.set_video_status(event.video_id, event.status)
-            self.set_video_size(event.video_id, event.video_path)
+        if event == DownloaderEvent:
+            item = self.find_item_by_id(event.video_id)
+            if not item:
+                logger.warning(f"Could not find ({event.video_id}) item to update")
+                return
+            
+            if event.event == Constants.EventType.PROGRESS and event.progress is not None:
+                self.set_video_progress(item, event.progress)
+            elif event.event == Constants.EventType.STATUS and event.status is not None:
+                self.set_video_status(item, event.status)
+                self.set_video_size(item, event.video_path)
         
         # scraper events
         elif event.event == Constants.EventType.VIDEOS:
@@ -157,28 +163,20 @@ class MainWindow(main_ui.MAIN_UI):
         elif event.event == Constants.EventType.MESSAGE:
             self.signal_on_error(event.message)
 
-    def set_video_progress(self, video_id: int, progress: str):
-        item = self.find_item_by_id(video_id)
-        if item:
-            item.setText(Constants.TreeViewColumns.PROGRESS, progress)
-        else:
-            logger.warning(f"Could not find ({video_id}) item to update progress")
+    def set_video_progress(self, item: QTreeWidgetItem, progress: str):
+        item.setText(Constants.TreeViewColumns.PROGRESS, progress)
 
-    def set_video_status(self, video_id: int, status: Constants.Status):
-        item = self.find_item_by_id(video_id)
-        if item:
-            if status == Constants.Status.COMPLETED:
-                self.change_item_color(item, Constants.StatusColors.SUCCESS)
-            elif status == Constants.Status.FAILED:
-                self.change_item_color(item, Constants.StatusColors.ERROR)
-            elif status == Constants.Status.DOWNLOADING:
-                self.change_item_color(item, Constants.StatusColors.WARNING)
-            elif status == Constants.Status.STARTING:
-                self.change_item_color(item, Constants.StatusColors.INFO)
+    def set_video_status(self, item: QTreeWidgetItem, status: Constants.Status):
+        if status == Constants.Status.COMPLETED:
+            self.change_item_color(item, Constants.StatusColors.SUCCESS)
+        elif status == Constants.Status.FAILED:
+            self.change_item_color(item, Constants.StatusColors.ERROR)
+        elif status == Constants.Status.DOWNLOADING:
+            self.change_item_color(item, Constants.StatusColors.WARNING)
+        elif status == Constants.Status.STARTING:
+            self.change_item_color(item, Constants.StatusColors.INFO)
 
-            item.setText(Constants.TreeViewColumns.STATUS, status.value)
-        else:
-            logger.warning(f"Could not find ({video_id}) item to update status")
+        item.setText(Constants.TreeViewColumns.STATUS, status.value)
     
     def mark_pending_items(self):
         for link in self.selected_links:
@@ -293,8 +291,7 @@ class MainWindow(main_ui.MAIN_UI):
         self.cleanup_threads()
         super().closeEvent(event)
     
-    def set_video_size(self, video_id: int, video_path: Path):
-        item = self.find_item_by_id(video_id)
+    def set_video_size(self, item: QTreeWidgetItem, video_path: Path):
         if item and video_path and video_path.exists():
             size_str = Utils.format_size(video_path.stat().st_size)
             item.setText(Constants.TreeViewColumns.SIZE, size_str)
