@@ -86,6 +86,20 @@ def truncate_text(text: str, width: int) -> str:
         return ""
     return text if len(text) <= width else text[:width-3] + "..."
 
+def format_duration(seconds: int) -> str:
+    """Format duration in seconds to HH:MM:SS or MM:SS format."""
+    if seconds is None or seconds < 0:
+        return ""
+    
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    secs = seconds % 60
+    
+    if hours > 0:
+        return f"{hours}:{minutes:02d}:{secs:02d}"
+    else:
+        return f"{minutes}:{secs:02d}"
+
 def treeitem_to_link(item: QTreeWidgetItem) -> Link:
     """
     Convert a QTreeWidgetItem row into a Link object.
@@ -117,7 +131,7 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
         video.username,
         video.video_id,
         "",
-        ""
+        format_duration(video.duration)
     ])
     
     item.setData(TreeViewColumns.SELECT, Qt.UserRole, (video._type, video.url))
@@ -140,6 +154,19 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
     except (ValueError, TypeError):
         no = 0
     
+    # Parse duration from formatted string (MM:SS or HH:MM:SS)
+    duration_str = item.text(TreeViewColumns.DURATION)
+    duration = None
+    if duration_str:
+        try:
+            parts = duration_str.split(':')
+            if len(parts) == 2:  # MM:SS
+                duration = int(parts[0]) * 60 + int(parts[1])
+            elif len(parts) == 3:  # HH:MM:SS
+                duration = int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+        except (ValueError, IndexError):
+            duration = None
+    
     return Video(
         no=no,
         caption=caption,
@@ -148,7 +175,8 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
         username=item.text(TreeViewColumns.USERNAME),
         video_id=item.text(TreeViewColumns.ID),
         _type=vtype,
-        url=None
+        url=None,
+        duration=duration
     )
 
 

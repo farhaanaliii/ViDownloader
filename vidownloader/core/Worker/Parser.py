@@ -59,12 +59,29 @@ class Parser:
                 if not is_videos:
                     video_id = video_id.replace("shorts-shelf-item-", "")
                 
+                # Extract duration if available
+                duration = None
+                if is_videos:
+                    length_text = renderer.get("lengthText", {}).get("simpleText", "")
+                    # Parse duration from format like "3:45" or "1:23:45"
+                    if length_text:
+                        try:
+                            parts = length_text.split(':')
+                            if len(parts) == 2:  # MM:SS
+                                duration = int(parts[0]) * 60 + int(parts[1])
+                            elif len(parts) == 3:  # HH:MM:SS
+                                duration = int(parts[0]) * 3600 + int(parts[1]) * 60 + int(parts[2])
+                        except (ValueError, IndexError):
+                            pass
+
+                        
                 videos.append(Video(
                     caption=title,
                     username=username,
                     video_id=video_id,
                     _type=video_type,
-                    url=f"https://www.youtube.com/watch?v={video_id}" if is_videos else f"https://www.youtube.com/shorts/{video_id}"
+                    url=f"https://www.youtube.com/watch?v={video_id}" if is_videos else f"https://www.youtube.com/shorts/{video_id}",
+                    duration=duration
                 ))
             
             return videos, continuation_token
@@ -170,12 +187,22 @@ class Parser:
                 if "runs" in byline:
                     uploader = byline["runs"][0].get("text", "")
                 
+                # Extract duration (in seconds)
+                duration = None
+                length_text = renderer.get("lengthSeconds")
+                if length_text:
+                    try:
+                        duration = int(length_text)
+                    except (ValueError, TypeError):
+                        pass
+                
                 videos.append(Video(
                     caption=title,
                     username=uploader,
                     video_id=video_id,
                     _type=VideoType.VIDEO,
-                    url=f"https://www.youtube.com/watch?v={video_id}"
+                    url=f"https://www.youtube.com/watch?v={video_id}",
+                    duration=duration
                 ))
             
             return videos, continuation_token
@@ -186,6 +213,7 @@ class Parser:
             return videos, continuation_token
 
     
+    @staticmethod
     def parse_video_details(data: dict) -> Video | None:
         try:
             video_renderer = data.get("videoDetails", {})
@@ -195,7 +223,15 @@ class Parser:
             video_id = video_renderer.get("videoId", "")
             title = video_renderer.get("title", "")
             
-            # Extract username from ownerProfileUrl (e.g., "http://www.youtube.com/@Username")
+            # Extract duration in seconds
+            duration = None
+            duration_str = video_renderer.get("lengthSeconds")
+            if duration_str:
+                try:    duration = int(duration_str)
+                except (ValueError, TypeError):
+                    duration = None
+            
+            # Extract username from ownerProfileUrl
             owner_url = data.get("microformat", {}).get("playerMicroformatRenderer", {}).get("ownerProfileUrl", "")
             username = ""
             if "/@" in owner_url:
@@ -206,7 +242,8 @@ class Parser:
                 username=username,
                 video_id=video_id,
                 _type=VideoType.VIDEO,
-                url=f"https://www.youtube.com/watch?v={video_id}"
+                url=f"https://www.youtube.com/watch?v={video_id}",
+                duration=duration
             )
         except Exception as e:
             logger.error("Error parsing video details: %s", str(e))

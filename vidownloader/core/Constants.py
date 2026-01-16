@@ -65,7 +65,7 @@ class TreeViewColumns(IntEnum):
     USERNAME = 5
     ID = 6
     SIZE = 7
-    TYPE = 8
+    DURATION = 8
 
 class StatusColors:
     SUCCESS = QColor(46, 204, 113, 100);   "#2ECC71"

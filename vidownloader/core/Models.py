@@ -23,6 +23,7 @@ class Video:
     video_id: str
     _type: VideoType
     url: str = None
+    duration: int = None
 
     def __str__(self):
         return (f"Video(no={self.no}, caption='{self.caption}', percentage='{self.percentage}', "
