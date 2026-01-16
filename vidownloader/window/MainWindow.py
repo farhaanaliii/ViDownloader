@@ -145,7 +145,7 @@ class MainWindow(main_ui.MAIN_UI):
     
     def signal_event(self, event: DownloaderEvent | ScraperEvent):
         # downloader events
-        if event == DownloaderEvent:
+        if isinstance(event, DownloaderEvent):
             item = self.find_item_by_id(event.video_id)
             if not item:
                 logger.warning(f"Could not find ({event.video_id}) item to update")
