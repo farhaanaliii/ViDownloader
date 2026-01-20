@@ -128,20 +128,19 @@ class MainWindow(main_ui.MAIN_UI):
             QMessageBox.warning(self, "Warning", "Please select Videos to download.")
             return
 
-        if self.selected_links:
-            self.set_status("Downloading...", Constants.StatusColors.INFO)
-            self.progress_bar.setMaximum(len(self.selected_links))
-            self.progress_bar.setValue(0)
-            self.downloader_t = Worker.DownloaderWorker(self.selected_links)
-            self.downloader_t._event.connect(self.signal_event)
-            self.downloader_t.on_finish.connect(self.signal_on_finish)
-            self.downloader_t.error_message.connect(self.signal_on_error)
-            self.downloader_t.start()
+        self.set_status("Downloading...", Constants.StatusColors.INFO)
+        self.progress_bar.setMaximum(len(self.selected_links))
+        self.progress_bar.setValue(0)
+        self.downloader_t = Worker.DownloaderWorker(self.selected_links)
+        self.downloader_t._event.connect(self.signal_event)
+        self.downloader_t.on_finish.connect(self.signal_on_finish)
+        self.downloader_t.error_message.connect(self.signal_on_error)
+        self.downloader_t.start()
 
-            self.stop_button.setEnabled(True)
-            self.pause_button.setEnabled(True)
-            self.mark_pending_items()
-            self.tree_widget.clearSelection()
+        self.stop_button.setEnabled(True)
+        self.pause_button.setEnabled(True)
+        self.mark_pending_items()
+        self.tree_widget.clearSelection()
     
     def signal_event(self, event: DownloaderEvent | ScraperEvent):
         # downloader events
