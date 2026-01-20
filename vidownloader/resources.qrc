@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/icon.png</file>
-        <file>icons/youtube.png</file>
         
         <file>fonts/Poppins-Regular.ttf</file>
         <file>fonts/Poppins-Medium.ttf</file>
