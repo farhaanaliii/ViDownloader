@@ -88,6 +88,14 @@ class FileName(IntEnum):
     VIDEO_ID = 2
     RANDOM = 3
 
+class PlaylistOrganization(IntEnum):
+    BY_PLAYLIST = 0
+    BY_UPLOADER = 1
+
+class SingleVideoOrganization(IntEnum):
+    GROUP_SINGLES = 0
+    BY_UPLOADER = 1
+
 if platform.system() == "Windows":
     DISALLOWED_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1F]')
 else:

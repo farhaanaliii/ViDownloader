@@ -12,7 +12,7 @@ from pathlib import Path
 
 from vidownloader.core.VIIO import VIIO
 from vidownloader.core.Models import Link, Video
-from vidownloader.core.Constants import TreeViewColumns, VideoType, FileName, DISALLOWED_CHARS, App
+from vidownloader.core.Constants import TreeViewColumns, VideoType, FileName, DISALLOWED_CHARS, App, PlaylistOrganization, SingleVideoOrganization
 from vidownloader.core import VSettings, Logger
 
 from PyQt5.QtWidgets import QTreeWidgetItem, QMessageBox
@@ -107,18 +107,23 @@ def treeitem_to_link(item: QTreeWidgetItem) -> Link:
     username = item.text(TreeViewColumns.USERNAME)
     video_id = item.text(TreeViewColumns.ID)
 
-    # visible caption is truncated, so use tooltip for full caption
-    # which is set when creating the item
+    # The visible caption is truncated, so a tooltip is used to display the full text.
+    # The tooltip is set when the item is created.
     caption = item.toolTip(TreeViewColumns.CAPTION)
-    vtype: VideoType = item.data(TreeViewColumns.SELECT, Qt.UserRole)[0]
-    url: str = item.data(TreeViewColumns.SELECT, Qt.UserRole)[1]
+    user_data = item.data(TreeViewColumns.SELECT, Qt.UserRole)
+    vtype: VideoType = user_data[0]
+    url: str = user_data[1]
+    playlist_id: str = user_data[2] if len(user_data) > 2 else None
+    playlist_name: str = user_data[3] if len(user_data) > 3 else None
 
     return Link(
         url=url,
         video_type=vtype,
         username=username,
         video_id=video_id,
-        caption=caption
+        caption=caption,
+        playlist_id=playlist_id,
+        playlist_name=playlist_name
     )
 
 def video_to_treeitem(video: Video) -> QTreeWidgetItem:
@@ -134,7 +139,8 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
         format_duration(video.duration)
     ])
     
-    item.setData(TreeViewColumns.SELECT, Qt.UserRole, (video._type, video.url))
+    # Store playlist metadata along with video type and url
+    item.setData(TreeViewColumns.SELECT, Qt.UserRole, (video._type, video.url, video.playlist_id, video.playlist_name))
     item.setToolTip(TreeViewColumns.CAPTION, video.caption)
     return item
 
@@ -183,9 +189,32 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
 def build_download_path(link: Link) -> Path:
     """
     Build the download path for a given Link object.
+    Organization depends on link type and user settings.
     """
-    platform_dir = link.video_type.name.lower()
-    path = Path(VSettings.get_download_location(), platform_dir, link.username)
+    
+    base_path = Path(VSettings.get_download_location())
+    
+    if link.playlist_id:
+        playlist_org = VSettings.get_playlist_organization()
+        
+        if playlist_org == PlaylistOrganization.BY_PLAYLIST:
+            playlist_name = link.playlist_name or link.playlist_id
+            playlist_name = sanitize_filename(playlist_name)
+            path = base_path / "playlists" / playlist_name
+        else:
+            path = base_path / link.username
+    
+    elif not link.channel_id:
+        single_org = VSettings.get_single_video_organization()
+        
+        if single_org == SingleVideoOrganization.GROUP_SINGLES:
+            path = base_path / "direct_videos"
+        else:
+            path = base_path / link.username
+    
+    else:
+        path = base_path / link.username
+    
     path.mkdir(parents=True, exist_ok=True)
     return path
 

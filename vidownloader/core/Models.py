@@ -10,6 +10,7 @@ class Link:
     username: str = None
     video_id: str = None
     playlist_id: str = None
+    playlist_name: str = None
     channel_id: str = None
     caption: str = None
 
@@ -24,6 +25,8 @@ class Video:
     _type: VideoType
     url: str = None
     duration: int = None
+    playlist_id: str = None
+    playlist_name: str = None
 
     def __str__(self):
         return (f"Video(no={self.no}, caption='{self.caption}', percentage='{self.percentage}', "

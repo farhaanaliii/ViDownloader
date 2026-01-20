@@ -74,6 +74,7 @@ class Scraper(QObject):
         logger.debug(f"Scraping playlist_id: {playlist_id}")
         continuation_token = None
         videos_count = 0
+        playlist_name = None
         
         while not self.stop_signal:
             if continuation_token:
@@ -86,11 +87,25 @@ class Scraper(QObject):
                 logger.error("Failed to retrieve data from YouTube API.")
                 break
             
+            # Extract playlist name from first response
+            if playlist_name is None:
+                playlist_name = Parser.extract_playlist_name(response)
+                if playlist_name:
+                    logger.debug(f"Extracted playlist name: {playlist_name}")
+                    # Update link with playlist name
+                    if self.link:
+                        self.link.playlist_name = playlist_name
+            
             videos, continuation_token = Parser.parse_playlist_videos_and_token(response)
             
             if not videos:
                 logger.debug("No videos found in response, stopping.")
                 break
+            
+            # Set playlist metadata on all videos
+            for video in videos:
+                video.playlist_id = playlist_id
+                video.playlist_name = playlist_name
                 
             self.emit_videos(videos)
             videos_count += len(videos)

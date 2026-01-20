@@ -74,6 +74,28 @@ class VSettings:
 
     def set_download_threads(self, threads: int) -> None:
         self.set_value("download/threads", threads)
+    
+    def get_playlist_organization(self):
+        from vidownloader.core.Constants import PlaylistOrganization
+        value = self.get_value("playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int)
+        try:
+            return PlaylistOrganization(value)
+        except ValueError:
+            return PlaylistOrganization.BY_PLAYLIST
+
+    def set_playlist_organization(self, mode) -> None:
+        self.set_value("playlist/organization", mode.value)
+
+    def get_single_video_organization(self):
+        from vidownloader.core.Constants import SingleVideoOrganization
+        value = self.get_value("single_video/organization", SingleVideoOrganization.GROUP_SINGLES.value, int)
+        try:
+            return SingleVideoOrganization(value)
+        except ValueError:
+            return SingleVideoOrganization.GROUP_SINGLES
+
+    def set_single_video_organization(self, mode) -> None:
+        self.set_value("single_video/organization", mode.value)
 
 settings = VSettings()
 
@@ -88,3 +110,9 @@ set_file_naming_mode = settings.set_file_naming_mode
 
 get_download_threads = settings.get_download_threads
 set_download_threads = settings.set_download_threads
+
+get_playlist_organization = settings.get_playlist_organization
+set_playlist_organization = settings.set_playlist_organization
+
+get_single_video_organization = settings.get_single_video_organization
+set_single_video_organization = settings.set_single_video_organization

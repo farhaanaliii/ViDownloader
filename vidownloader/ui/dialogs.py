@@ -1,4 +1,4 @@
-from vidownloader.core.Constants import FileName
+from vidownloader.core.Constants import FileName, PlaylistOrganization, SingleVideoOrganization
 from vidownloader.core import VSettings
 
 from PyQt5.QtWidgets import (
@@ -97,6 +97,34 @@ class SettingsDialog(QDialog):
         self.threads.setFixedHeight(25)
         general_layout.addRow("Download Threads", self.threads)
         
+        separator2 = QFrame()
+        separator2.setFrameShape(QFrame.HLine)
+        separator2.setFrameShadow(QFrame.Sunken)
+        separator2.setStyleSheet("background-color: #e0e0e0;")
+        general_layout.addRow("", separator2)
+        
+        organization_title = QLabel("Organization Settings")
+        organization_title.setStyleSheet("color: #007bff; margin-top: 12px; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
+        general_layout.addRow("", organization_title)
+        
+        self.playlist_org = QComboBox()
+        self.playlist_org.addItem("Group by Playlist Name", PlaylistOrganization.BY_PLAYLIST)
+        self.playlist_org.addItem("Group by Uploader", PlaylistOrganization.BY_UPLOADER)
+        self.playlist_org.setFixedHeight(25)
+        index = self.playlist_org.findData(VSettings.get_playlist_organization())
+        if index >= 0:
+            self.playlist_org.setCurrentIndex(index)
+        general_layout.addRow("Playlist Organization", self.playlist_org)
+        
+        self.single_video_org = QComboBox()
+        self.single_video_org.addItem("Group in Singles Folder", SingleVideoOrganization.GROUP_SINGLES)
+        self.single_video_org.addItem("Group by Uploader", SingleVideoOrganization.BY_UPLOADER)
+        self.single_video_org.setFixedHeight(25)
+        index = self.single_video_org.findData(VSettings.get_single_video_organization())
+        if index >= 0:
+            self.single_video_org.setCurrentIndex(index)
+        general_layout.addRow("Single Video Organization", self.single_video_org)
+        
         tab_widget.addTab(general_tab, "General")
         
         changelog_tab = QWidget()
@@ -184,5 +212,7 @@ class SettingsDialog(QDialog):
         VSettings.set_export_location(self.export_location.text().strip())
         VSettings.set_file_naming_mode(self.caption_setting.currentData())
         VSettings.set_download_threads(self.threads.value())
+        VSettings.set_playlist_organization(self.playlist_org.currentData())
+        VSettings.set_single_video_organization(self.single_video_org.currentData())
         
         super().accept()

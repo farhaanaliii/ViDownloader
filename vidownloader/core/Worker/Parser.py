@@ -111,6 +111,18 @@ class Parser:
         return None
     
     @staticmethod
+    def extract_playlist_name(data: dict) -> str | None:
+        """Extract playlist name from initial playlist API response"""
+        try:
+            # Path: header -> pageHeaderRenderer -> pageTitle
+            header = data.get("header", {})
+            playlist_header = header.get("pageHeaderRenderer", {})
+            return playlist_header.get("pageTitle", None)
+        except Exception as e:
+            logger.debug(f"Error extracting playlist name: {e}")
+            return None
+    
+    @staticmethod
     def parse_playlist_videos_and_token(data: dict) -> tuple[list[Video], str]:
         videos = []
         continuation_token = None
