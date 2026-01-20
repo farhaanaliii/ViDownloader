@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 from vidownloader.ui import main_ui
 from vidownloader.core import Logger, Worker, Utils, Constants, VSettings
 from vidownloader.core.Models import *
@@ -139,6 +138,7 @@ class MainWindow(main_ui.MAIN_UI):
 
         self.stop_button.setEnabled(True)
         self.pause_button.setEnabled(True)
+        self.download_button.setEnabled(False)
         self.mark_pending_items()
         self.tree_widget.clearSelection()
     
@@ -234,6 +234,8 @@ class MainWindow(main_ui.MAIN_UI):
                 self.downloader_t.wait()
                 self.downloader_t = None
         
+        self.download_button.setEnabled(True)
+        
     def update_progress(self, value: int):
         self.progress_bar.setValue(value)
     
@@ -254,6 +256,7 @@ class MainWindow(main_ui.MAIN_UI):
             self.downloader_t = None
         
         self.stop_button.setEnabled(False)
+        self.download_button.setEnabled(True)
         self.set_status("Stopped", Constants.StatusColors.ERROR)
     
     def action_pause(self):
