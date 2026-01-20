@@ -152,10 +152,44 @@ class SettingsDialog(QDialog):
             .fixed { color: #dc3545; }
         </style>
         
-        <h2>Version 1.0.0-beta <span class="date">(Current - December 2025)</span></h2>
+        <h2>Version 1.0.0-beta2 <span class="date">(Current - January 2026)</span></h2>
         <p><span class="beta">⚠ BETA:</span> This version is functional but may have rough edges. Your feedback helps!</p>
         
-        <h3>Current Features</h3>
+        <h3>✨ New Features</h3>
+        <ul>
+            <li><span class="new">NEW:</span> Flexible video organization system
+                <ul style="margin-top: 5px;">
+                    <li>Playlists: Group by playlist name or uploader</li>
+                    <li>Single videos: Group in dedicated folder or by uploader</li>
+                    <li>Configurable organization settings in Settings dialog</li>
+                </ul>
+            </li>
+            <li><span class="new">NEW:</span> Real-time download progress tracking</li>
+            <li><span class="new">NEW:</span> Video duration display (HH:MM:SS format)</li>
+            <li><span class="new">NEW:</span> Video file size display after download completion</li>
+            <li><span class="new">NEW:</span> Download button state management (prevents duplicate downloads)</li>
+        </ul>
+        
+        <h3>🔧 Improvements</h3>
+        <ul>
+            <li><span class="improved">IMPROVED:</span> Better error handling for video metadata</li>
+            <li><span class="improved">IMPROVED:</span> Optimized event handling (reduced duplicate lookups)</li>
+            <li><span class="improved">IMPROVED:</span> Consolidated video data storage in tree items</li>
+            <li><span class="improved">IMPROVED:</span> Enhanced YouTube parser for metadata extraction</li>
+        </ul>
+        
+        <h3>🐛 Bug Fixes</h3>
+        <ul>
+            <li><span class="fixed">FIXED:</span> Video size display error handling</li>
+            <li><span class="fixed">FIXED:</span> Event type checking improvements</li>
+            <li><span class="fixed">FIXED:</span> Various stability improvements</li>
+        </ul>
+        
+        <hr style="margin: 20px 0; border: 1px solid #e0e0e0;">
+        
+        <h2>Version 1.0.0-beta <span class="date">(December 2025)</span></h2>
+        
+        <h3>Initial Beta Features</h3>
         <ul>
             <li><span class="new">NEW:</span> YouTube video & shorts scraping from channels</li>
             <li><span class="new">NEW:</span> Single video/short direct downloads</li>
