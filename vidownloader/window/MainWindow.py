@@ -110,18 +110,17 @@ class MainWindow(main_ui.MAIN_UI):
             QMessageBox.warning(self, "Warning", "No links to process!")
             return
         
-        if self.links:
-            self.set_status("Scraping...", Constants.StatusColors.INFO)
-            self.progress_bar.setMaximum(len(self.links))
-            self.progress_bar.setValue(0)
-            self.scraper_t = Worker.ScraperWorker(self.links)
-            self.scraper_t._event.connect(self.signal_event)
-            self.scraper_t.error_message.connect(self.signal_on_error)
-            self.scraper_t.update_progress.connect(self.update_progress)
-            self.scraper_t.on_finish.connect(self.signal_on_finish)
-            self.scraper_t.start()
-            
-            self.stop_button.setEnabled(True)
+        self.set_status("Scraping...", Constants.StatusColors.INFO)
+        self.progress_bar.setMaximum(len(self.links))
+        self.progress_bar.setValue(0)
+        self.scraper_t = Worker.ScraperWorker(self.links)
+        self.scraper_t._event.connect(self.signal_event)
+        self.scraper_t.error_message.connect(self.signal_on_error)
+        self.scraper_t.update_progress.connect(self.update_progress)
+        self.scraper_t.on_finish.connect(self.signal_on_finish)
+        self.scraper_t.start()
+        
+        self.stop_button.setEnabled(True)
     
     def action_start_downloading(self):
         if not self.selected_links:
