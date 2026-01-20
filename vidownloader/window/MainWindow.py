@@ -134,6 +134,7 @@ class MainWindow(main_ui.MAIN_UI):
         self.downloader_t._event.connect(self.signal_event)
         self.downloader_t.on_finish.connect(self.signal_on_finish)
         self.downloader_t.error_message.connect(self.signal_on_error)
+        self.downloader_t.update_progress.connect(self.update_progress)
         self.downloader_t.start()
 
         self.stop_button.setEnabled(True)

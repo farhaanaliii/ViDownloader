@@ -61,6 +61,7 @@ class ScraperWorker(Worker):
 
 class DownloaderWorker(Worker):
     _event = pyqtSignal(DownloaderEvent)
+    update_progress = pyqtSignal(int)
     
     def __init__(self, links: list[Link]):
         super().__init__()
@@ -137,6 +138,7 @@ class DownloaderWorker(Worker):
             with self.lock:
                 self.finished_threads += 1
                 self.active_threads -= 1
+                self.update_progress.emit(self.finished_threads)
                 
                 for i, thread in enumerate(self.threads):
                     if not thread.isRunning():
