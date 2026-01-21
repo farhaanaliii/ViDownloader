@@ -1,7 +1,7 @@
 # ViDownloader
 
 <p align="center">
-  <img src="vidownloader/icons/icon.png" alt="ViDownloader Logo" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/farhaanaliii/ViDownloader/main/vidownloader/icons/icon.png" alt="ViDownloader Logo" width="128" height="128">
 </p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -16,7 +16,7 @@
 > **Heads up**: This is currently in **Beta** phase. It works, but there might be rough edges and unexpected behavior. Your feedback will help shape the stable release.
 
 <p align="center">
-  <img src="assets/image1.png" alt="ViDownloader Screenshot">
+  <img src="https://github.com/farhaanaliii/ViDownloader/raw/main/assets/image1.png" alt="ViDownloader Screenshot">
 </p>
 
 ---
