@@ -107,7 +107,7 @@ Working with a large channel? Export your video list as a `.viio` file, close th
 
 ## System Requirements
 
-- **Python 3.9** or newer
+- **Python 3.10** or newer
 - **PyQt5** (≥ 5.15.11)
 - **yt-dlp** (latest recommended)
 - **curl_cffi**
