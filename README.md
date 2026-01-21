@@ -124,6 +124,17 @@ Python dependencies install automatically via `pip`. You'll need to install FFmp
 
 ---
 
+## Cross-Platform Support
+
+ViDownloader is **cross-platform** and has been tested on:
+
+- **Windows** (10, 11)
+- **Linux** (Ubuntu 22.04)
+
+The application is built with Python and PyQt5, making it portable across different operating systems. Both the source installation and pre-built executables work seamlessly on supported platforms.
+
+---
+
 ## Building Executables
 
 Want to build a standalone executable? Use the provided build scripts:
