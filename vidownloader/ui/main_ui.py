@@ -1,5 +1,5 @@
 from vidownloader.core.Constants import App
-from vidownloader.ui.dialogs import SettingsDialog
+from vidownloader.ui.dialogs import SettingsDialog, ReleaseNotesDialog
 
 from PyQt5.QtCore import QSize, pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
@@ -74,6 +74,16 @@ class MAIN_UI(QMainWindow):
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         toolbar.addWidget(spacer)
+        
+        release_notes_button = QPushButton("Release Notes")
+        self.apply_font(release_notes_button, 9)
+        release_notes_button.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        release_notes_button.setMinimumWidth(80)
+        release_notes_button.setMaximumWidth(140)
+        release_notes_button.setMinimumHeight(28)
+        release_notes_button.setMaximumHeight(40)
+        release_notes_button.clicked.connect(self.show_release_notes)
+        toolbar.addWidget(release_notes_button)
         
         settings_button = QPushButton("Settings")
         self.apply_font(settings_button, 9)
@@ -246,6 +256,10 @@ class MAIN_UI(QMainWindow):
     
     def go_back(self):
         pass # TODO: Implement go back functionality
+    
+    def show_release_notes(self):
+        release_notes_dialog = ReleaseNotesDialog(self)
+        release_notes_dialog.exec_()
     
     def open_settings(self):
         settings_dialog = SettingsDialog(self)

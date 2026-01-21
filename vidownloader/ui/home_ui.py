@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from vidownloader.core.Constants import App, Author
-from vidownloader.ui.dialogs import SettingsDialog
+from vidownloader.ui.dialogs import SettingsDialog, ReleaseNotesDialog
 
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (
@@ -58,7 +58,6 @@ class HOME_UI(QMainWindow):
         self.settings_button.setText("Settings")
         self.settings_button.setStyleSheet("font-size: 9pt;")
         self.settings_button.setFixedSize(100, 30)
-        
         self.settings_button.clicked.connect(self.open_settings)
         header_layout.addWidget(self.settings_button)
         
@@ -117,6 +116,19 @@ class HOME_UI(QMainWindow):
         
         buttons_layout.addSpacing(5)
         
+        self.release_notes_button = QPushButton('Release Notes')
+        self.release_notes_button.setFixedSize(115, 30)
+        self.release_notes_button.setStyleSheet("""
+            QPushButton {
+                color: #007bff;
+                font-size: 9pt;
+            }
+        """)
+        self.release_notes_button.clicked.connect(self.show_release_notes)
+        buttons_layout.addWidget(self.release_notes_button)
+        
+        buttons_layout.addSpacing(5)
+        
         self.start_button = QPushButton('Start')
         self.start_button.setMinimumWidth(80)
         self.start_button.setMaximumWidth(100)
@@ -143,6 +155,10 @@ class HOME_UI(QMainWindow):
     def open_settings(self):
         settings_dialog = SettingsDialog(self)
         settings_dialog.exec_()
+    
+    def show_release_notes(self):
+        release_notes_dialog = ReleaseNotesDialog(self)
+        release_notes_dialog.exec_()
 
     def show_about(self):
         QMessageBox.about(self, f"About {App.NAME}", 
