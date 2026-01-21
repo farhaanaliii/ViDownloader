@@ -114,10 +114,18 @@ class Parser:
     def extract_playlist_name(data: dict) -> str | None:
         """Extract playlist name from initial playlist API response"""
         try:
-            # Path: header -> pageHeaderRenderer -> pageTitle
+            # Primary path: header -> pageHeaderRenderer -> pageTitle
             header = data.get("header", {})
             playlist_header = header.get("pageHeaderRenderer", {})
-            return playlist_header.get("pageTitle", None)
+            title = playlist_header.get("pageTitle", None)
+            
+            # Fallback path: metadata -> playlistMetadataRenderer -> title
+            if not title:
+                metadata = data.get("metadata", {})
+                playlist_metadata = metadata.get("playlistMetadataRenderer", {})
+                title = playlist_metadata.get("title", None)
+            
+            return title
         except Exception as e:
             logger.debug(f"Error extracting playlist name: {e}")
             return None
