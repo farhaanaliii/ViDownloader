@@ -2,7 +2,16 @@ import os
 import re
 import platform
 from pathlib import Path
-from enum import IntEnum, StrEnum
+from enum import IntEnum
+
+# StrEnum is available in Python 3.11 and later
+# Fallback for earlier versions
+try:
+    from enum import StrEnum as StringEnum
+except ImportError:
+    from enum import Enum
+    class StringEnum(str, Enum):
+        pass
 
 from PyQt5.QtGui import QColor
 
@@ -52,7 +61,7 @@ class EventType(IntEnum):
     VIDEOS = 3
     MESSAGE = 4
 
-class VideoType(StrEnum):
+class VideoType(StringEnum):
     VIDEO = "videos"
     SHORT = "shorts"
 
@@ -74,7 +83,7 @@ class StatusColors:
     INFO    = QColor(52, 152, 219, 100);   "#3498DB"
     PENDING = QColor(149, 165, 166, 90);   "#95A5A6"
 
-class Status(StrEnum):
+class Status(StringEnum):
     STARTING = "Starting"
     PENDING = "Pending"
     DOWNLOADING = "Downloading"
