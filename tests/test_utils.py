@@ -156,3 +156,142 @@ class TestSanitizeFilename:
         """Leading/trailing whitespace should be removed."""
         result = sanitize_filename("  Test Video  ")
         assert result == "Test Video"
+
+    def test_removes_windows_invalid_chars(self):
+        """Windows invalid characters should be removed."""
+        result = sanitize_filename("File<>:\"|?*Name")
+        assert "<" not in result
+        assert ">" not in result
+        assert "|" not in result
+        assert "*" not in result
+
+    def test_handles_unicode(self):
+        """Unicode characters should be preserved."""
+        result = sanitize_filename("Test 日本語 Video")
+        assert "日本語" in result
+
+
+class TestFormatDuration:
+    """Tests for the format_duration function."""
+
+    def test_format_seconds_only(self):
+        """Test formatting duration less than a minute."""
+        from vidownloader.core.Utils import format_duration
+        result = format_duration(45)
+        assert result == "0:45"
+
+    def test_format_minutes_and_seconds(self):
+        """Test formatting duration with minutes and seconds."""
+        from vidownloader.core.Utils import format_duration
+        result = format_duration(125)
+        assert result == "2:05"
+
+    def test_format_hours_minutes_seconds(self):
+        """Test formatting duration with hours."""
+        from vidownloader.core.Utils import format_duration
+        result = format_duration(3665)
+        assert result == "1:01:05"
+
+    def test_format_zero_duration(self):
+        """Test formatting zero duration."""
+        from vidownloader.core.Utils import format_duration
+        result = format_duration(0)
+        assert result == "0:00"
+
+    def test_format_exact_minute(self):
+        """Test formatting exact minute duration."""
+        from vidownloader.core.Utils import format_duration
+        result = format_duration(60)
+        assert result == "1:00"
+
+
+class TestFormatSize:
+    """Tests for the format_size function."""
+
+    def test_format_bytes(self):
+        """Test formatting bytes."""
+        from vidownloader.core.Utils import format_size
+        result = format_size(500)
+        assert "B" in result
+
+    def test_format_kilobytes(self):
+        """Test formatting kilobytes."""
+        from vidownloader.core.Utils import format_size
+        result = format_size(1024 * 5)
+        assert "KB" in result or "KiB" in result
+
+    def test_format_megabytes(self):
+        """Test formatting megabytes."""
+        from vidownloader.core.Utils import format_size
+        result = format_size(1024 * 1024 * 10)
+        assert "MB" in result or "MiB" in result
+
+    def test_format_gigabytes(self):
+        """Test formatting gigabytes."""
+        from vidownloader.core.Utils import format_size
+        result = format_size(1024 * 1024 * 1024 * 2)
+        assert "GB" in result or "GiB" in result
+
+    def test_format_zero_size(self):
+        """Test formatting zero size."""
+        from vidownloader.core.Utils import format_size
+        result = format_size(0)
+        assert "0" in result
+
+
+class TestBuildDownloadPath:
+    """Tests for the build_download_path function."""
+
+    def test_build_path_for_single_video(self):
+        """Test building path for a single video."""
+        from vidownloader.core.Utils import build_download_path
+        from vidownloader.core.Models import Link
+        
+        link = Link(
+            url="https://www.youtube.com/watch?v=test123",
+            video_type=VideoType.VIDEO,
+            username="testuser",
+            video_id="test123"
+        )
+        
+        path = build_download_path(link)
+        assert isinstance(path, Path)
+
+    def test_build_path_for_playlist(self):
+        """Test building path for playlist video."""
+        from vidownloader.core.Utils import build_download_path
+        from vidownloader.core.Models import Link
+        
+        link = Link(
+            url="https://www.youtube.com/watch?v=test123",
+            video_type=VideoType.VIDEO,
+            username="testuser",
+            video_id="test123",
+            playlist_id="PLtest123",
+            playlist_name="Test Playlist"
+        )
+        
+        path = build_download_path(link)
+        assert isinstance(path, Path)
+
+
+class TestGenerateExportFilename:
+    """Tests for the generate_export_filename function."""
+
+    def test_generates_unique_filename(self):
+        """Test that export filenames are unique."""
+        from vidownloader.core.Utils import generate_export_filename
+        import time
+        
+        filename1 = generate_export_filename()
+        time.sleep(1.1)  # Wait to ensure different timestamp
+        filename2 = generate_export_filename()
+        
+        assert filename1 != filename2
+
+    def test_filename_format(self):
+        """Test export filename format."""
+        from vidownloader.core.Utils import generate_export_filename
+        
+        filename = generate_export_filename()
+        assert "export" in filename.lower() or "vidownloader" in filename.lower()

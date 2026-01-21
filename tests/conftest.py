@@ -4,6 +4,8 @@ Pytest configuration and shared fixtures for ViDownloader tests.
 import pytest
 import sys
 import os
+import tempfile
+from pathlib import Path
 
 # Add the project root to the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -21,6 +23,13 @@ def qapp():
     if app is None:
         app = QApplication([])
     yield app
+
+
+@pytest.fixture
+def temp_dir():
+    """Create a temporary directory for tests."""
+    with tempfile.TemporaryDirectory() as tmpdir:
+        yield Path(tmpdir)
 
 
 @pytest.fixture
@@ -95,3 +104,61 @@ def sample_shorts_data():
             }
         }
     }
+
+
+@pytest.fixture
+def sample_link():
+    """Sample Link object for testing."""
+    from vidownloader.core.Models import Link
+    from vidownloader.core.Constants import VideoType
+    
+    return Link(
+        url="https://www.youtube.com/watch?v=test123",
+        video_type=VideoType.VIDEO,
+        username="testuser",
+        video_id="test123"
+    )
+
+
+@pytest.fixture
+def sample_video():
+    """Sample Video object for testing."""
+    from vidownloader.core.Models import Video
+    from vidownloader.core.Constants import VideoType
+    
+    return Video(
+        no=1,
+        caption="Test Video",
+        username="testuser",
+        video_id="test123",
+        _type=VideoType.VIDEO,
+        url="https://www.youtube.com/watch?v=test123",
+        duration=120
+    )
+
+
+@pytest.fixture
+def sample_videos_list():
+    """Sample list of Video objects for testing."""
+    from vidownloader.core.Models import Video
+    from vidownloader.core.Constants import VideoType
+    
+    return [
+        Video(
+            no=1,
+            caption="Test Video 1",
+            username="testuser",
+            video_id="video1",
+            _type=VideoType.VIDEO,
+            duration=120
+        ),
+        Video(
+            no=2,
+            caption="Test Short 1",
+            username="testuser",
+            video_id="short1",
+            _type=VideoType.SHORT,
+            duration=30
+        ),
+    ]
+
