@@ -7,6 +7,7 @@ from vidownloader.core.VIIO import VIIO, VIIOError, InvalidFileError
 from vidownloader.window.MainWindow import MainWindow
 
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
+from PyQt5.QtCore import Qt
 
 
 logger = Logger.get_logger("HomeWindow")
@@ -18,7 +19,6 @@ class HomeWindow(home_ui.HOME_UI):
         self.main = None
         self.init_handlers()
         
-    
     def init_handlers(self):
         self.start_button.clicked.connect(self.action_start)
         self.import_button.clicked.connect(self.action_import)
@@ -38,6 +38,7 @@ class HomeWindow(home_ui.HOME_UI):
             bridge_type=BridgeType.LINKS,
             links=filtered_links
         ))
+        self.main.setAttribute(Qt.WA_DeleteOnClose)
         self.main.show()
         self.close()
 
@@ -69,6 +70,7 @@ class HomeWindow(home_ui.HOME_UI):
                 videos=videos
             ))
             self.main.show()
+            self.main.setAttribute(Qt.WA_DeleteOnClose)
             self.close()
             
         except FileNotFoundError:

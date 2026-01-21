@@ -5,7 +5,7 @@ from vidownloader.core import Logger, Worker, Utils, Constants, VSettings
 from vidownloader.core.Models import *
 from vidownloader.core.VIIO import VIIO, VIIOError
 
-from PyQt5.QtWidgets import QMessageBox, QTreeWidgetItem, QFileDialog
+from PyQt5.QtWidgets import QMessageBox, QTreeWidgetItem, QFileDialog, QApplication
 from PyQt5.QtCore import pyqtSlot, Qt
 from PyQt5.QtGui import QColor
 
@@ -48,6 +48,36 @@ class MainWindow(main_ui.MAIN_UI):
         self.stop_button.clicked.connect(self.action_stop)
         self.pause_button.clicked.connect(self.action_pause)
         self.resume_button.clicked.connect(self.action_resume)
+    
+    def go_back(self):
+        scraper_running = hasattr(self, 'scraper_t') and self.scraper_t is not None and self.scraper_t.isRunning()
+        downloader_running = hasattr(self, 'downloader_t') and self.downloader_t is not None and self.downloader_t.isRunning()
+        
+        if scraper_running or downloader_running:
+            QMessageBox.warning(
+                self,
+                "Process Running",
+                "Please stop the running process before going back.\n\nClick the 'Stop' button to stop the current operation."
+            )
+            return
+        
+        reply = QMessageBox.question(
+            self,
+            "Confirm Go Back",
+            "Are you sure you want to go back to the home screen?\n\nAny unsaved progress will be lost.",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            self.cleanup_threads()
+            
+            app = QApplication.instance()
+            
+            if hasattr(app, 'home_window'):
+                app.home_window.show()
+            
+            self.close()
 
     def import_videos(self, videos: list[Video]):
         if not videos:

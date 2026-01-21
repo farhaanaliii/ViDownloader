@@ -255,7 +255,7 @@ class MAIN_UI(QMainWindow):
         header.setStretchLastSection(True)
     
     def go_back(self):
-        pass # TODO: Implement go back functionality
+        pass  # Implemented in MainWindow
     
     def show_release_notes(self):
         release_notes_dialog = ReleaseNotesDialog(self)

@@ -20,8 +20,8 @@ def main():
     sys.excepthook = exception_hook
     load_fonts()
     
-    window = HomeWindow()
-    window.show()
+    app.home_window = HomeWindow()
+    app.home_window.show()
     
     sys.exit(app.exec_())
 
