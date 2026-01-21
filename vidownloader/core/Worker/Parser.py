@@ -138,6 +138,16 @@ class Parser:
         try:
             raw_content_list = None
             
+            # Extract playlist owner as fallback for videos without uploader info
+            playlist_owner = None
+            try:
+                microformat = data.get("microformat", {})
+                microformat_data = microformat.get("microformatDataRenderer", {})
+                course_details = microformat_data.get("courseDetails", {})
+                playlist_owner = course_details.get("providerName", None)
+            except Exception:
+                pass
+            
             if data.get("onResponseReceivedActions"):
                 actions = data["onResponseReceivedActions"]
                 for action in actions:
@@ -206,6 +216,10 @@ class Parser:
                 byline = renderer.get("shortBylineText", {})
                 if "runs" in byline:
                     uploader = byline["runs"][0].get("text", "")
+                
+                # Fallback: If uploader not found, use playlist owner (videos uploaded by playlist owner)
+                if not uploader and playlist_owner:
+                    uploader = playlist_owner
                 
                 # Extract duration (in seconds)
                 duration = None
