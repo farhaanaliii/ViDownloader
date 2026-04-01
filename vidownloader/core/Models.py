@@ -1,7 +1,8 @@
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from vidownloader.core.Constants import BridgeType, EventType, VideoType
+
 
 @dataclass
 class Link:
@@ -13,6 +14,7 @@ class Link:
     playlist_name: str = None
     channel_id: str = None
     caption: str = None
+
 
 @dataclass(kw_only=True)
 class Video:
@@ -29,23 +31,28 @@ class Video:
     playlist_name: str = None
 
     def __str__(self):
-        return (f"Video(no={self.no}, caption='{self.caption}', percentage='{self.percentage}', "
-                f"status='{self.status}', username='{self.username}', id='{self.video_id}', "
-                f"url='{self.url}', type='{self._type}')")
+        return (
+            f"Video(no={self.no}, caption='{self.caption}', percentage='{self.percentage}', "
+            f"status='{self.status}', username='{self.username}', id='{self.video_id}', "
+            f"url='{self.url}', type='{self._type}')"
+        )
 
     def __repr__(self):
-        return (f"<Video #{self.no} - {self.caption} "
-                f"[{self.status} - {self.percentage}]>")
+        return (
+            f"<Video #{self.no} - {self.caption} "
+            f"[{self.status} - {self.percentage}]>"
+        )
 
     def to_dict(self):
         data = asdict(self)
-        data['_type'] = self._type.value
+        data["_type"] = self._type.value
         return data
 
     @classmethod
     def from_dict(cls, data: dict):
-        data['_type'] = VideoType(data['_type'])
+        data["_type"] = VideoType(data["_type"])
         return cls(**data)
+
 
 @dataclass
 class Bridge:
@@ -54,6 +61,7 @@ class Bridge:
     exported: str = None
     videos: list[Video] = None
 
+
 @dataclass
 class DownloaderEvent:
     event: EventType
@@ -61,6 +69,7 @@ class DownloaderEvent:
     video_path: Path = None
     progress: str = None
     status: str = None
+
 
 @dataclass
 class ScraperEvent:

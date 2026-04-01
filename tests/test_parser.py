@@ -2,10 +2,11 @@
 Unit tests for vidownloader.core.Worker.Parser module.
 Tests YouTube response parsing functionality.
 """
+
 import pytest
 
-from vidownloader.core.Worker.Parser import Parser
 from vidownloader.core.Constants import VideoType
+from vidownloader.core.Worker.Parser import Parser
 
 
 class TestParser:
@@ -14,11 +15,9 @@ class TestParser:
     def test_parse_videos_from_channel_data(self, sample_video_data):
         """Test parsing video data from a channel response."""
         videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_video_data,
-            VideoType.VIDEO,
-            "testuser"
+            sample_video_data, VideoType.VIDEO, "testuser"
         )
-        
+
         assert len(videos) == 1
         assert videos[0].video_id == "test123"
         assert videos[0].caption == "Test Video Title"
@@ -28,11 +27,9 @@ class TestParser:
     def test_parse_shorts_from_channel_data(self, sample_shorts_data):
         """Test parsing shorts data from a channel response."""
         videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_shorts_data,
-            VideoType.SHORT,
-            "testuser"
+            sample_shorts_data, VideoType.SHORT, "testuser"
         )
-        
+
         assert len(videos) == 1
         assert videos[0].video_id == "short123"
         assert videos[0].caption == "Test Short Title"
@@ -41,50 +38,38 @@ class TestParser:
     def test_parse_empty_data(self):
         """Test parsing empty data returns empty list."""
         videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            {},
-            VideoType.VIDEO,
-            "testuser"
+            {}, VideoType.VIDEO, "testuser"
         )
-        
+
         assert videos == []
         assert token is None
 
     def test_parse_malformed_data(self):
         """Test parsing malformed data doesn't crash."""
-        malformed_data = {
-            "contents": {
-                "unexpected": "structure"
-            }
-        }
-        
+        malformed_data = {"contents": {"unexpected": "structure"}}
+
         videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            malformed_data,
-            VideoType.VIDEO,
-            "testuser"
+            malformed_data, VideoType.VIDEO, "testuser"
         )
-        
+
         # Should return empty list, not crash
         assert videos == []
 
     def test_video_url_format(self, sample_video_data):
         """Test that video URLs are correctly formatted."""
         videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_video_data,
-            VideoType.VIDEO,
-            "testuser"
+            sample_video_data, VideoType.VIDEO, "testuser"
         )
-        
+
         assert len(videos) == 1
         assert videos[0].url == "https://www.youtube.com/watch?v=test123"
 
     def test_shorts_url_format(self, sample_shorts_data):
         """Test that shorts URLs are correctly formatted."""
         videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_shorts_data,
-            VideoType.SHORT,
-            "testuser"
+            sample_shorts_data, VideoType.SHORT, "testuser"
         )
-        
+
         assert len(videos) == 1
         assert videos[0].url == "https://www.youtube.com/shorts/short123"
 
@@ -105,7 +90,11 @@ class TestParser:
                                                     "content": {
                                                         "videoRenderer": {
                                                             "videoId": "abc123",
-                                                            "title": {"runs": [{"text": "Video"}]}
+                                                            "title": {
+                                                                "runs": [
+                                                                    {"text": "Video"}
+                                                                ]
+                                                            },
                                                         }
                                                     }
                                                 }
@@ -118,23 +107,21 @@ class TestParser:
                                                         }
                                                     }
                                                 }
-                                            }
+                                            },
                                         ]
                                     }
-                                }
+                                },
                             }
                         }
                     ]
                 }
             }
         }
-        
+
         videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            data_with_token,
-            VideoType.VIDEO,
-            "testuser"
+            data_with_token, VideoType.VIDEO, "testuser"
         )
-        
+
         assert token == "next_page_token_123"
 
     def test_parse_with_duration(self):
@@ -154,28 +141,34 @@ class TestParser:
                                                     "content": {
                                                         "videoRenderer": {
                                                             "videoId": "test123",
-                                                            "title": {"runs": [{"text": "Test Video"}]},
-                                                            "lengthText": {"simpleText": "3:45"}
+                                                            "title": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Test Video"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "lengthText": {
+                                                                "simpleText": "3:45"
+                                                            },
                                                         }
                                                     }
                                                 }
                                             }
                                         ]
                                     }
-                                }
+                                },
                             }
                         }
                     ]
                 }
             }
         }
-        
+
         videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            data_with_duration,
-            VideoType.VIDEO,
-            "testuser"
+            data_with_duration, VideoType.VIDEO, "testuser"
         )
-        
+
         assert len(videos) == 1
         assert videos[0].duration == 225  # 3*60 + 45 = 225 seconds
 
@@ -196,7 +189,11 @@ class TestParser:
                                                     "content": {
                                                         "videoRenderer": {
                                                             "videoId": "video1",
-                                                            "title": {"runs": [{"text": "Video 1"}]}
+                                                            "title": {
+                                                                "runs": [
+                                                                    {"text": "Video 1"}
+                                                                ]
+                                                            },
                                                         }
                                                     }
                                                 }
@@ -206,27 +203,29 @@ class TestParser:
                                                     "content": {
                                                         "videoRenderer": {
                                                             "videoId": "video2",
-                                                            "title": {"runs": [{"text": "Video 2"}]}
+                                                            "title": {
+                                                                "runs": [
+                                                                    {"text": "Video 2"}
+                                                                ]
+                                                            },
                                                         }
                                                     }
                                                 }
-                                            }
+                                            },
                                         ]
                                     }
-                                }
+                                },
                             }
                         }
                     ]
                 }
             }
         }
-        
+
         videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            data_multiple,
-            VideoType.VIDEO,
-            "testuser"
+            data_multiple, VideoType.VIDEO, "testuser"
         )
-        
+
         assert len(videos) == 2
         assert videos[0].video_id == "video1"
         assert videos[1].video_id == "video2"
@@ -237,21 +236,15 @@ class TestParserPlaylist:
 
     def test_extract_playlist_name(self):
         """Test extracting playlist name from API response."""
-        data = {
-            "header": {
-                "pageHeaderRenderer": {
-                    "pageTitle": "My Awesome Playlist"
-                }
-            }
-        }
-        
+        data = {"header": {"pageHeaderRenderer": {"pageTitle": "My Awesome Playlist"}}}
+
         name = Parser.extract_playlist_name(data)
         assert name == "My Awesome Playlist"
 
     def test_extract_playlist_name_missing(self):
         """Test extracting playlist name when not present."""
         data = {"header": {}}
-        
+
         name = Parser.extract_playlist_name(data)
         assert name is None
 
@@ -280,9 +273,21 @@ class TestParserPlaylist:
                                                                     {
                                                                         "playlistVideoRenderer": {
                                                                             "videoId": "playlist_vid1",
-                                                                            "title": {"runs": [{"text": "Playlist Video 1"}]},
-                                                                            "shortBylineText": {"runs": [{"text": "Creator1"}]},
-                                                                            "lengthSeconds": "180"
+                                                                            "title": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Playlist Video 1"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "shortBylineText": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Creator1"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "lengthSeconds": "180",
                                                                         }
                                                                     }
                                                                 ]
@@ -300,9 +305,9 @@ class TestParserPlaylist:
                 }
             }
         }
-        
+
         videos, token = Parser.parse_playlist_videos_and_token(data)
-        
+
         assert len(videos) == 1
         assert videos[0].video_id == "playlist_vid1"
         assert videos[0].caption == "Playlist Video 1"
@@ -329,8 +334,20 @@ class TestParserPlaylist:
                                                                     {
                                                                         "playlistVideoRenderer": {
                                                                             "videoId": "vid1",
-                                                                            "title": {"runs": [{"text": "Video 1"}]},
-                                                                            "shortBylineText": {"runs": [{"text": "Creator"}]}
+                                                                            "title": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Video 1"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "shortBylineText": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Creator"
+                                                                                    }
+                                                                                ]
+                                                                            },
                                                                         }
                                                                     },
                                                                     {
@@ -341,7 +358,7 @@ class TestParserPlaylist:
                                                                                 }
                                                                             }
                                                                         }
-                                                                    }
+                                                                    },
                                                                 ]
                                                             }
                                                         }
@@ -357,9 +374,9 @@ class TestParserPlaylist:
                 }
             }
         }
-        
+
         videos, token = Parser.parse_playlist_videos_and_token(data)
-        
+
         assert len(videos) == 1
         assert token == "playlist_token_123"
 
@@ -374,7 +391,7 @@ class TestParserPlaylist:
                                 "playlistVideoRenderer": {
                                     "videoId": "cont_vid1",
                                     "title": {"simpleText": "Continuation Video"},
-                                    "shortBylineText": {"runs": [{"text": "Creator2"}]}
+                                    "shortBylineText": {"runs": [{"text": "Creator2"}]},
                                 }
                             }
                         ]
@@ -382,9 +399,9 @@ class TestParserPlaylist:
                 }
             ]
         }
-        
+
         videos, _ = Parser.parse_playlist_videos_and_token(data)
-        
+
         assert len(videos) == 1
         assert videos[0].video_id == "cont_vid1"
         assert videos[0].caption == "Continuation Video"
@@ -392,7 +409,7 @@ class TestParserPlaylist:
     def test_parse_playlist_empty_data(self):
         """Test parsing empty playlist data."""
         videos, token = Parser.parse_playlist_videos_and_token({})
-        
+
         assert videos == []
         assert token is None
 
@@ -406,17 +423,17 @@ class TestParserVideoDetails:
             "videoDetails": {
                 "videoId": "detail_vid1",
                 "title": "Detailed Video Title",
-                "lengthSeconds": "300"
+                "lengthSeconds": "300",
             },
             "microformat": {
                 "playerMicroformatRenderer": {
                     "ownerProfileUrl": "https://www.youtube.com/@testcreator"
                 }
-            }
+            },
         }
-        
+
         video = Parser.parse_video_details(data)
-        
+
         assert video is not None
         assert video.video_id == "detail_vid1"
         assert video.caption == "Detailed Video Title"
@@ -426,15 +443,10 @@ class TestParserVideoDetails:
 
     def test_parse_video_details_no_username(self):
         """Test parsing video details without username."""
-        data = {
-            "videoDetails": {
-                "videoId": "vid123",
-                "title": "Test Video"
-            }
-        }
-        
+        data = {"videoDetails": {"videoId": "vid123", "title": "Test Video"}}
+
         video = Parser.parse_video_details(data)
-        
+
         assert video is not None
         assert video.video_id == "vid123"
         assert video.username == ""
@@ -445,12 +457,12 @@ class TestParserVideoDetails:
             "videoDetails": {
                 "videoId": "vid123",
                 "title": "Test",
-                "lengthSeconds": "invalid"
+                "lengthSeconds": "invalid",
             }
         }
-        
+
         video = Parser.parse_video_details(data)
-        
+
         assert video is not None
         assert video.duration is None
 
@@ -462,7 +474,7 @@ class TestParserVideoDetails:
     def test_parse_video_details_missing_video_details(self):
         """Test parsing when videoDetails key is missing."""
         data = {"microformat": {}}
-        
+
         video = Parser.parse_video_details(data)
         assert video is None
 
@@ -475,13 +487,11 @@ class TestParserContinuationToken:
         item = {
             "continuationItemRenderer": {
                 "continuationEndpoint": {
-                    "continuationCommand": {
-                        "token": "simple_token_123"
-                    }
+                    "continuationCommand": {"token": "simple_token_123"}
                 }
             }
         }
-        
+
         token = Parser._extract_continuation_token(item)
         assert token == "simple_token_123"
 
@@ -492,24 +502,20 @@ class TestParserContinuationToken:
                 "continuationEndpoint": {
                     "commandExecutorCommand": {
                         "commands": [
-                            {
-                                "continuationCommand": {
-                                    "token": "nested_token_456"
-                                }
-                            }
+                            {"continuationCommand": {"token": "nested_token_456"}}
                         ]
                     }
                 }
             }
         }
-        
+
         token = Parser._extract_continuation_token(item)
         assert token == "nested_token_456"
 
     def test_extract_no_continuation_token(self):
         """Test extracting when no token present."""
         item = {"continuationItemRenderer": {}}
-        
+
         token = Parser._extract_continuation_token(item)
         assert token is None
 
@@ -517,4 +523,3 @@ class TestParserContinuationToken:
         """Test extracting from empty item."""
         token = Parser._extract_continuation_token({})
         assert token is None
-

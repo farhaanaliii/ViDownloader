@@ -1,21 +1,23 @@
 from pathlib import Path
 from typing import Any, Optional, Type
 
-from vidownloader.core.Constants import App, Author, FileName
-
 from PyQt5.QtCore import QSettings
+
+from vidownloader.core.Constants import App, Author, FileName
 
 
 class VSettings:
     VERSION = "v1"
-    
+
     def __init__(self) -> None:
         self._settings = QSettings(Author.NAME, App.NAME)
 
     def _key(self, key: str) -> str:
         return f"{self.VERSION}/{key}"
-    
-    def get_value(self, key: str, default: Optional[Any] = None, value_type: Optional[Type] = None) -> Any:
+
+    def get_value(
+        self, key: str, default: Optional[Any] = None, value_type: Optional[Type] = None
+    ) -> Any:
         key = self._key(key)
         value = self._settings.value(key, default)
         if value_type is not None and value is not None:
@@ -24,7 +26,6 @@ class VSettings:
             except (ValueError, TypeError):
                 return default
         return value
-
 
     def set_value(self, key: str, value: Any) -> None:
         self._settings.setValue(self._key(key), value)
@@ -42,25 +43,25 @@ class VSettings:
         return self.get_value(
             "download/location",
             str((Path("~").expanduser() / "Downloads" / App.NAME).absolute()),
-            str
+            str,
         )
-    
+
     def set_download_location(self, location: str) -> None:
         self.set_value("download/location", location)
-    
+
     def get_export_location(self) -> str:
         return self.get_value(
             "export/location",
             str((Path("~").expanduser() / "Documents" / App.NAME).absolute()),
-            str
+            str,
         )
-    
+
     def set_export_location(self, location: str) -> None:
         self.set_value("export/location", location)
-    
+
     def get_file_naming_mode(self) -> FileName:
         value = self.get_value("file/naming_mode", FileName.CAPTION.value, int)
-        
+
         try:
             return FileName(value)
         except ValueError:
@@ -68,16 +69,19 @@ class VSettings:
 
     def set_file_naming_mode(self, mode: FileName) -> None:
         self.set_value("file/naming_mode", mode.value)
-    
+
     def get_download_threads(self) -> int:
         return self.get_value("download/threads", 4, int)
 
     def set_download_threads(self, threads: int) -> None:
         self.set_value("download/threads", threads)
-    
+
     def get_playlist_organization(self):
         from vidownloader.core.Constants import PlaylistOrganization
-        value = self.get_value("playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int)
+
+        value = self.get_value(
+            "playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int
+        )
         try:
             return PlaylistOrganization(value)
         except ValueError:
@@ -88,7 +92,12 @@ class VSettings:
 
     def get_single_video_organization(self):
         from vidownloader.core.Constants import SingleVideoOrganization
-        value = self.get_value("single_video/organization", SingleVideoOrganization.GROUP_SINGLES.value, int)
+
+        value = self.get_value(
+            "single_video/organization",
+            SingleVideoOrganization.GROUP_SINGLES.value,
+            int,
+        )
         try:
             return SingleVideoOrganization(value)
         except ValueError:
@@ -96,6 +105,7 @@ class VSettings:
 
     def set_single_video_organization(self, mode) -> None:
         self.set_value("single_video/organization", mode.value)
+
 
 settings = VSettings()
 
