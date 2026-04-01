@@ -58,6 +58,7 @@ dev = [
     "pytest-qt>=4.2.0",
     "pytest-cov>=7.0.0",
     "pytest-mock>=3.12.0",
+    "pyinstaller",
 ]
 
 [tool.pytest.ini_options]

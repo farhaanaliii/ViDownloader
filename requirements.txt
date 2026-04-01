@@ -1,4 +1,3 @@
 PyQt5
 yt-dlp
 curl_cffi
-nuitka

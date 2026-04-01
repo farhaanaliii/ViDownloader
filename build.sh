@@ -102,59 +102,38 @@ if [ $? -ne 0 ]; then
 fi
 echo "       Resources compiled to: $RC_OUTPUT"
 
-# Build with Nuitka
-echo
-echo "Building with Nuitka..."
-echo "       This may take several minutes..."
-echo
-
 # Detect architecture
 ARCH=$(uname -m)
 case $ARCH in
-    x86_64)
-        ARCH="x64"
-        ;;
-    aarch64|arm64)
-        ARCH="arm64"
-        ;;
-    arm*)
-        ARCH="arm"
-        ;;
-    i386|i686)
-        ARCH="x86"
-        ;;
-    *)
-        ARCH="unknown"
-        ;;
+    x86_64)  ARCH="x64" ;;
+    aarch64|arm64) ARCH="arm64" ;;
+    arm*)    ARCH="arm" ;;
+    i386|i686) ARCH="x86" ;;
+    *)       ARCH="unknown" ;;
 esac
 
-# Prepare Nuitka arguments
-NUITKA_ARGS=(
-    --standalone
+# Build with PyInstaller
+echo
+echo "Building with PyInstaller..."
+echo "       This may take several minutes..."
+echo
+
+# Prepare PyInstaller arguments
+PYINSTALLER_ARGS=(
     --onefile
-    --enable-plugin=pyqt5
-    --include-package=vidownloader
-    --output-dir="$OUTPUT_DIR"
-    --output-filename=ViDownloader
-    --assume-yes-for-downloads
+    --windowed
+    --name=ViDownloader
+    --distpath="$OUTPUT_DIR"
+    --workpath="$OUTPUT_DIR/work"
+    --specpath="$OUTPUT_DIR"
 )
 
-# Add icon if exists (for Linux desktop entry)
+# Add icon if exists
 if [ -f "$ICON_FILE" ]; then
-    NUITKA_ARGS+=(--linux-icon="$ICON_FILE")
+    PYINSTALLER_ARGS+=(--icon="$ICON_FILE")
 fi
 
-# Add metadata
-NUITKA_ARGS+=(
-    --company-name="$ORG_NAME"
-    --product-name="$TOOL_NAME"
-    --file-version="$FILE_VERSION"
-    --product-version="$FILE_VERSION"
-    --copyright="Copyright $CURRENT_YEAR $ORG_NAME, $ORG_URL"
-    --file-description="$TOOL_DESC"
-)
-
-python3 -m nuitka "${NUITKA_ARGS[@]}" "$MAIN_FILE"
+pyinstaller "${PYINSTALLER_ARGS[@]}" "$MAIN_FILE"
 
 if [ $? -ne 0 ]; then
     echo
@@ -200,7 +179,7 @@ Dependencies (if not bundled):
 - libgl1-mesa-glx
 - libxcb-xinerama0
 
-Note: The executable is built with Nuitka and should be self-contained.
+Note: The executable is built with PyInstaller and should be self-contained.
 EOF
 
 # Create desktop entry

@@ -85,30 +85,22 @@ echo       Resources compiled to: %RC_OUTPUT%
 
 REM Set icon option only if file exists
 set ICON_OPT=
-if exist "%ICON_FILE%" set ICON_OPT=--windows-icon-from-ico="%ICON_FILE%"
+if exist "%ICON_FILE%" set ICON_OPT=--icon="%ICON_FILE%"
 
-REM Build with Nuitka
+REM Build with PyInstaller
 echo.
-echo Building with Nuitka...
+echo Building with PyInstaller...
 echo       This may take several minutes...
 echo.
 
-python -m nuitka ^
-    --standalone ^
+pyinstaller ^
     --onefile ^
-    --enable-plugin=pyqt5 ^
-    --include-package=vidownloader ^
-    --windows-console-mode=disable ^
+    --windowed ^
+    --name=ViDownloader ^
     %ICON_OPT% ^
-    --company-name="%ORG_NAME%" ^
-    --product-name="%TOOL_NAME%" ^
-    --file-version="%FILE_VERSION%" ^
-    --product-version="%FILE_VERSION%" ^
-    --copyright="Copyright %CURRENT_YEAR% %ORG_NAME%, %ORG_URL%" ^
-    --file-description="%TOOL_DESC%" ^
-    --output-dir="%OUTPUT_DIR%" ^
-    --output-filename=ViDownloader.exe ^
-    --assume-yes-for-downloads ^
+    --distpath="%OUTPUT_DIR%" ^
+    --workpath="%OUTPUT_DIR%\work" ^
+    --specpath="%OUTPUT_DIR%" ^
     "%MAIN_FILE%"
 
 if errorlevel 1 (

@@ -153,7 +153,7 @@ These scripts will automatically:
 - Set up the virtual environment
 - Install dependencies
 - Compile Qt resources
-- Build the executable using Nuitka
+- Build the executable using PyInstaller
 
 Pre-built executables are also available for download:
 

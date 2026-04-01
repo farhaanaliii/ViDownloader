@@ -2,6 +2,15 @@
 
 All notable changes to ViDownloader will be documented in this file.
 
+## Unreleased
+
+### 🔧 Improvements
+
+- **IMPROVED:** Switched build toolchain from Nuitka to PyInstaller for simpler cross-platform builds
+- `pyinstaller` moved to dev dependencies (`pip install -e ".[dev]"`)
+
+---
+
 ## Version 1.0.0-beta2 (Current - January 2026)
 
 > [!WARNING]
