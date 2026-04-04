@@ -16,6 +16,8 @@ except ImportError:
 
 
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt
+
 
 
 class Author:
@@ -76,15 +78,17 @@ class VideoType(StringEnum):
 
 
 class TreeViewColumns(IntEnum):
-    SELECT = 0
-    NO = 1
-    CAPTION = 2
-    PROGRESS = 3
-    STATUS = 4
-    USERNAME = 5
-    ID = 6
-    SIZE = 7
-    DURATION = 8
+    NO = 0
+    CAPTION = 1
+    PROGRESS = 2
+    STATUS = 3
+    USERNAME = 4
+    ID = 5
+    SIZE = 6
+    DURATION = 7
+
+class TreeViewRoles(IntEnum):
+    VIDEO_DATA = Qt.UserRole + 1
 
 
 class StatusColors:

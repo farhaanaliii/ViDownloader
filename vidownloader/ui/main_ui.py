@@ -132,7 +132,6 @@ class MAIN_UI(QMainWindow):
         self.tree_widget.setColumnCount(8)
         self.tree_widget.setHeaderLabels(
             [
-                "",
                 "No #",
                 "Caption",
                 "Progress",

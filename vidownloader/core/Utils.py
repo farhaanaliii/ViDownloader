@@ -21,6 +21,7 @@ from vidownloader.core.Constants import (
     PlaylistOrganization,
     SingleVideoOrganization,
     TreeViewColumns,
+    TreeViewRoles,
     VideoType,
 )
 from vidownloader.core.Models import Link, Video
@@ -124,7 +125,7 @@ def treeitem_to_link(item: QTreeWidgetItem) -> Link:
     # The visible caption is truncated, so a tooltip is used to display the full text.
     # The tooltip is set when the item is created.
     caption = item.toolTip(TreeViewColumns.CAPTION)
-    user_data = item.data(TreeViewColumns.SELECT, Qt.UserRole)
+    user_data = item.data(TreeViewColumns.NO, TreeViewRoles.VIDEO_DATA)
     vtype: VideoType = user_data[0]
     url: str = user_data[1]
     playlist_id: str = user_data[2] if len(user_data) > 2 else None
@@ -144,7 +145,6 @@ def treeitem_to_link(item: QTreeWidgetItem) -> Link:
 def video_to_treeitem(video: Video) -> QTreeWidgetItem:
     item = QTreeWidgetItem(
         [
-            "",
             str(video.no),
             truncate_text(video.caption, 50),
             video.percentage,
@@ -158,8 +158,8 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
 
     # Store playlist metadata along with video type and url
     item.setData(
-        TreeViewColumns.SELECT,
-        Qt.UserRole,
+        TreeViewColumns.NO,
+        TreeViewRoles.VIDEO_DATA,
         (video._type, video.url, video.playlist_id, video.playlist_name),
     )
     item.setToolTip(TreeViewColumns.CAPTION, video.caption)
@@ -170,7 +170,7 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
     """
     Convert a QTreeWidgetItem row back into a Video object.
     """
-    vtype: VideoType = item.data(TreeViewColumns.SELECT, Qt.UserRole)[0]
+    vtype: VideoType = item.data(TreeViewColumns.NO, TreeViewRoles.VIDEO_DATA)[0]
 
     # Get full caption from tooltip (visible text is truncated)
     caption = item.toolTip(TreeViewColumns.CAPTION)
