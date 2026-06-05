@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QSize, Qt, pyqtSignal
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
+    QAbstractItemView,
     QFrame,
     QHBoxLayout,
     QHeaderView,
@@ -17,7 +18,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from vidownloader.core.Constants import App
+from vidownloader.core.Constants import App, TreeViewColumns
 from vidownloader.ui.dialogs import ReleaseNotesDialog, SettingsDialog
 
 
@@ -127,6 +128,9 @@ class MAIN_UI(QMainWindow):
 
         self.tree_widget = QTreeWidget()
         self.tree_widget.setItemDelegate(ViDelegate())
+        self.tree_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tree_widget.setSelectionMode(QTreeWidget.ExtendedSelection)
+        self.tree_widget.setAlternatingRowColors(True)
         self.tree_widget.setMinimumHeight(300)
         self.tree_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.tree_widget.setColumnCount(8)
@@ -142,9 +146,20 @@ class MAIN_UI(QMainWindow):
                 "Duration",
             ]
         )
-        self.tree_widget.setAlternatingRowColors(True)
-        self.tree_widget.setSelectionMode(QTreeWidget.ExtendedSelection)
         self.tree_widget.setUniformRowHeights(True)
+        header = self.tree_widget.header()
+        header.setSectionResizeMode(QHeaderView.Interactive)
+
+        self.tree_widget.setColumnWidth(TreeViewColumns.NO, 100)
+        self.tree_widget.setColumnWidth(TreeViewColumns.PROGRESS, 90)
+        self.tree_widget.setColumnWidth(TreeViewColumns.STATUS, 120)
+        self.tree_widget.setColumnWidth(TreeViewColumns.USERNAME, 120)
+        self.tree_widget.setColumnWidth(TreeViewColumns.ID, 150)
+        self.tree_widget.setColumnWidth(TreeViewColumns.SIZE, 100)
+        self.tree_widget.setColumnWidth(TreeViewColumns.DURATION, 90)
+
+        header.setSectionResizeMode(TreeViewColumns.CAPTION, QHeaderView.Stretch)
+
         main_layout.addWidget(self.tree_widget)
 
         buttons_frame = QFrame()
@@ -254,17 +269,6 @@ class MAIN_UI(QMainWindow):
         buttons_layout.addLayout(export_layout)
 
         main_layout.addWidget(buttons_frame)
-
-        header = self.tree_widget.header()
-        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.Stretch)
-        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(4, QHeaderView.Stretch)
-        header.setSectionResizeMode(5, QHeaderView.Stretch)
-        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)
-        header.setSectionResizeMode(7, QHeaderView.ResizeToContents)
-        header.setStretchLastSection(True)
 
     def go_back(self):
         pass  # Implemented in MainWindow
