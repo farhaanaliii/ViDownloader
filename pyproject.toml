@@ -76,5 +76,5 @@ exclude = "venv"
 
 [tool.isort]
 profile = "black"
-skip = ["venv"]
+skip = ["venv", "build", "dist"]
 
