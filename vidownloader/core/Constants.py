@@ -15,9 +15,8 @@ except ImportError:
         pass
 
 
-from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt
-
+from PyQt5.QtGui import QColor
 
 
 class Author:
@@ -86,6 +85,7 @@ class TreeViewColumns(IntEnum):
     ID = 5
     SIZE = 6
     DURATION = 7
+
 
 class TreeViewRoles(IntEnum):
     VIDEO_DATA = Qt.UserRole + 1
