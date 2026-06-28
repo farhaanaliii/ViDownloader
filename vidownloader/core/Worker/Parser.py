@@ -17,9 +17,9 @@ class Parser:
         continuation_token = None
         is_videos = video_type == VideoType.VIDEO
 
-        _RENDERER_ = "videoRenderer" if is_videos else "shortsLockupViewModel"
-        _ID_ = "videoId" if is_videos else "entityId"
-        _TITLE = "title" if is_videos else "overlayMetadata"
+        _RENDERER_ = "lockupViewModel" if is_videos else "shortsLockupViewModel"
+        _ID_ = "contentId" if is_videos else "entityId"
+        _TITLE = "metadata" if is_videos else "overlayMetadata"
 
         try:
             raw_content_list = None
@@ -65,7 +65,7 @@ class Parser:
                 title_ = renderer[_TITLE]
 
                 if is_videos:
-                    title = title_["runs"][0]["text"]
+                    title = title_["lockupMetadataViewModel"]["title"]["content"]
                 else:
                     title = title_["primaryText"]["content"]
 
