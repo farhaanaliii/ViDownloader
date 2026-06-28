@@ -72,9 +72,9 @@ python_functions = ["test_*"]
 
 [tool.black]
 target-version = ["py310"]
-exclude = "venv"
+extend-exclude = '''/(venv|build|dist|\.git|__pycache__)/'''
 
 [tool.isort]
 profile = "black"
-skip = ["venv", "build", "dist"]
+skip = ["venv", "build", "dist", ".git", "__pycache__"]
 
