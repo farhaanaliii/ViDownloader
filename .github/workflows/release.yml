@@ -15,11 +15,11 @@ jobs:
         include:
           - os: windows-latest
             arch: x64
-            asset_name: ViDownloader_windows.exe
+            asset_name: ViDownloader_windows_x64.exe
             icon: vidownloader/icons/icon.ico
           - os: ubuntu-latest
             arch: x64
-            asset_name: ViDownloader_linux
+            asset_name: ViDownloader_linux_x64
             icon: vidownloader/icons/icon.png
 
     runs-on: ${{ matrix.os }}
