@@ -211,12 +211,15 @@ class MainWindow(main_ui.MAIN_UI):
             Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH
         )
         if video_path and Path(video_path).exists():
-            action = QAction("Play Video", self)
-            action.triggered.connect(lambda: Utils.play_video(video_path))
-            menu.addAction(action)
+            self._make_menu_action(menu, "Play Video", lambda: Utils.play_video(video_path))
 
         menu.exec_(self.tree_widget.viewport().mapToGlobal(position))
 
+    def _make_menu_action(self, menu: QMenu, title: str, callback: callable):
+        action = QAction(title, self)
+        action.triggered.connect(callback)
+        menu.addAction(action)
+        
     def signal_event(self, event: DownloaderEvent | ScraperEvent):
         # downloader events
         if isinstance(event, DownloaderEvent):
