@@ -21,10 +21,6 @@ jobs:
             arch: x64
             asset_name: ViDownloader_linux
             icon: vidownloader/icons/icon.png
-          - os: macos-13
-            arch: x64
-            asset_name: ViDownloader_macos
-            icon: vidownloader/icons/icon.png
 
     runs-on: ${{ matrix.os }}
     steps:
