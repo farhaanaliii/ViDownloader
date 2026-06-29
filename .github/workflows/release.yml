@@ -15,27 +15,15 @@ jobs:
         include:
           - os: windows-latest
             arch: x64
-            asset_name: ViDownloader.exe
-            icon: vidownloader/icons/icon.ico
-          - os: windows-latest
-            arch: arm64
-            asset_name: ViDownloader_arm64.exe
+            asset_name: ViDownloader_windows.exe
             icon: vidownloader/icons/icon.ico
           - os: ubuntu-latest
             arch: x64
             asset_name: ViDownloader_linux
             icon: vidownloader/icons/icon.png
-          - os: ubuntu-24.04-arm
-            arch: arm64
-            asset_name: ViDownloader_linux_aarch64
-            icon: vidownloader/icons/icon.png
           - os: macos-13
             arch: x64
             asset_name: ViDownloader_macos
-            icon: vidownloader/icons/icon.png
-          - os: macos-latest
-            arch: arm64
-            asset_name: ViDownloader_macos_arm64
             icon: vidownloader/icons/icon.png
 
     runs-on: ${{ matrix.os }}
