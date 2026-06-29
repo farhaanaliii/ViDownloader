@@ -454,3 +454,18 @@ def play_video(video_path: str):
         return
 
     subprocess.run(cmd, check=True)
+
+def show_in_explorer(path: str):
+    system = platform.system()
+
+    if system == "Windows":
+        cmd = f'explorer /select,"{path}"' # this works
+    elif system == "Linux":
+        cmd = ["xdg-open", str(Path(path).parent)]  # linux doesn't have select option (fr?)
+    elif system == "Darwin":
+        cmd = ["open", "-R", str(Path(path))] # idk if this works
+    else:
+        logger.warning(f"Unsupported platform: {system}")
+        return
+
+    subprocess.Popen(cmd)
