@@ -78,13 +78,32 @@ class TestParseLinks:
         assert result == []
 
     def test_parse_playlist_url(self):
-        """Test parsing URL with playlist ID."""
+        """Test parsing watch URL with playlist ID (should discard playlist_id)."""
         links = "https://www.youtube.com/watch?v=abc123def45&list=PLtest12345"
         result = parse_links(links)
 
         assert len(result) == 1
-        assert result[0].playlist_id == "PLtest12345"
+        assert result[0].playlist_id is None
         assert result[0].video_id == "abc123def45"
+
+    def test_parse_pure_playlist_url(self):
+        """Test parsing a pure playlist URL (should keep playlist_id)."""
+        links = "https://www.youtube.com/playlist?list=PLtest12345"
+        result = parse_links(links)
+
+        assert len(result) == 1
+        assert result[0].playlist_id == "PLtest12345"
+        assert result[0].video_id is None
+
+    def test_parse_watch_later_url(self):
+        """Test that list=WL (Watch Later) is ignored and treated as a video link."""
+        links = "https://www.youtube.com/watch?v=LK8i91u92oc&list=WL&index=6"
+        result = parse_links(links)
+
+        assert len(result) == 1
+        assert result[0].playlist_id is None
+        assert result[0].video_id == "LK8i91u92oc"
+
 
 
 class TestTruncateText:

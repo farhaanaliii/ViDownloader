@@ -70,6 +70,11 @@ def parse_links(links: str) -> list[Link]:
 
             playlist_match = re.search(r"[?&]list=([A-Za-z0-9_-]+)", link)
             playlist_id = playlist_match.group(1) if playlist_match else None
+            
+            # since user pasted a video link, we don't need to treat it as a playlist link
+            # ig we'll need to make this better
+            if video_id and playlist_id:
+                playlist_id = None
 
             channel_match = re.search(r"(?:channel/)(UC[0-9A-Za-z_-]+)", link)
             channel_id = channel_match.group(1) if channel_match else None
