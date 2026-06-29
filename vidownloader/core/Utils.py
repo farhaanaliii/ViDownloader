@@ -10,7 +10,6 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QMessageBox, QTreeWidgetItem
 
@@ -36,16 +35,6 @@ if platform.system() == "Windows":
 
 
 def parse_links(links: str) -> list[Link]:
-    """
-    Parses a list of link strings into Link objects with extracted username and video ID/UID.
-
-    Args:
-        links (list[str]): A list of link strings.
-
-    Returns:
-        list[Link]: A list of Link objects.
-    """
-
     links = [link.strip() for link in links.splitlines() if link.strip()]
     if not links:
         return []
@@ -100,14 +89,12 @@ def parse_links(links: str) -> list[Link]:
 
 
 def truncate_text(text: str, width: int) -> str:
-    """Truncate text with ellipsis if it exceeds width."""
     if not isinstance(text, str):
         return ""
     return text if len(text) <= width else text[: width - 3] + "..."
 
 
 def format_duration(seconds: int) -> str:
-    """Format duration in seconds to HH:MM:SS or MM:SS format."""
     if seconds is None or seconds < 0:
         return ""
 
@@ -122,9 +109,6 @@ def format_duration(seconds: int) -> str:
 
 
 def treeitem_to_link(item: QTreeWidgetItem) -> Link:
-    """
-    Convert a QTreeWidgetItem row into a Link object.
-    """
     username = item.text(TreeViewColumns.USERNAME)
     video_id = item.text(TreeViewColumns.ID)
 
@@ -173,9 +157,6 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
 
 
 def treeitem_to_video(item: QTreeWidgetItem) -> Video:
-    """
-    Convert a QTreeWidgetItem row back into a Video object.
-    """
     video_data: tuple = item.data(TreeViewColumns.NO, TreeViewRoles.VIDEO_DATA)
     vtype: VideoType = video_data[0]
     video_url: str = video_data[1]
@@ -217,11 +198,6 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
 
 
 def build_download_path(link: Link) -> Path:
-    """
-    Build the download path for a given Link object.
-    Organization depends on link type and user settings.
-    """
-
     base_path = Path(VSettings.get_download_location())
 
     if link.playlist_id:
@@ -380,8 +356,6 @@ def filter_string(text: str, path: Path = Path()) -> str:
 
 
 def load_fonts():
-    """Load application fonts from Qt resources"""
-
     font_resources = [
         ":/fonts/Poppins-Regular.ttf",
         ":/fonts/Poppins-Medium.ttf",
@@ -394,7 +368,7 @@ def load_fonts():
             logger.warning(f"Failed to load font: {font_path}")
         else:
             families = QFontDatabase.applicationFontFamilies(font_id)
-            logger.info(f"Loaded font: {families}")
+            logger.debug(f"Loaded font: {families}")
 
 
 def is_frozen():
@@ -426,13 +400,11 @@ def exception_hook(exctype, value, tb):
 
 
 def generate_export_filename() -> str:
-    """Generate a default filename for exporting videos."""
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     return f"{App.NAME}_exports_{timestamp}{VIIO.EXTENSION}"
 
 
 def format_size(size_bytes: int) -> str:
-    """Format size in bytes to human-readable"""
     for unit in ("B", "KB", "MB", "GB"):
         if size_bytes < 1024:
             return f"{size_bytes:.2f} {unit}"
