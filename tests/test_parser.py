@@ -88,12 +88,14 @@ class TestParser:
                                             {
                                                 "richItemRenderer": {
                                                     "content": {
-                                                        "videoRenderer": {
-                                                            "videoId": "abc123",
-                                                            "title": {
-                                                                "runs": [
-                                                                    {"text": "Video"}
-                                                                ]
+                                                        "lockupViewModel": {
+                                                            "contentId": "abc123",
+                                                            "metadata": {
+                                                                "lockupMetadataViewModel": {
+                                                                    "title": {
+                                                                        "content": "Video"
+                                                                    }
+                                                                }
                                                             },
                                                         }
                                                     }
@@ -139,14 +141,14 @@ class TestParser:
                                             {
                                                 "richItemRenderer": {
                                                     "content": {
-                                                        "videoRenderer": {
-                                                            "videoId": "test123",
-                                                            "title": {
-                                                                "runs": [
-                                                                    {
-                                                                        "text": "Test Video"
+                                                        "lockupViewModel": {
+                                                            "contentId": "test123",
+                                                            "metadata": {
+                                                                "lockupMetadataViewModel": {
+                                                                    "title": {
+                                                                        "content": "Test Video"
                                                                     }
-                                                                ]
+                                                                }
                                                             },
                                                             "lengthText": {
                                                                 "simpleText": "3:45"
@@ -187,12 +189,14 @@ class TestParser:
                                             {
                                                 "richItemRenderer": {
                                                     "content": {
-                                                        "videoRenderer": {
-                                                            "videoId": "video1",
-                                                            "title": {
-                                                                "runs": [
-                                                                    {"text": "Video 1"}
-                                                                ]
+                                                        "lockupViewModel": {
+                                                            "contentId": "video1",
+                                                            "metadata": {
+                                                                "lockupMetadataViewModel": {
+                                                                    "title": {
+                                                                        "content": "Video 1"
+                                                                    }
+                                                                }
                                                             },
                                                         }
                                                     }
@@ -201,12 +205,14 @@ class TestParser:
                                             {
                                                 "richItemRenderer": {
                                                     "content": {
-                                                        "videoRenderer": {
-                                                            "videoId": "video2",
-                                                            "title": {
-                                                                "runs": [
-                                                                    {"text": "Video 2"}
-                                                                ]
+                                                        "lockupViewModel": {
+                                                            "contentId": "video2",
+                                                            "metadata": {
+                                                                "lockupMetadataViewModel": {
+                                                                    "title": {
+                                                                        "content": "Video 2"
+                                                                    }
+                                                                }
                                                             },
                                                         }
                                                     }

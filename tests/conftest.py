@@ -50,14 +50,14 @@ def sample_video_data():
                                         {
                                             "richItemRenderer": {
                                                 "content": {
-                                                    "videoRenderer": {
-                                                        "videoId": "test123",
-                                                        "title": {
-                                                            "runs": [
-                                                                {
-                                                                    "text": "Test Video Title"
+                                                    "lockupViewModel": {
+                                                        "contentId": "test123",
+                                                        "metadata": {
+                                                            "lockupMetadataViewModel": {
+                                                                "title": {
+                                                                    "content": "Test Video Title"
                                                                 }
-                                                            ]
+                                                            }
                                                         },
                                                     }
                                                 }
