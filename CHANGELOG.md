@@ -4,14 +4,41 @@ All notable changes to ViDownloader will be documented in this file.
 
 ## Unreleased
 
+---
+
+## Version 1.0.0-beta3 (Current - June 2026)
+
+> [!WARNING]
+> **BETA:** This version is functional but may have rough edges. Your feedback helps!
+
+### ✨ New Features
+
+- **NEW:** Comprehensive pytest suite with 137 tests
+- **NEW:** Proper window navigation with process safety checks
+- **NEW:** Uploader fallback for playlist video metadata extraction
+- **NEW:** Fallback path for playlist name extraction
+- **NEW:** Separate release notes dialog with toolbar buttons
+
 ### 🔧 Improvements
 
-- **IMPROVED:** Switched build toolchain from Nuitka to PyInstaller for simpler cross-platform builds
-- `pyinstaller` moved to dev dependencies (`pip install -e ".[dev]"`)
+- **IMPROVED:** Switched build toolchain from Nuitka to PyInstaller
+- **IMPROVED:** Replaced shell scripts with Makefile for cross-platform builds
+- **IMPROVED:** Unified CI/CD with multi-platform matrix build workflow
+- **IMPROVED:** Applied black & isort code formatting across entire codebase
+- **IMPROVED:** Tree widget: removed select column, using custom data role
+- **IMPROVED:** Improved tree widget column sizing and user interaction
+- **IMPROVED:** Unified filename restrictions across all platforms
+- **IMPROVED:** Added StrEnum fallback for Python 3.10 compatibility
+- **IMPROVED:** Cross-platform support documentation in README
+
+### 🐛 Bug Fixes
+
+- **FIXED:** YouTube API response parsing for updated video metadata structure
+- **FIXED:** Makefile clean target for cross-platform (Windows) support
 
 ---
 
-## Version 1.0.0-beta2 (Current - January 2026)
+## Version 1.0.0-beta2 (January 2026)
 
 > [!WARNING]
 > **BETA:** This version is functional but may have rough edges. Your feedback helps!

@@ -58,63 +58,35 @@ class ReleaseNotesDialog(QDialog):
             .fixed { color: #dc3545; }
         </style>
         
-        <h2>Version 1.0.0-beta2 <span class="date">(Current - January 2026)</span></h2>
+        <h2>Version 1.0.0-beta3 <span class="date">(Current - June 2026)</span></h2>
         <p><span class="beta">⚠ BETA:</span> This version is functional but may have rough edges. Your feedback helps!</p>
         
         <h3>✨ New Features</h3>
         <ul>
-            <li><span class="new">NEW:</span> Flexible video organization system
-                <ul style="margin-top: 5px;">
-                    <li>Playlists: Group by playlist name or uploader</li>
-                    <li>Single videos: Group in dedicated folder or by uploader</li>
-                    <li>Configurable organization settings in Settings dialog</li>
-                </ul>
-            </li>
-            <li><span class="new">NEW:</span> Real-time download progress tracking</li>
-            <li><span class="new">NEW:</span> Video duration display (HH:MM:SS format)</li>
-            <li><span class="new">NEW:</span> Video file size display after download completion</li>
-            <li><span class="new">NEW:</span> Download button state management (prevents duplicate downloads)</li>
+            <li><span class="new">NEW:</span> Comprehensive pytest suite with 137 tests</li>
+            <li><span class="new">NEW:</span> Proper window navigation with process safety checks</li>
+            <li><span class="new">NEW:</span> Uploader fallback for playlist video metadata extraction</li>
+            <li><span class="new">NEW:</span> Fallback path for playlist name extraction</li>
+            <li><span class="new">NEW:</span> Separate release notes dialog with toolbar buttons</li>
         </ul>
         
         <h3>🔧 Improvements</h3>
         <ul>
-            <li><span class="improved">IMPROVED:</span> Better error handling for video metadata</li>
-            <li><span class="improved">IMPROVED:</span> Optimized event handling (reduced duplicate lookups)</li>
-            <li><span class="improved">IMPROVED:</span> Consolidated video data storage in tree items</li>
-            <li><span class="improved">IMPROVED:</span> Enhanced YouTube parser for metadata extraction</li>
+            <li><span class="improved">IMPROVED:</span> Switched build toolchain from Nuitka to PyInstaller</li>
+            <li><span class="improved">IMPROVED:</span> Replaced shell scripts with Makefile for cross-platform builds</li>
+            <li><span class="improved">IMPROVED:</span> Unified CI/CD with multi-platform matrix build workflow</li>
+            <li><span class="improved">IMPROVED:</span> Applied black &amp; isort code formatting across entire codebase</li>
+            <li><span class="improved">IMPROVED:</span> Tree widget: removed select column, using custom data role</li>
+            <li><span class="improved">IMPROVED:</span> Improved tree widget column sizing and user interaction</li>
+            <li><span class="improved">IMPROVED:</span> Unified filename restrictions across all platforms</li>
+            <li><span class="improved">IMPROVED:</span> Added StrEnum fallback for Python 3.10 compatibility</li>
+            <li><span class="improved">IMPROVED:</span> Cross-platform support documentation in README</li>
         </ul>
         
         <h3>🐛 Bug Fixes</h3>
         <ul>
-            <li><span class="fixed">FIXED:</span> Video size display error handling</li>
-            <li><span class="fixed">FIXED:</span> Event type checking improvements</li>
-            <li><span class="fixed">FIXED:</span> Various stability improvements</li>
-        </ul>
-        
-        <hr style="margin: 20px 0; border: 1px solid #e0e0e0;">
-        
-        <h2>Version 1.0.0-beta <span class="date">(December 2025)</span></h2>
-        
-        <h3>Initial Beta Features</h3>
-        <ul>
-            <li><span class="new">NEW:</span> YouTube video & shorts scraping from channels</li>
-            <li><span class="new">NEW:</span> Single video/short direct downloads</li>
-            <li><span class="new">NEW:</span> Playlist scraping</li>
-            <li><span class="new">NEW:</span> Multi-threaded bulk downloads (1-10 concurrent threads)</li>
-            <li><span class="new">NEW:</span> Pause/Resume download capability</li>
-            <li><span class="new">NEW:</span> Export/Import video lists (.viio format)</li>
-            <li><span class="new">NEW:</span> Flexible file naming (title, video ID, or random)</li>
-            <li><span class="new">NEW:</span> Modern PyQt5 interface with real-time progress tracking</li>
-            <li><span class="new">NEW:</span> Configurable download and export directories</li>
-        </ul>
-        
-        <h3>Coming Soon</h3>
-        <ul>
-            <li><span class="new">NEW:</span> Quality selection (720p, 1080p, 4K)</li>
-            <li><span class="new">NEW:</span> Advanced filtering and search in video lists</li>
-            <li><span class="new">NEW:</span> Download history and statistics</li>
-            <li><span class="improved">IMPROVED:</span> Better performance and memory optimization</li>
-            <li><span class="improved">IMPROVED:</span> Enhanced error handling and retry logic</li>
+            <li><span class="fixed">FIXED:</span> YouTube API response parsing for updated video metadata structure</li>
+            <li><span class="fixed">FIXED:</span> Makefile clean target for cross-platform (Windows) support</li>
         </ul>
         """)
 
