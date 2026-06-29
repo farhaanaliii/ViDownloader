@@ -176,8 +176,10 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
     """
     Convert a QTreeWidgetItem row back into a Video object.
     """
-    vtype: VideoType = item.data(TreeViewColumns.NO, TreeViewRoles.VIDEO_DATA)[0]
-
+    video_data: tuple = item.data(TreeViewColumns.NO, TreeViewRoles.VIDEO_DATA)
+    vtype: VideoType = video_data[0]
+    video_url: str = video_data[1]
+    
     # Get full caption from tooltip (visible text is truncated)
     caption = item.toolTip(TreeViewColumns.CAPTION)
     if not caption:
@@ -209,7 +211,7 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
         username=item.text(TreeViewColumns.USERNAME),
         video_id=item.text(TreeViewColumns.ID),
         _type=vtype,
-        url=None,
+        url=video_url,
         duration=duration,
     )
 
