@@ -128,6 +128,7 @@ class MAIN_UI(QMainWindow):
 
         self.tree_widget = QTreeWidget()
         self.tree_widget.setItemDelegate(ViDelegate())
+        self.tree_widget.setContextMenuPolicy(Qt.CustomContextMenu)
         self.tree_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tree_widget.setSelectionMode(QTreeWidget.ExtendedSelection)
         self.tree_widget.setAlternatingRowColors(True)

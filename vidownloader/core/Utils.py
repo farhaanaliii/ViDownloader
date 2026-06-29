@@ -6,6 +6,7 @@ import re
 import string
 import sys
 import traceback
+import subprocess
 from datetime import datetime
 from pathlib import Path
 
@@ -430,3 +431,19 @@ def format_size(size_bytes: int) -> str:
             return f"{size_bytes:.2f} {unit}"
         size_bytes /= 1024
     return f"{size_bytes:.2f} GB"
+
+def play_video(video_path: str):
+    system = platform.system()
+    
+    if system == "Windows":
+        cmd = ["cmd", "/c", "start", "", video_path]
+    elif system == "Linux":
+        cmd = ["xdg-open", video_path]
+    elif system == "Darwin":  # macOS
+        cmd = ["open", video_path]
+    else:
+        logger.warning(f"Unsupported platform for playing video: {platform.system()}")
+        return
+    
+    subprocess.run(cmd, check=True)
+

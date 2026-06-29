@@ -89,6 +89,7 @@ class TreeViewColumns(IntEnum):
 
 class TreeViewRoles(IntEnum):
     VIDEO_DATA = Qt.UserRole + 1
+    VIDEO_PATH = Qt.UserRole + 2
 
 
 class StatusColors:
