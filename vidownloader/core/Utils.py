@@ -4,9 +4,9 @@ import platform
 import random
 import re
 import string
+import subprocess
 import sys
 import traceback
-import subprocess
 from datetime import datetime
 from pathlib import Path
 
@@ -70,7 +70,7 @@ def parse_links(links: str) -> list[Link]:
 
             playlist_match = re.search(r"[?&]list=([A-Za-z0-9_-]+)", link)
             playlist_id = playlist_match.group(1) if playlist_match else None
-            
+
             # since user pasted a video link, we don't need to treat it as a playlist link
             # ig we'll need to make this better
             if video_id and playlist_id:
@@ -179,7 +179,7 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
     video_data: tuple = item.data(TreeViewColumns.NO, TreeViewRoles.VIDEO_DATA)
     vtype: VideoType = video_data[0]
     video_url: str = video_data[1]
-    
+
     # Get full caption from tooltip (visible text is truncated)
     caption = item.toolTip(TreeViewColumns.CAPTION)
     if not caption:
@@ -439,9 +439,10 @@ def format_size(size_bytes: int) -> str:
         size_bytes /= 1024
     return f"{size_bytes:.2f} GB"
 
+
 def play_video(video_path: str):
     system = platform.system()
-    
+
     if system == "Windows":
         cmd = ["cmd", "/c", "start", "", video_path]
     elif system == "Linux":
@@ -451,6 +452,5 @@ def play_video(video_path: str):
     else:
         logger.warning(f"Unsupported platform for playing video: {platform.system()}")
         return
-    
-    subprocess.run(cmd, check=True)
 
+    subprocess.run(cmd, check=True)

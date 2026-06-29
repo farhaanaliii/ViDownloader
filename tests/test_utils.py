@@ -105,7 +105,6 @@ class TestParseLinks:
         assert result[0].video_id == "LK8i91u92oc"
 
 
-
 class TestTruncateText:
     """Tests for the truncate_text function."""
 

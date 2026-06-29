@@ -2,7 +2,14 @@ from pathlib import Path
 
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox, QTreeWidgetItem, QMenu, QAction
+from PyQt5.QtWidgets import (
+    QAction,
+    QApplication,
+    QFileDialog,
+    QMenu,
+    QMessageBox,
+    QTreeWidgetItem,
+)
 
 from vidownloader.core import Constants, Logger, Utils, VSettings, Worker
 from vidownloader.core.Models import *
@@ -51,8 +58,10 @@ class MainWindow(main_ui.MAIN_UI):
         self.stop_button.clicked.connect(self.action_stop)
         self.pause_button.clicked.connect(self.action_pause)
         self.resume_button.clicked.connect(self.action_resume)
-        
-        self.tree_widget.customContextMenuRequested.connect(self.action_show_context_menu)
+
+        self.tree_widget.customContextMenuRequested.connect(
+            self.action_show_context_menu
+        )
 
     def go_back(self):
         scraper_running = (
@@ -190,22 +199,23 @@ class MainWindow(main_ui.MAIN_UI):
         self.download_button.setEnabled(False)
         self.mark_pending_items()
         self.tree_widget.clearSelection()
-    
+
     def action_show_context_menu(self, position):
         item = self.tree_widget.itemAt(position)
         if item is None:
-            return # clicked on empty area
-        
+            return  # clicked on empty area
+
         menu = QMenu(self)
-        
-        video_path = item.data(Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH)
+
+        video_path = item.data(
+            Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH
+        )
         if video_path and Path(video_path).exists():
             action = QAction("Play Video", self)
             action.triggered.connect(lambda: Utils.play_video(video_path))
             menu.addAction(action)
-        
+
         menu.exec_(self.tree_widget.viewport().mapToGlobal(position))
-    
 
     def signal_event(self, event: DownloaderEvent | ScraperEvent):
         # downloader events
@@ -221,10 +231,17 @@ class MainWindow(main_ui.MAIN_UI):
             ):
                 self.set_video_progress(item, event.progress)
             elif event.event == Constants.EventType.STATUS and event.status is not None:
-                if event.status == Constants.Status.COMPLETED and event.video_path is not None:
+                if (
+                    event.status == Constants.Status.COMPLETED
+                    and event.video_path is not None
+                ):
                     # set video path so we can use it to play the video (and maybe for other purposes in the future)
-                    item.setData(Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH, event.video_path)
-                    
+                    item.setData(
+                        Constants.TreeViewColumns.NO,
+                        Constants.TreeViewRoles.VIDEO_PATH,
+                        event.video_path,
+                    )
+
                 self.set_video_status(item, event.status)
                 if event.video_path is not None:
                     self.set_video_size(item, event.video_path)
