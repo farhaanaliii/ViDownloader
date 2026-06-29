@@ -210,12 +210,21 @@ class MainWindow(main_ui.MAIN_UI):
         video_path = item.data(
             Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH
         )
+        video_url = item.data(
+            Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_DATA
+        )[1]
+
         if video_path and Path(video_path).exists():
             self._make_menu_action(
                 menu, "Play Video", lambda: Utils.play_video(video_path)
             )
             self._make_menu_action(
                 menu, "Show in Explorer", lambda: Utils.show_in_explorer(video_path)
+            )
+
+        if video_url:
+            self._make_menu_action(
+                menu, "Copy URL", lambda: QApplication.clipboard().setText(video_url)
             )
 
         menu.exec_(self.tree_widget.viewport().mapToGlobal(position))
