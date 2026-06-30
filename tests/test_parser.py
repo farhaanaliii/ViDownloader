@@ -278,18 +278,24 @@ class TestParserPlaylist:
                                                                 "contentId": "playlist_vid1",
                                                                 "metadata": {
                                                                     "lockupMetadataViewModel": {
-                                                                        "title": {"content": "Playlist Video 1"},
+                                                                        "title": {
+                                                                            "content": "Playlist Video 1"
+                                                                        },
                                                                         "metadata": {
                                                                             "contentMetadataViewModel": {
                                                                                 "metadataRows": [
                                                                                     {
                                                                                         "metadataParts": [
-                                                                                            {"text": {"content": "Creator1"}}
+                                                                                            {
+                                                                                                "text": {
+                                                                                                    "content": "Creator1"
+                                                                                                }
+                                                                                            }
                                                                                         ]
                                                                                     }
                                                                                 ]
                                                                             }
-                                                                        }
+                                                                        },
                                                                     }
                                                                 },
                                                                 "contentImage": {
@@ -308,7 +314,7 @@ class TestParserPlaylist:
                                                                             }
                                                                         ]
                                                                     }
-                                                                }
+                                                                },
                                                             }
                                                         }
                                                     ]
@@ -351,18 +357,24 @@ class TestParserPlaylist:
                                                                 "contentId": "vid1",
                                                                 "metadata": {
                                                                     "lockupMetadataViewModel": {
-                                                                        "title": {"content": "Video 1"},
+                                                                        "title": {
+                                                                            "content": "Video 1"
+                                                                        },
                                                                         "metadata": {
                                                                             "contentMetadataViewModel": {
                                                                                 "metadataRows": [
                                                                                     {
                                                                                         "metadataParts": [
-                                                                                            {"text": {"content": "Creator"}}
+                                                                                            {
+                                                                                                "text": {
+                                                                                                    "content": "Creator"
+                                                                                                }
+                                                                                            }
                                                                                         ]
                                                                                     }
                                                                                 ]
                                                                             }
-                                                                        }
+                                                                        },
                                                                     }
                                                                 },
                                                                 "contentImage": {
@@ -381,7 +393,7 @@ class TestParserPlaylist:
                                                                             }
                                                                         ]
                                                                     }
-                                                                }
+                                                                },
                                                             }
                                                         },
                                                         {
@@ -392,7 +404,7 @@ class TestParserPlaylist:
                                                                     }
                                                                 }
                                                             }
-                                                        }
+                                                        },
                                                     ]
                                                 }
                                             }
@@ -429,12 +441,16 @@ class TestParserPlaylist:
                                                     "metadataRows": [
                                                         {
                                                             "metadataParts": [
-                                                                {"text": {"content": "Creator2"}}
+                                                                {
+                                                                    "text": {
+                                                                        "content": "Creator2"
+                                                                    }
+                                                                }
                                                             ]
                                                         }
                                                     ]
                                                 }
-                                            }
+                                            },
                                         }
                                     },
                                     "contentImage": {
@@ -453,7 +469,7 @@ class TestParserPlaylist:
                                                 }
                                             ]
                                         }
-                                    }
+                                    },
                                 }
                             }
                         ]
