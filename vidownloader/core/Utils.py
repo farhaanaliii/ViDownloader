@@ -94,13 +94,21 @@ def truncate_text(text: str, width: int) -> str:
     return text if len(text) <= width else text[: width - 3] + "..."
 
 
-def format_duration(seconds: int) -> str:
-    if seconds is None or seconds < 0:
+def format_duration(duration: str) -> str:
+    if ":" in duration:
+        return duration # already formatted
+    
+    try:
+        duration = int(duration)
+    except (ValueError, TypeError):
         return ""
 
-    hours = seconds // 3600
-    minutes = (seconds % 3600) // 60
-    secs = seconds % 60
+    if duration is None or duration < 0:
+        return ""
+
+    hours = duration // 3600
+    minutes = (duration % 3600) // 60
+    secs = duration % 60
 
     if hours > 0:
         return f"{hours}:{minutes:02d}:{secs:02d}"

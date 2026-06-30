@@ -76,21 +76,7 @@ class Parser:
                 # Extract duration if available
                 duration = None
                 if is_videos:
-                    length_text = renderer.get("lengthText", {}).get("simpleText", "")
-                    # Parse duration from format like "3:45" or "1:23:45"
-                    if length_text:
-                        try:
-                            parts = length_text.split(":")
-                            if len(parts) == 2:  # MM:SS
-                                duration = int(parts[0]) * 60 + int(parts[1])
-                            elif len(parts) == 3:  # HH:MM:SS
-                                duration = (
-                                    int(parts[0]) * 3600
-                                    + int(parts[1]) * 60
-                                    + int(parts[2])
-                                )
-                        except (ValueError, IndexError):
-                            pass
+                    duration = renderer.get("lengthText", {}).get("simpleText", "")
 
                 videos.append(
                     Video(
@@ -292,13 +278,7 @@ class Parser:
             title = video_renderer.get("title", "")
 
             # Extract duration in seconds
-            duration = None
-            duration_str = video_renderer.get("lengthSeconds")
-            if duration_str:
-                try:
-                    duration = int(duration_str)
-                except (ValueError, TypeError):
-                    duration = None
+            duration = video_renderer.get("lengthSeconds")
 
             # Extract username from ownerProfileUrl
             owner_url = (

@@ -26,7 +26,7 @@ class Video:
     video_id: str
     _type: VideoType
     url: str = None
-    duration: int = None
+    duration: str = None
     playlist_id: str = None
     playlist_name: str = None
 
