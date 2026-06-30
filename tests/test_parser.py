@@ -172,7 +172,7 @@ class TestParser:
         )
 
         assert len(videos) == 1
-        assert videos[0].duration == 225  # 3*60 + 45 = 225 seconds
+        assert videos[0].duration == "3:45"
 
     def test_multiple_videos_parsing(self):
         """Test parsing multiple videos from channel."""
@@ -274,29 +274,41 @@ class TestParserPlaylist:
                                                 "itemSectionRenderer": {
                                                     "contents": [
                                                         {
-                                                            "playlistVideoListRenderer": {
-                                                                "contents": [
-                                                                    {
-                                                                        "playlistVideoRenderer": {
-                                                                            "videoId": "playlist_vid1",
-                                                                            "title": {
-                                                                                "runs": [
+                                                            "lockupViewModel": {
+                                                                "contentId": "playlist_vid1",
+                                                                "metadata": {
+                                                                    "lockupMetadataViewModel": {
+                                                                        "title": {"content": "Playlist Video 1"},
+                                                                        "metadata": {
+                                                                            "contentMetadataViewModel": {
+                                                                                "metadataRows": [
                                                                                     {
-                                                                                        "text": "Playlist Video 1"
+                                                                                        "metadataParts": [
+                                                                                            {"text": {"content": "Creator1"}}
+                                                                                        ]
                                                                                     }
                                                                                 ]
-                                                                            },
-                                                                            "shortBylineText": {
-                                                                                "runs": [
-                                                                                    {
-                                                                                        "text": "Creator1"
-                                                                                    }
-                                                                                ]
-                                                                            },
-                                                                            "lengthSeconds": "180",
+                                                                            }
                                                                         }
                                                                     }
-                                                                ]
+                                                                },
+                                                                "contentImage": {
+                                                                    "thumbnailViewModel": {
+                                                                        "overlays": [
+                                                                            {
+                                                                                "thumbnailBottomOverlayViewModel": {
+                                                                                    "badges": [
+                                                                                        {
+                                                                                            "thumbnailBadgeViewModel": {
+                                                                                                "text": "3:00"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     ]
@@ -318,7 +330,7 @@ class TestParserPlaylist:
         assert videos[0].video_id == "playlist_vid1"
         assert videos[0].caption == "Playlist Video 1"
         assert videos[0].username == "Creator1"
-        assert videos[0].duration == 180
+        assert videos[0].duration == "3:00"
 
     def test_parse_playlist_videos_with_continuation(self):
         """Test parsing playlist videos with continuation token."""
@@ -335,37 +347,50 @@ class TestParserPlaylist:
                                                 "itemSectionRenderer": {
                                                     "contents": [
                                                         {
-                                                            "playlistVideoListRenderer": {
-                                                                "contents": [
-                                                                    {
-                                                                        "playlistVideoRenderer": {
-                                                                            "videoId": "vid1",
-                                                                            "title": {
-                                                                                "runs": [
+                                                            "lockupViewModel": {
+                                                                "contentId": "vid1",
+                                                                "metadata": {
+                                                                    "lockupMetadataViewModel": {
+                                                                        "title": {"content": "Video 1"},
+                                                                        "metadata": {
+                                                                            "contentMetadataViewModel": {
+                                                                                "metadataRows": [
                                                                                     {
-                                                                                        "text": "Video 1"
+                                                                                        "metadataParts": [
+                                                                                            {"text": {"content": "Creator"}}
+                                                                                        ]
                                                                                     }
                                                                                 ]
-                                                                            },
-                                                                            "shortBylineText": {
-                                                                                "runs": [
-                                                                                    {
-                                                                                        "text": "Creator"
-                                                                                    }
-                                                                                ]
-                                                                            },
-                                                                        }
-                                                                    },
-                                                                    {
-                                                                        "continuationItemRenderer": {
-                                                                            "continuationEndpoint": {
-                                                                                "continuationCommand": {
-                                                                                    "token": "playlist_token_123"
-                                                                                }
                                                                             }
                                                                         }
-                                                                    },
-                                                                ]
+                                                                    }
+                                                                },
+                                                                "contentImage": {
+                                                                    "thumbnailViewModel": {
+                                                                        "overlays": [
+                                                                            {
+                                                                                "thumbnailBottomOverlayViewModel": {
+                                                                                    "badges": [
+                                                                                        {
+                                                                                            "thumbnailBadgeViewModel": {
+                                                                                                "text": "3:00"
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        {
+                                                            "continuationItemRenderer": {
+                                                                "continuationEndpoint": {
+                                                                    "continuationCommand": {
+                                                                        "token": "playlist_token_123"
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     ]
@@ -394,10 +419,41 @@ class TestParserPlaylist:
                     "appendContinuationItemsAction": {
                         "continuationItems": [
                             {
-                                "playlistVideoRenderer": {
-                                    "videoId": "cont_vid1",
-                                    "title": {"simpleText": "Continuation Video"},
-                                    "shortBylineText": {"runs": [{"text": "Creator2"}]},
+                                "lockupViewModel": {
+                                    "contentId": "cont_vid1",
+                                    "metadata": {
+                                        "lockupMetadataViewModel": {
+                                            "title": {"content": "Continuation Video"},
+                                            "metadata": {
+                                                "contentMetadataViewModel": {
+                                                    "metadataRows": [
+                                                        {
+                                                            "metadataParts": [
+                                                                {"text": {"content": "Creator2"}}
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "contentImage": {
+                                        "thumbnailViewModel": {
+                                            "overlays": [
+                                                {
+                                                    "thumbnailBottomOverlayViewModel": {
+                                                        "badges": [
+                                                            {
+                                                                "thumbnailBadgeViewModel": {
+                                                                    "text": "3:00"
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             }
                         ]
@@ -444,7 +500,7 @@ class TestParserVideoDetails:
         assert video.video_id == "detail_vid1"
         assert video.caption == "Detailed Video Title"
         assert video.username == "testcreator"
-        assert video.duration == 300
+        assert video.duration == "300"
         assert video.url == "https://www.youtube.com/watch?v=detail_vid1"
 
     def test_parse_video_details_no_username(self):
@@ -470,7 +526,7 @@ class TestParserVideoDetails:
         video = Parser.parse_video_details(data)
 
         assert video is not None
-        assert video.duration is None
+        assert video.duration == "invalid"
 
     def test_parse_video_details_empty_data(self):
         """Test parsing empty video details."""

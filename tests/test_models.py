@@ -79,7 +79,7 @@ class TestVideo:
             video_id="test123",
             _type=VideoType.VIDEO,
             url="https://www.youtube.com/watch?v=test123",
-            duration=180,
+            duration="180",
             playlist_id="PLtest",
             playlist_name="Test Playlist",
         )
@@ -87,7 +87,7 @@ class TestVideo:
         assert video.no == 1
         assert video.percentage == "50%"
         assert video.status == "Downloading"
-        assert video.duration == 180
+        assert video.duration == "180"
         assert video.playlist_id == "PLtest"
 
     def test_video_to_dict(self):
@@ -97,7 +97,7 @@ class TestVideo:
             username="testuser",
             video_id="test123",
             _type=VideoType.VIDEO,
-            duration=120,
+            duration="120",
         )
 
         video_dict = video.to_dict()
@@ -107,7 +107,7 @@ class TestVideo:
         assert video_dict["username"] == "testuser"
         assert video_dict["video_id"] == "test123"
         assert video_dict["_type"] == VideoType.VIDEO.value
-        assert video_dict["duration"] == 120
+        assert video_dict["duration"] == "120"
 
     def test_video_from_dict(self):
         """Test Video deserialization from dictionary."""
@@ -120,7 +120,7 @@ class TestVideo:
             "video_id": "test123",
             "_type": VideoType.SHORT.value,
             "url": "https://www.youtube.com/shorts/test123",
-            "duration": 60,
+            "duration": "60",
             "playlist_id": None,
             "playlist_name": None,
         }
@@ -132,7 +132,7 @@ class TestVideo:
         assert video.percentage == "75%"
         assert video.status == "Complete"
         assert video._type == VideoType.SHORT
-        assert video.duration == 60
+        assert video.duration == "60"
 
     def test_video_roundtrip(self):
         """Test Video serialization and deserialization roundtrip."""
@@ -142,7 +142,7 @@ class TestVideo:
             username="testuser",
             video_id="roundtrip123",
             _type=VideoType.VIDEO,
-            duration=300,
+            duration="300",
         )
 
         video_dict = original.to_dict()

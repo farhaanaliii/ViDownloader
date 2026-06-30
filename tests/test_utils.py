@@ -234,6 +234,30 @@ class TestFormatDuration:
         result = format_duration(60)
         assert result == "1:00"
 
+    def test_format_already_formatted_string(self):
+        """Test formatting a duration that is already formatted."""
+        from vidownloader.core.Utils import format_duration
+
+        result = format_duration("3:45")
+        assert result == "3:45"
+
+        result = format_duration("1:23:45")
+        assert result == "1:23:45"
+
+    def test_format_string_seconds(self):
+        """Test formatting string representing seconds."""
+        from vidownloader.core.Utils import format_duration
+
+        result = format_duration("125")
+        assert result == "2:05"
+
+    def test_format_invalid_string(self):
+        """Test formatting invalid duration string."""
+        from vidownloader.core.Utils import format_duration
+
+        result = format_duration("invalid")
+        assert result == ""
+
 
 class TestFormatSize:
     """Tests for the format_size function."""
