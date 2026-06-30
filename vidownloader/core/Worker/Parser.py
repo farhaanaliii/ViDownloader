@@ -207,29 +207,17 @@ class Parser:
                     ).get("contents", [])
 
                     for section in section_list_contents:
-                        item_section = section.get("itemSectionRenderer", {}).get(
+                        raw_content_list = section.get("itemSectionRenderer", {}).get(
                             "contents", []
                         )
-                        for item in item_section:
-                            playlist_renderer = item.get(
-                                "playlistVideoListRenderer", {}
-                            )
-                            if playlist_renderer:
-                                raw_content_list = playlist_renderer.get("contents", [])
-
-                                # Token is INSIDE the playlist contents as the LAST item
-                                if raw_content_list:
-                                    last_item = raw_content_list[-1]
-                                    if "continuationItemRenderer" in last_item:
-                                        continuation_token = (
-                                            Parser._extract_continuation_token(
-                                                last_item
-                                            )
-                                        )
-                                break
-
-                    if raw_content_list:
-                        break
+                        # Token is INSIDE the playlist contents as the LAST item
+                        if raw_content_list:
+                            last_item = raw_content_list[-1]
+                            if "continuationItemRenderer" in last_item:
+                                continuation_token = Parser._extract_continuation_token(
+                                    last_item
+                                )
+                            break
 
             if not raw_content_list:
                 logger.debug("No raw_content_list found in playlist response")
@@ -240,38 +228,40 @@ class Parser:
             )
 
             for content in raw_content_list:
-                renderer = content.get("playlistVideoRenderer")
+                renderer = content.get("lockupViewModel")
                 if not renderer:
                     continue
 
-                video_id = renderer.get("videoId")
+                video_id = renderer.get("contentId")
                 if not video_id:
                     continue
 
-                title = ""
-                title_obj = renderer.get("title", {})
-                if "runs" in title_obj:
-                    title = title_obj["runs"][0].get("text", "")
-                elif "simpleText" in title_obj:
-                    title = title_obj.get("simpleText", "")
+                metadata = renderer.get("metadata", {}).get("lockupMetadataViewModel")
+                title = metadata.get("title", {}).get("content", "")
 
-                uploader = ""
-                byline = renderer.get("shortBylineText", {})
-                if "runs" in byline:
-                    uploader = byline["runs"][0].get("text", "")
+                uploader = (
+                    metadata.get("metadata", {})
+                    .get("contentMetadataViewModel")
+                    .get("metadataRows", [])[0]
+                    .get("metadataParts", [])[0]
+                    .get("text", {})
+                    .get("content")
+                )
 
-                # Fallback: If uploader not found, use playlist owner (videos uploaded by playlist owner)
+                # Fallback: If uploader not found, use playlist owner (videos uploaded by playlist owner maybe)
                 if not uploader and playlist_owner:
                     uploader = playlist_owner
 
-                # Extract duration (in seconds)
-                duration = None
-                length_text = renderer.get("lengthSeconds")
-                if length_text:
-                    try:
-                        duration = int(length_text)
-                    except (ValueError, TypeError):
-                        pass
+                # Extract duration (eg. 1:05:14)
+                duration = (
+                    renderer.get("contentImage", {})
+                    .get("thumbnailViewModel", {})
+                    .get("overlays", [])[0]
+                    .get("thumbnailBottomOverlayViewModel", {})
+                    .get("badges", [])[0]
+                    .get("thumbnailBadgeViewModel", {})
+                    .get("text", "")
+                )
 
                 videos.append(
                     Video(
