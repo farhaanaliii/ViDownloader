@@ -258,6 +258,16 @@ class TestFormatDuration:
         result = format_duration("invalid")
         assert result == ""
 
+    def test_format_none_duration(self):
+        """Test formatting None or empty duration string."""
+        from vidownloader.core.Utils import format_duration
+
+        result = format_duration(None)
+        assert result == ""
+
+        result = format_duration("")
+        assert result == ""
+
 
 class TestFormatSize:
     """Tests for the format_size function."""

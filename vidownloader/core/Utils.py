@@ -95,6 +95,9 @@ def truncate_text(text: str, width: int) -> str:
 
 
 def format_duration(duration: str) -> str:
+    if not duration:
+        return ""
+
     if ":" in duration:
         return duration  # already formatted
 
