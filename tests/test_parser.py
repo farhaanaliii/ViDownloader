@@ -491,6 +491,141 @@ class TestParserPlaylist:
         assert videos == []
         assert token is None
 
+    def test_parse_playlist_owner_fallback(self):
+        """Test fallback extraction of playlist owner from pageHeaderViewModel metadata."""
+        data = {
+            "header": {
+                "pageHeaderRenderer": {
+                    "content": {
+                        "pageHeaderViewModel": {
+                            "metadata": {
+                                "contentMetadataViewModel": {
+                                    "metadataRows": [
+                                        {
+                                            "metadataParts": [
+                                                {
+                                                    "avatarStack": {
+                                                        "avatarStackViewModel": {
+                                                            "text": {
+                                                                "content": "by Unknown is Live"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "contents": {
+                "twoColumnBrowseResultsRenderer": {
+                    "tabs": [
+                        {
+                            "tabRenderer": {
+                                "content": {
+                                    "sectionListRenderer": {
+                                        "contents": [
+                                            {
+                                                "itemSectionRenderer": {
+                                                    "contents": [
+                                                        {
+                                                            "lockupViewModel": {
+                                                                "contentId": "playlist_vid1",
+                                                                "metadata": {
+                                                                    "lockupMetadataViewModel": {
+                                                                        "title": {
+                                                                            "content": "Playlist Video 1"
+                                                                        }
+                                                                    }
+                                                                },
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+        }
+
+        videos, _ = Parser.parse_playlist_videos_and_token(data)
+
+        assert len(videos) == 1
+        assert videos[0].username == "Unknown is Live"
+
+    def test_parse_shorts_playlist(self):
+        """Test parsing playlist consisting of shorts layout in richGridRenderer."""
+        data = {
+            "contents": {
+                "twoColumnBrowseResultsRenderer": {
+                    "tabs": [
+                        {
+                            "tabRenderer": {
+                                "content": {
+                                    "sectionListRenderer": {
+                                        "contents": [
+                                            {
+                                                "itemSectionRenderer": {
+                                                    "contents": [
+                                                        {
+                                                            "richGridRenderer": {
+                                                                "contents": [
+                                                                    {
+                                                                        "richItemRenderer": {
+                                                                            "content": {
+                                                                                "shortsLockupViewModel": {
+                                                                                    "entityId": "shorts-shelf-item-abc12345",
+                                                                                    "overlayMetadata": {
+                                                                                        "primaryText": {
+                                                                                            "content": "Short Video Title"
+                                                                                        }
+                                                                                    },
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            {
+                                                "continuationItemRenderer": {
+                                                    "continuationEndpoint": {
+                                                        "continuationCommand": {
+                                                            "token": "continuation_shorts_token"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        videos, token = Parser.parse_playlist_videos_and_token(data)
+
+        assert len(videos) == 1
+        assert videos[0].video_id == "abc12345"
+        assert videos[0].caption == "Short Video Title"
+        assert videos[0].duration is None
+        assert token == "continuation_shorts_token"
+
 
 class TestParserVideoDetails:
     """Tests for Parser.parse_video_details method."""

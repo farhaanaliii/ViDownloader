@@ -203,35 +203,35 @@ class TestFormatDuration:
         """Test formatting duration less than a minute."""
         from vidownloader.core.Utils import format_duration
 
-        result = format_duration(45)
+        result = format_duration("45")
         assert result == "0:45"
 
     def test_format_minutes_and_seconds(self):
         """Test formatting duration with minutes and seconds."""
         from vidownloader.core.Utils import format_duration
 
-        result = format_duration(125)
+        result = format_duration("125")
         assert result == "2:05"
 
     def test_format_hours_minutes_seconds(self):
         """Test formatting duration with hours."""
         from vidownloader.core.Utils import format_duration
 
-        result = format_duration(3665)
+        result = format_duration("3665")
         assert result == "1:01:05"
 
     def test_format_zero_duration(self):
         """Test formatting zero duration."""
         from vidownloader.core.Utils import format_duration
 
-        result = format_duration(0)
+        result = format_duration("0")
         assert result == "0:00"
 
     def test_format_exact_minute(self):
         """Test formatting exact minute duration."""
         from vidownloader.core.Utils import format_duration
 
-        result = format_duration(60)
+        result = format_duration("60")
         assert result == "1:00"
 
     def test_format_already_formatted_string(self):

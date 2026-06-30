@@ -157,6 +157,30 @@ class Parser:
             except Exception:
                 pass
 
+            if not playlist_owner:
+                try:
+                    header = data.get("header", {})
+                    page_header = header.get("pageHeaderRenderer", {})
+                    content = page_header.get("content", {})
+                    vm = content.get("pageHeaderViewModel", {})
+                    meta = vm.get("metadata", {}).get("contentMetadataViewModel", {})
+                    rows = meta.get("metadataRows", [])
+                    if rows:
+                        parts = rows[0].get("metadataParts", [])
+                        if parts:
+                            avatar_stack = parts[0].get("avatarStack", {})
+                            vm_text = avatar_stack.get("avatarStackViewModel", {}).get(
+                                "text", {}
+                            )
+                            owner_str = vm_text.get("content", "")
+                            if owner_str:
+                                if owner_str.startswith("by "):
+                                    playlist_owner = owner_str[3:]
+                                else:
+                                    playlist_owner = owner_str
+                except Exception:
+                    pass
+
             if data.get("onResponseReceivedActions"):
                 actions = data["onResponseReceivedActions"]
                 for action in actions:
@@ -185,7 +209,6 @@ class Parser:
                     .get("twoColumnBrowseResultsRenderer", {})
                     .get("tabs", [])
                 )
-
                 for tab in tabs:
                     tab_content = tab.get("tabRenderer", {}).get("content", {})
                     section_list_contents = tab_content.get(
@@ -193,17 +216,29 @@ class Parser:
                     ).get("contents", [])
 
                     for section in section_list_contents:
-                        raw_content_list = section.get("itemSectionRenderer", {}).get(
-                            "contents", []
-                        )
-                        # Token is INSIDE the playlist contents as the LAST item
-                        if raw_content_list:
-                            last_item = raw_content_list[-1]
-                            if "continuationItemRenderer" in last_item:
-                                continuation_token = Parser._extract_continuation_token(
-                                    last_item
-                                )
-                            break
+                        if "continuationItemRenderer" in section:
+                            continuation_token = Parser._extract_continuation_token(
+                                section
+                            )
+                        elif "itemSectionRenderer" in section:
+                            raw_content_list = section.get(
+                                "itemSectionRenderer", {}
+                            ).get("contents", [])
+                            # Token is INSIDE the playlist contents as the LAST item
+                            if raw_content_list:
+                                last_item = raw_content_list[-1]
+                                if "continuationItemRenderer" in last_item:
+                                    continuation_token = (
+                                        Parser._extract_continuation_token(last_item)
+                                    )
+
+            # Extract from nested richGridRenderer if present (e.g. playlist of Shorts)
+            if raw_content_list and len(raw_content_list) > 0:
+                first_item = raw_content_list[0]
+                if "richGridRenderer" in first_item:
+                    raw_content_list = first_item["richGridRenderer"].get(
+                        "contents", []
+                    )
 
             if not raw_content_list:
                 logger.debug("No raw_content_list found in playlist response")
@@ -214,40 +249,72 @@ class Parser:
             )
 
             for content in raw_content_list:
-                renderer = content.get("lockupViewModel")
+                # If wrapped in richItemRenderer (as in richGridRenderer grids)
+                if "richItemRenderer" in content:
+                    content = content["richItemRenderer"].get("content", {})
+
+                renderer = content.get("lockupViewModel") or content.get(
+                    "shortsLockupViewModel"
+                )
                 if not renderer:
                     continue
 
-                video_id = renderer.get("contentId")
+                video_id = renderer.get("contentId") or renderer.get("entityId")
                 if not video_id:
                     continue
 
-                metadata = renderer.get("metadata", {}).get("lockupMetadataViewModel")
-                title = metadata.get("title", {}).get("content", "")
+                if video_id.startswith("shorts-shelf-item-"):
+                    video_id = video_id.replace("shorts-shelf-item-", "")
 
-                uploader = (
-                    metadata.get("metadata", {})
-                    .get("contentMetadataViewModel")
-                    .get("metadataRows", [])[0]
-                    .get("metadataParts", [])[0]
-                    .get("text", {})
-                    .get("content")
-                )
+                title = ""
+                uploader = ""
 
-                # Fallback: If uploader not found, use playlist owner (videos uploaded by playlist owner maybe)
+                # Extract title and uploader based on renderer type
+                if "shortsLockupViewModel" in content:
+                    # Shorts
+                    title = (
+                        renderer.get("overlayMetadata", {})
+                        .get("primaryText", {})
+                        .get("content", "")
+                    )
+                else:
+                    # Videos
+                    metadata = renderer.get("metadata", {}).get(
+                        "lockupMetadataViewModel"
+                    )
+                    if metadata:
+                        title = metadata.get("title", {}).get("content", "")
+                        try:
+                            uploader = (
+                                metadata.get("metadata", {})
+                                .get("contentMetadataViewModel", {})
+                                .get("metadataRows", [])[0]
+                                .get("metadataParts", [])[0]
+                                .get("text", {})
+                                .get("content")
+                            )
+                        except (IndexError, KeyError, TypeError, AttributeError):
+                            uploader = ""
+
+                # Fallback: If uploader not found, use playlist owner
                 if not uploader and playlist_owner:
                     uploader = playlist_owner
 
                 # Extract duration (eg. 1:05:14)
-                duration = (
-                    renderer.get("contentImage", {})
-                    .get("thumbnailViewModel", {})
-                    .get("overlays", [])[0]
-                    .get("thumbnailBottomOverlayViewModel", {})
-                    .get("badges", [])[0]
-                    .get("thumbnailBadgeViewModel", {})
-                    .get("text", "")
-                )
+                duration = None
+                content_image = renderer.get("contentImage", {})
+                if content_image:
+                    try:
+                        duration = (
+                            content_image.get("thumbnailViewModel", {})
+                            .get("overlays", [])[0]
+                            .get("thumbnailBottomOverlayViewModel", {})
+                            .get("badges", [])[0]
+                            .get("thumbnailBadgeViewModel", {})
+                            .get("text", "")
+                        )
+                    except (IndexError, KeyError, TypeError):
+                        duration = None
 
                 videos.append(
                     Video(
