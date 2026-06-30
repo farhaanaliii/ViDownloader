@@ -328,6 +328,7 @@ class MainWindow(main_ui.MAIN_UI):
     def signal_on_finish(self, msg: str, worker_type: int):
         self.set_status(msg, Constants.StatusColors.SUCCESS)
         self.stop_button.setEnabled(False)
+        self.pause_button.setEnabled(False)
 
         if worker_type == Constants.WorkerType.SCRAPER:
             if hasattr(self, "scraper_t") and self.scraper_t is not None:
