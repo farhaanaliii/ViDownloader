@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication
 
 from vidownloader.core.Constants import App, Author, Paths
 from vidownloader.core.Utils import exception_hook, load_fonts
-from vidownloader.ui import resources_rc, stylesheets
+from vidownloader.ui import stylesheets
 from vidownloader.window.HomeWindow import HomeWindow
 
 

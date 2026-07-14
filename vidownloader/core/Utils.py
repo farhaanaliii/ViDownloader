@@ -208,6 +208,15 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
     )
 
 
+def get_assets_path(relative: str) -> str:
+    if is_frozen():
+        base = Path(sys._MEIPASS)
+    else:
+        base = Path(__file__).parent.parent  # root
+
+    return str(base / relative)
+
+
 def build_download_path(link: Link) -> Path:
     base_path = Path(VSettings.get_download_location())
 
@@ -367,10 +376,12 @@ def filter_string(text: str, path: Path = Path()) -> str:
 
 
 def load_fonts():
+    fonts_dir = get_assets_path("fonts")
+
     font_resources = [
-        ":/fonts/Poppins-Regular.ttf",
-        ":/fonts/Poppins-Medium.ttf",
-        ":/fonts/Poppins-SemiBold.ttf",
+        f"{fonts_dir}/Poppins-Regular.ttf",
+        f"{fonts_dir}/Poppins-Medium.ttf",
+        f"{fonts_dir}/Poppins-SemiBold.ttf",
     ]
 
     for font_path in font_resources:

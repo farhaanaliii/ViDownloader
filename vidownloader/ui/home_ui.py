@@ -16,6 +16,7 @@ from PyQt5.QtWidgets import (
 )
 
 from vidownloader.core.Constants import App, Author
+from vidownloader.core.Utils import get_assets_path
 from vidownloader.ui.dialogs import ReleaseNotesDialog, SettingsDialog
 
 
@@ -28,7 +29,7 @@ class HOME_UI(QMainWindow):
         self.setWindowTitle(f"{App.NAME} v{App.VERSION} By {Author.NAME}")
         self.resize(800, 600)
         self.setMinimumSize(800, 600)
-        self.setWindowIcon(QIcon(f":/icons/{App.ICON}"))
+        self.setWindowIcon(QIcon(get_assets_path(f"icons/{App.ICON}")))
         self.main_widget = QWidget()
         self.setCentralWidget(self.main_widget)
 
@@ -44,7 +45,7 @@ class HOME_UI(QMainWindow):
         logo_label.setStyleSheet(
             "background-color: transparent !important; margin-top: 0px !important; margin-bottom: 0px !important;"
         )
-        pixmap = QPixmap(f":/icons/{App.ICON}")
+        pixmap = QPixmap(get_assets_path(f"icons/{App.ICON}"))
         pixmap = pixmap.scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         logo_label.setPixmap(pixmap)
         header_layout.addWidget(logo_label)

@@ -19,6 +19,7 @@ from PyQt5.QtWidgets import (
 )
 
 from vidownloader.core.Constants import App, TreeViewColumns
+from vidownloader.core.Utils import get_assets_path
 from vidownloader.ui.dialogs import ReleaseNotesDialog, SettingsDialog
 
 
@@ -48,7 +49,7 @@ class MAIN_UI(QMainWindow):
 
     def init_gui(self):
         self.setWindowTitle(f"{App.NAME} v{App.VERSION}")
-        self.setWindowIcon(QIcon(f":/icons/{App.ICON}"))
+        self.setWindowIcon(QIcon(get_assets_path(f"icons/{App.ICON}")))
         self.showMaximized()
         self.statusBar = QStatusBar()
         self.setStatusBar(self.statusBar)
