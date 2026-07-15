@@ -44,15 +44,12 @@ git clone https://github.com/farhaanaliii/vidownloader.git
 cd vidownloader
 ```
 
-2. Install in editable mode:
+2. Install in editable mode with all dev dependencies:
 ```bash
-pip install -e .
+pip install -e ".[dev]"
 ```
 
-3. Install development dependencies:
-```bash
-pip install pytest pytest-qt
-```
+This installs all development dependencies automatically: `pytest`, `pytest-qt`, `pytest-cov`, `pytest-mock`, `black`, `isort`, `flake8`, and `pyinstaller`.
 
 4. Run tests:
 ```bash
