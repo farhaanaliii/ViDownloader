@@ -15,12 +15,16 @@ jobs:
         include:
           - os: windows-latest
             arch: x64
-            asset_name: ViDownloader_windows_x64.exe
+            platform: windows
+            ext: .exe
             icon: vidownloader/icons/icon.ico
+            separator: ";"
           - os: ubuntu-latest
             arch: x64
-            asset_name: ViDownloader_linux_x64
+            platform: linux
+            ext: ""
             icon: vidownloader/icons/icon.png
+            separator: ":"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -42,29 +46,33 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Compile resources
-        run: pyrcc5 vidownloader/resources.qrc -o vidownloader/ui/resources_rc.py
-
       - name: Build executable
-        run: pyinstaller --onefile --windowed --name="ViDownloader" --icon=${{ matrix.icon }} --distpath=dist vidownloader/main.py
+        run: |
+          pyinstaller --onefile --windowed \
+            --name="ViDownloader" \
+            --icon=${{ matrix.icon }} \
+            --add-data="vidownloader/fonts${{ matrix.separator }}fonts" \
+            --add-data="vidownloader/icons${{ matrix.separator }}icons" \
+            --distpath=dist vidownloader/main.py
         shell: bash
 
       - name: Rename executable
         run: |
+          TAG=${{ github.ref_name }}
+          ASSET="ViDownloader_${TAG}_${{ matrix.platform }}_${{ matrix.arch }}${{ matrix.ext }}"
+          echo "ASSET_NAME=${ASSET}" >> $GITHUB_ENV
           if [ -f "dist/ViDownloader.exe" ]; then
-            mv "dist/ViDownloader.exe" "dist/${{ matrix.asset_name }}"
+            mv "dist/ViDownloader.exe" "dist/${ASSET}"
           else
-            mv "dist/ViDownloader" "dist/${{ matrix.asset_name }}"
+            mv "dist/ViDownloader" "dist/${ASSET}"
           fi
         shell: bash
-
-
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ matrix.os }}-${{ matrix.arch }}
-          path: dist/${{ matrix.asset_name }}
+          path: dist/${{ env.ASSET_NAME }}
 
   release:
     needs: build
@@ -88,4 +96,4 @@ jobs:
           files: release_assets/*
           generate_release_notes: false
           draft: false
-          prerelease: ${{ contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+          prerelease: ${{ startsWith(github.ref_name, 'v0.') }}
