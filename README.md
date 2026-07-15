@@ -86,6 +86,18 @@ The interface sits on top of **yt-dlp** for reliable downloads, but all the scra
 
 ---
 
+## Features
+
+- **Bulk downloads** – Scrape entire channels, playlists, or mixed link lists
+- **Multi-threaded** – Run 1–10 simultaneous downloads
+- **Pause & Resume** – Pause active downloads and resume them at any time
+- **Real-time progress** – Per-video progress bars, status indicators, file size display, and duration
+- **Export & Import** – Save your video list as a `.viio` file and reload it later without re-scraping
+- **Flexible file naming** – Name files by video title, video ID, or a random string
+- **Flexible organization** – Organize downloads by playlist name, uploader, or into a dedicated singles folder
+
+---
+
 ## Configuration
 
 Open **Settings** (top-right corner) to adjust:
@@ -96,6 +108,8 @@ Open **Settings** (top-right corner) to adjust:
 | **Export Location** | Where `.viio` list files are stored |
 | **File Naming** | Name files by title, video ID, or random string |
 | **Download Threads** | Simultaneous downloads (1–10 threads) |
+| **Playlist Organization** | Group by playlist name or by uploader |
+| **Single Video Organization** | Group in a singles folder or by uploader |
 
 ---
 
@@ -129,38 +143,42 @@ Python dependencies install automatically via `pip`. You'll need to install FFmp
 ViDownloader is **cross-platform** and has been tested on:
 
 - **Windows** (10, 11)
-- **Linux** (Ubuntu 22.04)
+- **Linux** (Ubuntu 22.04, Ubuntu 24.04)
 
 The application is built with Python and PyQt5, making it portable across different operating systems. Both the source installation and pre-built executables work seamlessly on supported platforms.
+
+> [!NOTE]
+> macOS is not officially supported at this time. It may work from source, but no pre-built executables are provided.
 
 ---
 
 ## Building Executables
 
-Want to build a standalone executable? Use the provided build scripts:
+Want to build a standalone executable? Use the provided `Makefile`:
 
-**Windows:**
-```powershell
-.\build.bat
-```
-
-**Linux:**
 ```bash
-./build.sh
+make build
 ```
 
-These scripts will automatically:
-- Set up the virtual environment
-- Install dependencies
-- Compile Qt resources
-- Build the executable using PyInstaller
+This works on both **Windows** and **Linux** and will:
+- Build a single-file executable using **PyInstaller**
+- Bundle fonts and icons into the binary
+
+Other useful Makefile targets:
+
+```bash
+make format   # Auto-format code with black & isort
+make lint     # Run flake8, black, and isort checks
+make test     # Run the test suite with pytest
+make clean    # Remove build artifacts and caches
+```
 
 Pre-built executables are also available for download:
 
-- **Windows** (x86/x64)
-- **Linux** (x64)
+- **Windows** (x64) `.exe`
+- **Linux** (x64) standalone binary
 
-Check the [Releases](https://github.com/farhaanaliii/vidownloader/releases) page for downloads.
+Each release includes a `SHA256SUMS` file for checksum verification. Check the [Releases](https://github.com/farhaanaliii/vidownloader/releases) page for downloads.
 
 ---
 
@@ -172,7 +190,29 @@ This is my first major open-source project, so I'm sure there are plenty of area
 2. Create a feature branch
 3. Submit a pull request
 
-All contributions are welcome. just try to match the existing code style.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more details. All contributions are welcome. just try to match the existing code style (`black` + `isort`).
+
+### Dev Setup
+
+```bash
+git clone https://github.com/farhaanaliii/vidownloader.git
+cd vidownloader
+pip install -e ".[dev]"
+```
+
+This installs all development dependencies including `pytest`, `black`, `isort`, `flake8`, and `pyinstaller`.
+
+---
+
+## Running Tests
+
+The project has a growing pytest suite (137+ tests):
+
+```bash
+make test
+# or
+pytest
+```
 
 ---
 
@@ -201,4 +241,4 @@ While ViDownloader implements its own scraping logic, it relies on the excellent
 
 ## Author
 
-Built by **[Farhan Ali](https://github.com/farhaanaliii)** – my first serious dive into open-source desktop apps. Be gentle.
+Built by **[Farhan Ali](https://github.com/farhaanaliii)**, my first serious dive into open-source desktop apps. Be gentle.
