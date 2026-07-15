@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "vidownloader"
-version = "1.0.0-beta3"
+version = "0.3.0"
 description = "A modern YouTube video downloader with a beautiful PyQt5 interface"
 readme = "README.md"
 license = "MIT"
@@ -14,7 +14,7 @@ authors = [
 ]
 keywords = ["youtube", "downloader", "video", "pyqt5", "yt-dlp"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Environment :: X11 Applications :: Qt",
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",

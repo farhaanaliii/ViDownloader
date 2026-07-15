@@ -6,10 +6,7 @@ All notable changes to ViDownloader will be documented in this file.
 
 ---
 
-## Version 1.0.0-beta3 (Current - June 2026)
-
-> [!WARNING]
-> **BETA:** This version is functional but may have rough edges. Your feedback helps!
+## [v0.3.0] - June 2026
 
 ### ✨ New Features
 
@@ -38,10 +35,7 @@ All notable changes to ViDownloader will be documented in this file.
 
 ---
 
-## Version 1.0.0-beta2 (January 2026)
-
-> [!WARNING]
-> **BETA:** This version is functional but may have rough edges. Your feedback helps!
+## [v0.2.0] - January 2026
 
 ### ✨ New Features
 
@@ -69,7 +63,7 @@ All notable changes to ViDownloader will be documented in this file.
 
 ---
 
-## Version 1.0.0-beta (December 2025)
+## [v0.1.0] - December 2025
 
 ### Initial Beta Features
 
