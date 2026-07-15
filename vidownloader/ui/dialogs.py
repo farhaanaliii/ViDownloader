@@ -50,43 +50,37 @@ class ReleaseNotesDialog(QDialog):
             h3 { color: #6c757d; margin-top: 15px; font-size: 11pt; }
             ul { margin-left: 20px; }
             li { margin-bottom: 8px; }
-            .version { color: #28a745; font-weight: bold; }
             .date { color: #6c757d; }
-            .beta { color: #fd7e14; font-weight: bold; }
+            .pre { color: #fd7e14; font-weight: bold; }
             .new { color: #28a745; }
             .improved { color: #fd7e14; }
             .fixed { color: #dc3545; }
         </style>
-        
-        <h2>Version 1.0.0-beta3 <span class="date">(Current - June 2026)</span></h2>
-        <p><span class="beta">⚠ BETA:</span> This version is functional but may have rough edges. Your feedback helps!</p>
-        
-        <h3>✨ New Features</h3>
+
+        <h2>v0.4.0 <span class="date">(July 2026)</span></h2>
+        <p><span class="pre">&#9888; PRE-RELEASE:</span> This version is functional but expect rough edges. Your feedback helps!</p>
+
+        <h3>&#10024; New Features</h3>
         <ul>
-            <li><span class="new">NEW:</span> Comprehensive pytest suite with 137 tests</li>
-            <li><span class="new">NEW:</span> Proper window navigation with process safety checks</li>
-            <li><span class="new">NEW:</span> Uploader fallback for playlist video metadata extraction</li>
-            <li><span class="new">NEW:</span> Fallback path for playlist name extraction</li>
-            <li><span class="new">NEW:</span> Separate release notes dialog with toolbar buttons</li>
+            <li><span class="new">NEW:</span> Video playback via context menu (opens in default media player)</li>
+            <li><span class="new">NEW:</span> "Show in Explorer" context menu option to reveal downloaded file</li>
+            <li><span class="new">NEW:</span> "Copy URL" context menu option</li>
         </ul>
-        
-        <h3>🔧 Improvements</h3>
+
+        <h3>&#128027; Bug Fixes</h3>
         <ul>
-            <li><span class="improved">IMPROVED:</span> Switched build toolchain from Nuitka to PyInstaller</li>
-            <li><span class="improved">IMPROVED:</span> Replaced shell scripts with Makefile for cross-platform builds</li>
-            <li><span class="improved">IMPROVED:</span> Unified CI/CD with multi-platform matrix build workflow</li>
-            <li><span class="improved">IMPROVED:</span> Applied black &amp; isort code formatting across entire codebase</li>
-            <li><span class="improved">IMPROVED:</span> Tree widget: removed select column, using custom data role</li>
-            <li><span class="improved">IMPROVED:</span> Improved tree widget column sizing and user interaction</li>
-            <li><span class="improved">IMPROVED:</span> Unified filename restrictions across all platforms</li>
-            <li><span class="improved">IMPROVED:</span> Added StrEnum fallback for Python 3.10 compatibility</li>
-            <li><span class="improved">IMPROVED:</span> Cross-platform support documentation in README</li>
+            <li><span class="fixed">FIXED:</span> Pause button not disabling when worker finishes</li>
+            <li><span class="fixed">FIXED:</span> Crash in duration formatter on None or empty string input</li>
+            <li><span class="fixed">FIXED:</span> Shorts playlists not being detected by parser</li>
+            <li><span class="fixed">FIXED:</span> Video URL lost when converting tree item to Video object</li>
+            <li><span class="fixed">FIXED:</span> playlist_id incorrectly kept when URL has both video and playlist params</li>
         </ul>
-        
-        <h3>🐛 Bug Fixes</h3>
+
+        <h3>&#128295; Improvements</h3>
         <ul>
-            <li><span class="fixed">FIXED:</span> YouTube API response parsing for updated video metadata structure</li>
-            <li><span class="fixed">FIXED:</span> Makefile clean target for cross-platform (Windows) support</li>
+            <li><span class="improved">IMPROVED:</span> Duration stored as formatted string, supporting both raw and pre-formatted input</li>
+            <li><span class="improved">IMPROVED:</span> Context menu action creation refactored into helper method</li>
+            <li><span class="improved">IMPROVED:</span> Migrated from PyQt5 resource system to PyInstaller --add-data</li>
         </ul>
         """)
 
