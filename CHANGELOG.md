@@ -6,6 +6,43 @@ All notable changes to ViDownloader will be documented in this file.
 
 ---
 
+## [v0.4.0] - July 2026
+
+### ✨ New Features
+
+- **NEW:** Video playback via context menu (open directly in default media player)
+- **NEW:** "Show in Explorer" context menu option to reveal downloaded file
+- **NEW:** "Copy URL" context menu option
+
+### 🐛 Bug Fixes
+
+- **FIXED:** Pause button not disabling when worker finishes
+- **FIXED:** `format_duration` crash on `None` or empty string input
+- **FIXED:** Shorts playlists not being detected in parser
+- **FIXED:** Video URL lost when converting tree item to `Video` object
+- **FIXED:** `playlist_id` incorrectly kept when URL contains both video and playlist params
+
+### 🔧 Refactors
+
+- **REFACTORED:** Duration stored as formatted string, supporting both raw and pre-formatted input
+- **REFACTORED:** Context menu action creation extracted to helper method
+- **REFACTORED:** Removed redundant docstrings and cleaned up imports
+
+### 🏗️ Build / CI
+
+- **BUILD:** Migrated from PyQt5 resource system (`pyrcc5`) to PyInstaller `--add-data`
+- **CI:** Fixed Linux dependencies for Ubuntu 24.04 (`libgl1`)
+- **CI:** Dropped ARM64 build targets
+- **CI:** Fixed asset naming for Windows and Linux x64 builds
+- **CI:** Removed macOS build from release workflow
+
+### 🧪 Tests
+
+- **TESTS:** Updated fixtures for new YouTube API response structure
+- **TESTS:** Updated duration format tests
+
+---
+
 ## [v0.3.0] - June 2026
 
 ### ✨ New Features
