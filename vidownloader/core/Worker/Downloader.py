@@ -41,6 +41,7 @@ class Downloader(QThread):
             "progress_hooks": [self._progress_hook],
             "quiet": True,
             "no_warnings": True,
+            "noprogress": True,
             "retries": 10,
             "fragment_retries": 10,
             "continuedl": True,
