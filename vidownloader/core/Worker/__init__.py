@@ -1,11 +1,6 @@
-import time
-
 from PyQt5.QtCore import (
-    QMetaObject,
-    QObject,
     QThread,
     QTimer,
-    Qt,
     pyqtSignal,
     pyqtSlot,
 )
@@ -145,4 +140,3 @@ class DownloaderWorker(Worker):
             logger.info("DownloadProcess completed.")
             self.on_finish.emit("Download completed.", WorkerType.DOWNLOADER)
             self.quit()
-
