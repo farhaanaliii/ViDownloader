@@ -12,11 +12,20 @@ logger = Logger.get_logger("Scraper")
 
 class Scraper(QObject):
     _event = pyqtSignal(ScraperEvent)
-    stop_signal = False
 
-    def __init__(self, link: Link):
+    def __init__(self, link: Link, stop_checker: callable = None):
         super().__init__()
         self.link = link
+        self._stop_signal = False
+        self.stop_checker = stop_checker
+
+    @property
+    def stop_signal(self) -> bool:
+        if self._stop_signal:
+            return True
+        if self.stop_checker and self.stop_checker():
+            return True
+        return False
 
     def start(self):
         logger.debug(f"Starting scraper for link: {self.link}")
@@ -145,7 +154,7 @@ class Scraper(QObject):
             logger.debug(f"Scraped video: {video.caption} ({video.video_id})")
 
     def set_stop(self):
-        self.stop_signal = True
+        self._stop_signal = True
 
     def emit_message(self, message: str):
         self._event.emit(ScraperEvent(event=EventType.MESSAGE, message=message))

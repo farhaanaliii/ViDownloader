@@ -46,7 +46,11 @@ class ScraperWorker(Worker):
                     self.on_finish.emit("Scraping stopped by user.", WorkerType.SCRAPER)
                     return
 
-                self.scraper = Scraper.Scraper(link)
+                self.scraper = Scraper.Scraper(
+                    link,
+                    stop_checker=lambda: self._stop_requested
+                    or self.isInterruptionRequested(),
+                )
                 self.scraper._event.connect(self._event)
                 self.scraper.start()
 
@@ -58,9 +62,9 @@ class ScraperWorker(Worker):
             self.error_message.emit(f"Scraping error: {str(e)}")
 
     def stop(self):
+        super().stop()
         if self.scraper:
             self.scraper.set_stop()
-        super().stop()
 
 
 class DownloaderWorker(Worker):
