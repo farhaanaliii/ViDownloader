@@ -1,9 +1,8 @@
 from pathlib import Path
 
-from PyQt5.QtCore import Qt, pyqtSlot
-from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import (
-    QAction,
+from PySide6.QtCore import Qt, Slot
+from PySide6.QtGui import QAction, QColor
+from PySide6.QtWidgets import (
     QApplication,
     QFileDialog,
     QMenu,
@@ -227,7 +226,7 @@ class MainWindow(main_ui.MAIN_UI):
                 menu, "Copy URL", lambda: QApplication.clipboard().setText(video_url)
             )
 
-        menu.exec_(self.tree_widget.viewport().mapToGlobal(position))
+        menu.exec(self.tree_widget.viewport().mapToGlobal(position))
 
     def _make_menu_action(self, menu: QMenu, title: str, callback: callable):
         action = QAction(title, self)
@@ -297,7 +296,7 @@ class MainWindow(main_ui.MAIN_UI):
         for col in range(self.tree_widget.columnCount()):
             item.setData(col, Qt.BackgroundRole, color)
 
-    @pyqtSlot(Video)
+    @Slot(Video)
     def signal_append_videos(self, videos: list[Video]):
         start_index = self.tree_widget.topLevelItemCount()
 
@@ -310,7 +309,7 @@ class MainWindow(main_ui.MAIN_UI):
             if start_index == 0:
                 self.download_button.setEnabled(True)
 
-    @pyqtSlot(str)
+    @Slot(str)
     def signal_on_error(self, msg: str):
         self.stop_button.setEnabled(False)
         QMessageBox.critical(self, "Error", msg)
@@ -319,7 +318,7 @@ class MainWindow(main_ui.MAIN_UI):
         self.status_label.setText(message)
         self.status_label.setStyleSheet(f"color: {color.name()}; font-weight: bold;")
 
-    @pyqtSlot(str, int)
+    @Slot(str, int)
     def signal_on_finish(self, msg: str, worker_type: int):
         self.set_status(msg, Constants.StatusColors.SUCCESS)
         self.stop_button.setEnabled(False)

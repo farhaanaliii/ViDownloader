@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def qapp():
     """
     Create a QApplication instance for the entire test session.
-    Required for any PyQt5 widget tests.
+    Required for any PySide6 widget tests.
     """
-    from PyQt5.QtWidgets import QApplication
+    from PySide6.QtWidgets import QApplication
 
     app = QApplication.instance()
     if app is None:

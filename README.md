@@ -9,7 +9,7 @@
 [![Status: Beta](https://img.shields.io/badge/Status-Beta-orange.svg)](https://github.com/farhaanaliii/vidownloader)
 [![PyPI Version](https://img.shields.io/pypi/v/vidownloader?color=blue)](https://pypi.org/project/vidownloader/)
 [![Platform: Windows & Linux](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux-lightgrey.svg)](https://github.com/farhaanaliii/vidownloader/releases)
-[![Built with PyQt5](https://img.shields.io/badge/Built%20with-PyQt5-green.svg)](https://www.qt.io/)
+[![Built with PySide6](https://img.shields.io/badge/Built%20with-PySide6-green.svg)](https://www.qt.io/)
 [![Powered by yt-dlp](https://img.shields.io/badge/Powered%20by-yt--dlp-red.svg)](https://github.com/yt-dlp/yt-dlp)
 
 > [!WARNING]
@@ -23,7 +23,7 @@
 
 ## What This Is
 
-ViDownloader is a desktop application built with PyQt5 that simplifies downloading YouTube videos in bulk. While it uses **yt-dlp** under the hood for the actual downloading, the scraping and interface are completely custom-built.
+ViDownloader is a desktop application built with PySide6 that simplifies downloading YouTube videos in bulk. While it uses **yt-dlp** under the hood for the actual downloading, the scraping and interface are completely custom-built.
 
 This happens to be my first substantial open-source project, so please bear with me. it might do some dumb things, but I'm learning as I go. If something breaks or doesn't make sense, let me know and I'll do my best to fix it.
 
@@ -122,7 +122,7 @@ Working with a large channel? Export your video list as a `.viio` file, close th
 ## System Requirements
 
 - **Python 3.10** or newer
-- **PyQt5** (≥ 5.15.11)
+- **PySide6** (≥ 6.5.0)
 - **yt-dlp** (latest recommended)
 - **curl_cffi**
 - **FFmpeg** – Required by yt-dlp for video/audio processing ([download](https://github.com/yt-dlp/FFmpeg-Builds/releases/tag/latest))
@@ -145,7 +145,7 @@ ViDownloader is **cross-platform** and has been tested on:
 - **Windows** (10, 11)
 - **Linux** (Ubuntu 22.04, Ubuntu 24.04)
 
-The application is built with Python and PyQt5, making it portable across different operating systems. Both the source installation and pre-built executables work seamlessly on supported platforms.
+The application is built with Python and PySide6, making it portable across different operating systems. Both the source installation and pre-built executables work seamlessly on supported platforms.
 
 > [!NOTE]
 > macOS is not officially supported at this time. It may work from source, but no pre-built executables are provided.

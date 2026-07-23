@@ -16,7 +16,7 @@ Before creating a bug report, please check existing issues to avoid duplicates. 
 - **Describe the exact steps to reproduce the problem**
 - **Provide specific examples** (links, screenshots, error messages)
 - **Describe the behavior you observed** and what you expected
-- **Include your environment details** (OS, Python version, PyQt5 version)
+- **Include your environment details** (OS, Python version, PySide6 version)
 
 ### Suggesting Features
 
@@ -88,7 +88,7 @@ vidownloader/
 
 - `init_*` - Initialization methods
 - `action_*` - User action handlers
-- `signal_*` - Signal/slot handlers (use `@pyqtSlot` decorator)
+- `signal_*` - Signal/slot handlers (use `@Slot` decorator)
 
 ## Commit Message Guidelines
 

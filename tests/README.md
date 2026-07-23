@@ -23,7 +23,7 @@ pip install -e ".[dev]"
 
 This installs:
 - `pytest` - Testing framework
-- `pytest-qt` - PyQt5 testing support
+- `pytest-qt` - PySide6 / Qt testing support
 - `pytest-cov` - Code coverage reporting
 - `pytest-mock` - Advanced mocking capabilities
 
@@ -89,7 +89,7 @@ tests/
 The `conftest.py` file provides several fixtures for testing:
 
 ### Session Fixtures
-- `qapp` - QApplication instance (required for PyQt5 tests)
+- `qapp` - QApplication instance (required for PySide6 tests)
 
 ### Function Fixtures
 - `temp_dir` - Temporary directory for file operations
@@ -175,7 +175,7 @@ Tests should be run before:
 
 ### QApplication Issues
 
-If you encounter issues with PyQt5 tests, ensure you have the `qapp` fixture in scope:
+If you encounter issues with PySide6 tests, ensure you have the `qapp` fixture in scope:
 
 ```python
 def test_qt_widget(qapp):

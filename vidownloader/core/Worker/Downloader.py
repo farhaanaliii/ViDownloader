@@ -1,7 +1,7 @@
 import traceback
 from pathlib import Path
 
-from PyQt5.QtCore import QThread, pyqtSignal
+from PySide6.QtCore import QThread, Signal
 from yt_dlp import YoutubeDL
 
 from vidownloader.core.Constants import EventType, Status
@@ -13,7 +13,7 @@ logger = get_logger("Downloader")
 
 
 class Downloader(QThread):
-    _event = pyqtSignal(DownloaderEvent)
+    _event = Signal(DownloaderEvent)
 
     def __init__(self, link: Link):
         super().__init__()

@@ -1,8 +1,8 @@
-from PyQt5.QtCore import (
+from PySide6.QtCore import (
     QThread,
     QTimer,
-    pyqtSignal,
-    pyqtSlot,
+    Signal,
+    Slot,
 )
 
 from vidownloader.core.Constants import EventType, Status, WorkerType
@@ -15,8 +15,8 @@ logger = get_logger("Worker")
 
 
 class Worker(QThread):
-    error_message = pyqtSignal(str)
-    on_finish = pyqtSignal(str, int)
+    error_message = Signal(str)
+    on_finish = Signal(str, int)
 
     def __init__(self):
         super().__init__()
@@ -31,8 +31,8 @@ class Worker(QThread):
 
 
 class ScraperWorker(Worker):
-    _event = pyqtSignal(ScraperEvent)
-    update_progress = pyqtSignal(int)
+    _event = Signal(ScraperEvent)
+    update_progress = Signal(int)
 
     def __init__(self, links: list[Link]):
         super().__init__()
@@ -68,8 +68,8 @@ class ScraperWorker(Worker):
 
 
 class DownloaderWorker(Worker):
-    _event = pyqtSignal(DownloaderEvent)
-    update_progress = pyqtSignal(int)
+    _event = Signal(DownloaderEvent)
+    update_progress = Signal(int)
 
     def __init__(self, links: list[Link]):
         super().__init__()
@@ -123,7 +123,7 @@ class DownloaderWorker(Worker):
         self.is_paused = False
         self._start_next_batch()
 
-    @pyqtSlot(DownloaderEvent)
+    @Slot(DownloaderEvent)
     def event_handler(self, event: DownloaderEvent):
         if event.event == EventType.STATUS and event.status in (
             Status.COMPLETED,

@@ -5,14 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "vidownloader"
 version = "0.4.0"
-description = "A modern YouTube video downloader with a beautiful PyQt5 interface"
+description = "A modern YouTube video downloader with a beautiful PySide6 interface"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
     { name = "Farhan Ali", email = "i.farhanali.de@gmail.com" }
 ]
-keywords = ["youtube", "downloader", "video", "pyqt5", "yt-dlp"]
+keywords = ["youtube", "downloader", "video", "pyside6", "qt6", "yt-dlp"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: X11 Applications :: Qt",
@@ -26,7 +26,7 @@ classifiers = [
     "Topic :: Multimedia :: Video",
 ]
 dependencies = [
-    "PyQt5>=5.15.11",
+    "PySide6>=6.5.0",
     "yt-dlp",
     "curl_cffi",
 ]

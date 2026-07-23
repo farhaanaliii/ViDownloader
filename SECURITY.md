@@ -36,4 +36,4 @@ This project:
 Relevant areas to consider:
 - Malicious `.viio` import files
 - Unsafe URL handling
-- Dependency vulnerabilities (yt-dlp, PyQt5, curl_cffi)
+- Dependency vulnerabilities (yt-dlp, PySide6, curl_cffi)

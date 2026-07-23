@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
 
 from vidownloader.core.Constants import App, Author, Paths
 from vidownloader.core.Utils import exception_hook, load_fonts
@@ -23,7 +23,7 @@ def main():
     app.home_window = HomeWindow()
     app.home_window.show()
 
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 
 if __name__ == "__main__":

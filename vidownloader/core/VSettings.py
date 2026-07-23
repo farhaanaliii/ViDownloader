@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any, Optional, Type
 
-from PyQt5.QtCore import QSettings
+from PySide6.QtCore import QSettings
 
 from vidownloader.core.Constants import App, Author, FileName
 

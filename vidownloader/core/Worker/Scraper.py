@@ -1,6 +1,6 @@
 import traceback
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PySide6.QtCore import QObject, Signal
 
 from vidownloader.core import Logger, http
 from vidownloader.core.Constants import EventType, VideoType, YouTube
@@ -11,7 +11,7 @@ logger = Logger.get_logger("Scraper")
 
 
 class Scraper(QObject):
-    _event = pyqtSignal(ScraperEvent)
+    _event = Signal(ScraperEvent)
 
     def __init__(self, link: Link, stop_checker: callable = None):
         super().__init__()

@@ -1,6 +1,6 @@
-from PyQt5.QtCore import QSize, Qt, pyqtSignal
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import (
+from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import (
     QAbstractItemView,
     QFrame,
     QHBoxLayout,
@@ -35,7 +35,7 @@ class ViDelegate(QStyledItemDelegate):
 
 
 class MAIN_UI(QMainWindow):
-    loaded = pyqtSignal(dict)
+    loaded = Signal(dict)
 
     def __init__(self):
         super().__init__()

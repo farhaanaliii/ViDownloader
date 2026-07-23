@@ -10,8 +10,8 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-from PyQt5.QtGui import QFontDatabase
-from PyQt5.QtWidgets import QMessageBox, QTreeWidgetItem
+from PySide6.QtGui import QFontDatabase
+from PySide6.QtWidgets import QMessageBox, QTreeWidgetItem
 
 from vidownloader.core import Logger, VSettings
 from vidownloader.core.Constants import (
