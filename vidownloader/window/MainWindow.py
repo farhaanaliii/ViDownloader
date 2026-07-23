@@ -41,7 +41,6 @@ class MainWindow(main_ui.MAIN_UI):
         logger.info("initialized")
 
     def init_click_handlers(self):
-        self.stop_button.clicked.connect(self.action_stop)
         self.tree_widget.itemSelectionChanged.connect(
             lambda: setattr(
                 self,
