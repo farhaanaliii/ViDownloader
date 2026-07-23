@@ -69,6 +69,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+qt_api = "pyside6"
 
 [tool.black]
 target-version = ["py310"]
