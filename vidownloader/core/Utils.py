@@ -218,17 +218,29 @@ def get_assets_path(relative: str) -> str:
 
 
 def build_download_path(link: Link) -> Path:
-    base_path = Path(VSettings.get_download_location())
+    raw_loc = VSettings.get_download_location()
+    download_loc = str(raw_loc).strip() if raw_loc else ""
+    default_dir = Path.home() / "Downloads" / App.NAME
+    base_path = Path(download_loc).resolve() if download_loc else default_dir.resolve()
+    base_path.mkdir(parents=True, exist_ok=True)
+
+    raw_username = link.username or "Unknown"
+    safe_username = sanitize_filename(raw_username).strip(". ") or "Unknown"
+    fallback_folder = (
+        f"Unknown_{safe_username}" if safe_username != "Unknown" else "Unknown"
+    )
 
     if link.playlist_id:
         playlist_org = VSettings.get_playlist_organization()
 
         if playlist_org == PlaylistOrganization.BY_PLAYLIST:
             playlist_name = link.playlist_name or link.playlist_id
-            playlist_name = sanitize_filename(playlist_name)
-            path = base_path / "playlists" / playlist_name
+            safe_playlist_name = (
+                sanitize_filename(playlist_name).strip(". ") or "playlist"
+            )
+            path = base_path / "playlists" / safe_playlist_name
         else:
-            path = base_path / link.username
+            path = base_path / safe_username
 
     elif not link.channel_id:
         single_org = VSettings.get_single_video_organization()
@@ -236,10 +248,23 @@ def build_download_path(link: Link) -> Path:
         if single_org == SingleVideoOrganization.GROUP_SINGLES:
             path = base_path / "direct_videos"
         else:
-            path = base_path / link.username
+            path = base_path / safe_username
 
     else:
-        path = base_path / link.username
+        path = base_path / safe_username
+
+    # Traversal defense, Ensure final path stays strictly inside base_path
+    # maybe needs more work
+    try:
+        resolved_path = path.resolve()
+        if not resolved_path.is_relative_to(base_path):
+            logger.warning(
+                f"Path traversal attempt detected: '{path}'. Falling back to base directory."
+            )
+            path = base_path / fallback_folder
+    except (OSError, ValueError) as e:
+        logger.error(f"Path resolution error for '{path}': {e}")
+        path = base_path / fallback_folder
 
     path.mkdir(parents=True, exist_ok=True)
     return path

@@ -343,6 +343,34 @@ class TestBuildDownloadPath:
         path = build_download_path(link)
         assert isinstance(path, Path)
 
+    def test_path_traversal_prevention(self):
+        """Test that username with path traversal tokens stays inside base download location."""
+        from vidownloader.core.Models import Link
+        from vidownloader.core.Utils import build_download_path
+        from vidownloader.core.VSettings import get_download_location
+
+        base_path = Path(get_download_location()).resolve()
+
+        link = Link(
+            url="https://www.youtube.com/watch?v=test123",
+            video_type=VideoType.VIDEO,
+            username="../../etc/passwd",
+            video_id="test123",
+        )
+
+        path = build_download_path(link)
+        assert path.resolve().is_relative_to(base_path)
+
+        link_dots_only = Link(
+            url="https://www.youtube.com/watch?v=test123",
+            video_type=VideoType.VIDEO,
+            username="..",
+            video_id="test123",
+        )
+
+        path_dots = build_download_path(link_dots_only)
+        assert path_dots.resolve().is_relative_to(base_path)
+
 
 class TestGenerateExportFilename:
     """Tests for the generate_export_filename function."""
