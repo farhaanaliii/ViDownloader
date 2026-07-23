@@ -1,7 +1,14 @@
 import time
-from threading import Lock
 
-from PyQt5.QtCore import QEventLoop, QThread, QTimer, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import (
+    QMetaObject,
+    QObject,
+    QThread,
+    QTimer,
+    Qt,
+    pyqtSignal,
+    pyqtSlot,
+)
 
 from vidownloader.core.Constants import EventType, Status, WorkerType
 from vidownloader.core.Logger import get_logger
@@ -72,87 +79,70 @@ class DownloaderWorker(Worker):
         self.active_threads = 0
         self.finished_threads = 0
         self.threads: list[Downloader.Downloader] = []
-        self.lock = Lock()
         self.is_paused = False
 
     def run(self):
         logger.info("DownloadProcess started.")
         self._start_next_batch()
-
-        loop = QEventLoop()
-        while self.finished_threads < len(self.links):
-            if self._stop_requested:
-                return
-            loop.processEvents()
-            time.sleep(0.1)
-
-        logger.info("DownloadProcess run method completed.")
-        # Individual threads emit their own completion events with video_id
-        # No need to emit a generic event here
-        self.on_finish.emit("Download completed.", WorkerType.DOWNLOADER)
+        self.exec_()
 
     def _start_next_batch(self):
-        if self.is_paused:
+        if self.is_paused or self._stop_requested:
             return
 
-        with self.lock:
-            max_threads = get_download_threads()
-            while self.active_threads < max_threads and self.current_index < len(
-                self.links
-            ):
+        max_threads = get_download_threads()
+        while self.active_threads < max_threads and self.current_index < len(
+            self.links
+        ):
+            if self._stop_requested:
+                return
 
-                if self._stop_requested:
-                    return
+            link = self.links[self.current_index]
+            self.current_index += 1
 
-                link = self.links[self.current_index]
-                self.current_index += 1
-
-                thread = Downloader.Downloader(link)
-                thread._event.connect(self.event_handler)
-                logger.debug("Starting the downloader thread for : %s", link.url)
-                thread.start()
-                logger.info(f"Download thread for {link} started")
-                self.threads.append(thread)
-                self.active_threads += 1
+            thread = Downloader.Downloader(link)
+            thread._event.connect(self.event_handler)
+            logger.debug("Starting the downloader thread for : %s", link.url)
+            thread.start()
+            logger.info(f"Download thread for {link} started")
+            self.threads.append(thread)
+            self.active_threads += 1
 
     def stop(self):
-        if hasattr(self, "downloader") and self.downloader:
-            self.downloader = None
         super().stop()
+        for thread in self.threads:
+            if thread.isRunning():
+                thread.requestInterruption()
+        self.quit()
 
     def pause(self):
         logger.info("Pausing all downloader threads.")
-        with self.lock:
-            self.is_paused = True
-            # we'll let the running threads finish, but won't start new ones
-            # TODO: implement better pausing mechanism
+        self.is_paused = True
 
     def resume(self):
         logger.info("Resuming downloader threads.")
-        with self.lock:
-            self.is_paused = False
-        # Call _start_next_batch OUTSIDE the lock to avoid deadlock
+        self.is_paused = False
         self._start_next_batch()
 
     @pyqtSlot(DownloaderEvent)
     def event_handler(self, event: DownloaderEvent):
-        # only handle completion or failure events to manage threads
         if event.event == EventType.STATUS and event.status in (
             Status.COMPLETED,
             Status.FAILED,
         ):
+            self.finished_threads += 1
+            self.active_threads -= 1
+            self.update_progress.emit(self.finished_threads)
 
-            with self.lock:
-                self.finished_threads += 1
-                self.active_threads -= 1
-                self.update_progress.emit(self.finished_threads)
+            self.threads = [t for t in self.threads if t.isRunning()]
 
-                for i, thread in enumerate(self.threads):
-                    if not thread.isRunning():
-                        self.threads.pop(i)
-                        break
-
-                if self.current_index < len(self.links):
-                    QTimer.singleShot(0, self._start_next_batch)
+            if not self._stop_requested and self.current_index < len(self.links):
+                QTimer.singleShot(0, self._start_next_batch)
 
         self._event.emit(event)
+
+        if self.finished_threads >= len(self.links) and not self._stop_requested:
+            logger.info("DownloadProcess completed.")
+            self.on_finish.emit("Download completed.", WorkerType.DOWNLOADER)
+            self.quit()
+
