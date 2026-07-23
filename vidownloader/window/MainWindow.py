@@ -29,6 +29,7 @@ class MainWindow(main_ui.MAIN_UI):
         self.downloader_t = None
         self.is_paused = False
         self.selected_links: list[Link] = []
+        self.item_map: dict[str, QTreeWidgetItem] = {}
 
         if bridge.bridge_type == BridgeType.LINKS:
             self.links = bridge.links
@@ -291,13 +292,7 @@ class MainWindow(main_ui.MAIN_UI):
                 self.change_item_color(item, Constants.StatusColors.PENDING)
 
     def find_item_by_id(self, video_id: str) -> QTreeWidgetItem | None:
-        for i in range(self.tree_widget.topLevelItemCount()):
-            item = self.tree_widget.topLevelItem(i)
-            _id = item.text(Constants.TreeViewColumns.ID)
-            if _id == video_id:
-                return item
-
-        return None
+        return self.item_map.get(video_id) if video_id else None
 
     def change_item_color(self, item: QTreeWidgetItem, color: QColor):
         for col in range(self.tree_widget.columnCount()):
@@ -311,6 +306,7 @@ class MainWindow(main_ui.MAIN_UI):
             video.no = start_index + i + 1
             item = Utils.video_to_treeitem(video)
             self.tree_widget.addTopLevelItem(item)
+            self.item_map[video.video_id] = item
 
             if start_index == 0:
                 self.download_button.setEnabled(True)
