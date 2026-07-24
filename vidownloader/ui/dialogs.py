@@ -57,30 +57,28 @@ class ReleaseNotesDialog(QDialog):
             .fixed { color: #dc3545; }
         </style>
 
-        <h2>v0.4.0 <span class="date">(July 2026)</span></h2>
+        <h2>v0.5.0 <span class="date">(July 2026)</span></h2>
         <p><span class="pre">&#9888; PRE-RELEASE:</span> This version is functional but expect rough edges. Your feedback helps!</p>
 
         <h3>&#10024; New Features</h3>
         <ul>
-            <li><span class="new">NEW:</span> Video playback via context menu (opens in default media player)</li>
-            <li><span class="new">NEW:</span> "Show in Explorer" context menu option to reveal downloaded file</li>
-            <li><span class="new">NEW:</span> "Copy URL" context menu option</li>
+            <li><span class="new">NEW:</span> Complete migration from PyQt5 to PySide6 (Qt6) bindings</li>
+            <li><span class="new">NEW:</span> Automated Python package publishing to PyPI via GitHub Actions</li>
         </ul>
 
-        <h3>&#128027; Bug Fixes</h3>
+        <h3>&#128027; Security & Bug Fixes</h3>
         <ul>
-            <li><span class="fixed">FIXED:</span> Pause button not disabling when worker finishes</li>
-            <li><span class="fixed">FIXED:</span> Crash in duration formatter on None or empty string input</li>
-            <li><span class="fixed">FIXED:</span> Shorts playlists not being detected by parser</li>
-            <li><span class="fixed">FIXED:</span> Video URL lost when converting tree item to Video object</li>
-            <li><span class="fixed">FIXED:</span> playlist_id incorrectly kept when URL has both video and playlist params</li>
+            <li><span class="fixed">FIXED:</span> Path traversal vulnerability in download path construction</li>
+            <li><span class="fixed">FIXED:</span> Duplicate signal connection on stop button</li>
+            <li><span class="fixed">FIXED:</span> Suppressed yt-dlp progress bar output in GUI threads</li>
         </ul>
 
-        <h3>&#128295; Improvements</h3>
+        <h3>&#128295; Improvements & Performance</h3>
         <ul>
-            <li><span class="improved">IMPROVED:</span> Duration stored as formatted string, supporting both raw and pre-formatted input</li>
-            <li><span class="improved">IMPROVED:</span> Context menu action creation refactored into helper method</li>
-            <li><span class="improved">IMPROVED:</span> Migrated from PyQt5 resource system to PyInstaller --add-data</li>
+            <li><span class="improved">IMPROVED:</span> O(1) dictionary lookup for tree widget items replacing O(n) traversal</li>
+            <li><span class="improved">IMPROVED:</span> Simplified DownloaderWorker lifecycle and clean thread interruption</li>
+            <li><span class="improved">IMPROVED:</span> Scraper stop signal handling with stop_checker callback</li>
+            <li><span class="improved">IMPROVED:</span> Added XVFB and Qt6 dependencies for CI testing</li>
         </ul>
         """)
 

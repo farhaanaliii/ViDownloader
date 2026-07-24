@@ -27,7 +27,7 @@ class Author:
 
 class App:
     NAME = "ViDownloader"
-    VERSION = "1.0.0-beta3"
+    VERSION = "0.5.0"
     ICON = "icon.png"
     USER_AGENT = f"{NAME}/{VERSION} - {Author.GITHUB_URL}"
 

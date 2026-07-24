@@ -6,6 +6,37 @@ All notable changes to ViDownloader will be documented in this file.
 
 ---
 
+## [v0.5.0] - July 2026
+
+### ✨ New Features & Migrations
+
+- **MIGRATION:** Migrated entire GUI codebase from PyQt5 to official Qt for Python bindings (**PySide6 / Qt6**).
+- **NEW:** Added automated PyPI package publishing workflow to GitHub Actions (`release.yml`).
+
+### 🔒 Security
+
+- **SECURITY:** Fixed path traversal vulnerability in download path construction by sanitizing uploader and playlist names.
+
+### ⚡ Performance & Refactoring
+
+- **PERF:** Replaced O(n) tree widget traversal with O(1) dictionary mapping (`item_map`).
+- **REFACTOR:** Simplified `DownloaderWorker` thread lifecycle, using `QThread.exec_()` and `requestInterruption()`.
+- **REFACTOR:** Enhanced `Scraper` stop signal handling with `stop_checker` callback for clean thread termination.
+- **REFACTOR:** Cleaned up unused imports in worker modules.
+
+### 🐛 Bug Fixes
+
+- **FIXED:** Suppressed `yt-dlp` console progress bar output in GUI threads.
+- **FIXED:** Removed duplicate `stop_button` signal connection in `MainWindow`.
+
+### 🏗️ CI / Documentation
+
+- **CI:** Added XVFB and Qt6 dependencies (`libxcb-cursor0`, `libegl1`) for headless PySide6 testing.
+- **CI:** Consolidated CI workflows into `ci.yml` and updated matrix to Python 3.11/3.12.
+- **DOCS:** Added `SECURITY.md` for vulnerability reporting guidelines.
+
+---
+
 ## [v0.4.0] - July 2026
 
 ### ✨ New Features
