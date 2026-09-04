@@ -48,8 +48,7 @@ class ScraperWorker(Worker):
 
                 self.scraper = Scraper.Scraper(
                     link,
-                    stop_checker=lambda: self._stop_requested
-                    or self.isInterruptionRequested(),
+                    stop_checker=lambda: self._stop_requested or self.isInterruptionRequested(),
                 )
                 self.scraper._event.connect(self._event)
                 self.scraper.start()
@@ -90,9 +89,7 @@ class DownloaderWorker(Worker):
             return
 
         max_threads = get_download_threads()
-        while self.active_threads < max_threads and self.current_index < len(
-            self.links
-        ):
+        while self.active_threads < max_threads and self.current_index < len(self.links):
             if self._stop_requested:
                 return
 

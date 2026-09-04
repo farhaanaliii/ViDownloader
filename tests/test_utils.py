@@ -192,8 +192,8 @@ class TestSanitizeFilename:
 
     def test_handles_unicode(self):
         """Unicode characters should be preserved."""
-        result = sanitize_filename("Test 日本語 Video")
-        assert "日本語" in result
+        result = sanitize_filename("Test \u65e5\u672c\u8a9e Video")
+        assert "\u65e5\u672c\u8a9e" in result
 
 
 class TestFormatDuration:

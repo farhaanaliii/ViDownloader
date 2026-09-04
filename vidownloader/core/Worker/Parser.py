@@ -24,9 +24,9 @@ class Parser:
         try:
             raw_content_list = None
             if data.get("onResponseReceivedActions"):
-                raw_content_list = data["onResponseReceivedActions"][0][
-                    "appendContinuationItemsAction"
-                ]["continuationItems"]
+                raw_content_list = data["onResponseReceivedActions"][0]["appendContinuationItemsAction"][
+                    "continuationItems"
+                ]
             else:
                 tabs = data["contents"]["twoColumnBrowseResultsRenderer"]["tabs"]
                 target_tab = None
@@ -54,11 +54,7 @@ class Parser:
                 .get("token")
             )
             for content in raw_content_list:
-                renderer = (
-                    content.get("richItemRenderer", {})
-                    .get("content", {})
-                    .get(_RENDERER_)
-                )
+                renderer = content.get("richItemRenderer", {}).get("content", {}).get(_RENDERER_)
                 if not renderer:
                     continue
 
@@ -169,9 +165,7 @@ class Parser:
                         parts = rows[0].get("metadataParts", [])
                         if parts:
                             avatar_stack = parts[0].get("avatarStack", {})
-                            vm_text = avatar_stack.get("avatarStackViewModel", {}).get(
-                                "text", {}
-                            )
+                            vm_text = avatar_stack.get("avatarStackViewModel", {}).get("text", {})
                             owner_str = vm_text.get("content", "")
                             if owner_str:
                                 if owner_str.startswith("by "):
@@ -185,18 +179,14 @@ class Parser:
                 actions = data["onResponseReceivedActions"]
                 for action in actions:
                     if "appendContinuationItemsAction" in action:
-                        raw_content_list = action["appendContinuationItemsAction"][
-                            "continuationItems"
-                        ]
+                        raw_content_list = action["appendContinuationItemsAction"]["continuationItems"]
                         break
 
                 # For continuation responses, token is in the content list
                 if raw_content_list:
                     for content in reversed(raw_content_list):
                         if "continuationItemRenderer" in content:
-                            continuation_token = Parser._extract_continuation_token(
-                                content
-                            )
+                            continuation_token = Parser._extract_continuation_token(content)
                             if continuation_token:
                                 break
             else:
@@ -204,41 +194,27 @@ class Parser:
                 # Path: contents -> twoColumnBrowseResultsRenderer -> tabs -> tabRenderer -> content
                 #       -> sectionListRenderer -> contents -> itemSectionRenderer -> playlistVideoListRenderer
                 # The continuation token is INSIDE playlistVideoListRenderer.contents as the LAST item
-                tabs = (
-                    data.get("contents", {})
-                    .get("twoColumnBrowseResultsRenderer", {})
-                    .get("tabs", [])
-                )
+                tabs = data.get("contents", {}).get("twoColumnBrowseResultsRenderer", {}).get("tabs", [])
                 for tab in tabs:
                     tab_content = tab.get("tabRenderer", {}).get("content", {})
-                    section_list_contents = tab_content.get(
-                        "sectionListRenderer", {}
-                    ).get("contents", [])
+                    section_list_contents = tab_content.get("sectionListRenderer", {}).get("contents", [])
 
                     for section in section_list_contents:
                         if "continuationItemRenderer" in section:
-                            continuation_token = Parser._extract_continuation_token(
-                                section
-                            )
+                            continuation_token = Parser._extract_continuation_token(section)
                         elif "itemSectionRenderer" in section:
-                            raw_content_list = section.get(
-                                "itemSectionRenderer", {}
-                            ).get("contents", [])
+                            raw_content_list = section.get("itemSectionRenderer", {}).get("contents", [])
                             # Token is INSIDE the playlist contents as the LAST item
                             if raw_content_list:
                                 last_item = raw_content_list[-1]
                                 if "continuationItemRenderer" in last_item:
-                                    continuation_token = (
-                                        Parser._extract_continuation_token(last_item)
-                                    )
+                                    continuation_token = Parser._extract_continuation_token(last_item)
 
             # Extract from nested richGridRenderer if present (e.g. playlist of Shorts)
             if raw_content_list and len(raw_content_list) > 0:
                 first_item = raw_content_list[0]
                 if "richGridRenderer" in first_item:
-                    raw_content_list = first_item["richGridRenderer"].get(
-                        "contents", []
-                    )
+                    raw_content_list = first_item["richGridRenderer"].get("contents", [])
 
             if not raw_content_list:
                 logger.debug("No raw_content_list found in playlist response")
@@ -253,9 +229,7 @@ class Parser:
                 if "richItemRenderer" in content:
                     content = content["richItemRenderer"].get("content", {})
 
-                renderer = content.get("lockupViewModel") or content.get(
-                    "shortsLockupViewModel"
-                )
+                renderer = content.get("lockupViewModel") or content.get("shortsLockupViewModel")
                 if not renderer:
                     continue
 
@@ -272,16 +246,10 @@ class Parser:
                 # Extract title and uploader based on renderer type
                 if "shortsLockupViewModel" in content:
                     # Shorts
-                    title = (
-                        renderer.get("overlayMetadata", {})
-                        .get("primaryText", {})
-                        .get("content", "")
-                    )
+                    title = renderer.get("overlayMetadata", {}).get("primaryText", {}).get("content", "")
                 else:
                     # Videos
-                    metadata = renderer.get("metadata", {}).get(
-                        "lockupMetadataViewModel"
-                    )
+                    metadata = renderer.get("metadata", {}).get("lockupMetadataViewModel")
                     if metadata:
                         title = metadata.get("title", {}).get("content", "")
                         try:
@@ -348,11 +316,7 @@ class Parser:
             duration = video_renderer.get("lengthSeconds")
 
             # Extract username from ownerProfileUrl
-            owner_url = (
-                data.get("microformat", {})
-                .get("playerMicroformatRenderer", {})
-                .get("ownerProfileUrl", "")
-            )
+            owner_url = data.get("microformat", {}).get("playerMicroformatRenderer", {}).get("ownerProfileUrl", "")
             username = ""
             if "/@" in owner_url:
                 username = owner_url.split("/@")[-1].rstrip("/")

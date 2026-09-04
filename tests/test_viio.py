@@ -215,7 +215,7 @@ class TestVIIO:
         """Test saving videos with unicode characters in captions."""
         videos = [
             Video(
-                caption="Test 日本語 العربية 中文",
+                caption="Test \u65e5\u672c\u8a9e \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u4e2d\u6587",
                 username="user",
                 video_id="test123",
                 _type=VideoType.VIDEO,
@@ -226,4 +226,4 @@ class TestVIIO:
         viio.save(videos)
         loaded = viio.load()
 
-        assert loaded[0].caption == "Test 日本語 العربية 中文"
+        assert loaded[0].caption == "Test \u65e5\u672c\u8a9e \u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u4e2d\u6587"

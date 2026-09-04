@@ -48,9 +48,7 @@ def parse_links(links: str) -> list[Link]:
         video_type = VideoType.VIDEO
 
         if "youtube.com" in link or "youtu.be" in link:
-            video_match = re.search(
-                r"(?:v=|youtu\.be/|shorts/)([0-9A-Za-z_-]{11})", link
-            )
+            video_match = re.search(r"(?:v=|youtu\.be/|shorts/)([0-9A-Za-z_-]{11})", link)
             video_id = video_match.group(1) if video_match else None
 
             user_match = re.search(r"youtube\.com/@([A-Za-z0-9._-]+)", link)
@@ -225,18 +223,14 @@ def build_download_path(link: Link) -> Path:
 
     raw_username = link.username or "Unknown"
     safe_username = sanitize_filename(raw_username).strip(". ") or "Unknown"
-    fallback_folder = (
-        f"Unknown_{safe_username}" if safe_username != "Unknown" else "Unknown"
-    )
+    fallback_folder = f"Unknown_{safe_username}" if safe_username != "Unknown" else "Unknown"
 
     if link.playlist_id:
         playlist_org = VSettings.get_playlist_organization()
 
         if playlist_org == PlaylistOrganization.BY_PLAYLIST:
             playlist_name = link.playlist_name or link.playlist_id
-            safe_playlist_name = (
-                sanitize_filename(playlist_name).strip(". ") or "playlist"
-            )
+            safe_playlist_name = sanitize_filename(playlist_name).strip(". ") or "playlist"
             path = base_path / "playlists" / safe_playlist_name
         else:
             path = base_path / safe_username
@@ -257,9 +251,7 @@ def build_download_path(link: Link) -> Path:
     try:
         resolved_path = path.resolve()
         if not resolved_path.is_relative_to(base_path):
-            logger.warning(
-                f"Path traversal attempt detected: '{path}'. Falling back to base directory."
-            )
+            logger.warning(f"Path traversal attempt detected: '{path}'. Falling back to base directory.")
             path = base_path / fallback_folder
     except (OSError, ValueError) as e:
         logger.error(f"Path resolution error for '{path}': {e}")
@@ -299,9 +291,7 @@ def get_max_filename_length(root_path: Path) -> int:
         try:
             return os.pathconf(root_path, "PC_NAME_MAX")
         except Exception as e:
-            logger.warning(
-                f"Failed to get PC_NAME_MAX for {os.path.abspath(root_path)}: {e}"
-            )
+            logger.warning(f"Failed to get PC_NAME_MAX for {os.path.abspath(root_path)}: {e}")
             return 255  # Default for most Unix-like filesystems
 
     try:
@@ -361,9 +351,7 @@ def sanitize_filename(text: str, path: Path = Path()) -> str:
         safe_text = re.sub(DISALLOWED_CHARS, "", text.strip())
         safe_text = re.sub(r"\s+", " ", safe_text).strip()
 
-        max_len = (
-            get_max_filename_length(path) - len(str(path)) - 11
-        )  # Reserve space for suffix
+        max_len = get_max_filename_length(path) - len(str(path)) - 11  # Reserve space for suffix
 
         return safe_text[: max(max_len, 1)]
 
@@ -418,9 +406,7 @@ def exception_hook(exctype, value, tb):
     msg_box = QMessageBox()
     msg_box.setWindowTitle("Application Error")
     msg_box.setText(f"An unexpected error occurred: {exctype.__name__}")
-    msg_box.setInformativeText(
-        "Please copy the error details and report to the developer."
-    )
+    msg_box.setInformativeText("Please copy the error details and report to the developer.")
     msg_box.setIcon(QMessageBox.Critical)
     msg_box.setDetailedText(exception_text)
     msg_box.setStandardButtons(QMessageBox.Ok)

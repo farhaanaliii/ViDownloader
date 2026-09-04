@@ -17,21 +17,14 @@ class FileHandler(logging.FileHandler):
             if hasattr(self.stream, "write"):
                 self.stream.write(msg + self.terminator)
             else:
-                self.stream.write(
-                    (msg + self.terminator).encode("utf-8", errors="replace")
-                )
+                self.stream.write((msg + self.terminator).encode("utf-8", errors="replace"))
 
             self.flush()
         except UnicodeEncodeError as e:
             try:
-                sanitized_msg = (
-                    self.format(record)
-                    .encode("ascii", errors="replace")
-                    .decode("ascii")
-                )
+                sanitized_msg = self.format(record).encode("ascii", errors="replace").decode("ascii")
                 self.stream.write(
-                    f"[Unicode Error in Log Message - Original error: {str(e)}] {sanitized_msg}"
-                    + self.terminator
+                    f"[Unicode Error in Log Message - Original error: {str(e)}] {sanitized_msg}" + self.terminator
                 )
                 self.flush()
             except Exception:
@@ -79,9 +72,7 @@ class Logger:
         for handler in root_logger.handlers[:]:
             root_logger.removeHandler(handler)
 
-        logging.basicConfig(
-            level=logging.DEBUG, handlers=[file_handler, stream_handler]
-        )
+        logging.basicConfig(level=logging.DEBUG, handlers=[file_handler, stream_handler])
         warnings.showwarning = self.log_warning
 
     def log_warning(self, message, category, filename, lineno, file=None, line=None):

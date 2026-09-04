@@ -82,9 +82,7 @@ def _make_request(
                 return resp
 
             if attempt < retries and _should_retry(resp.status_code, retryable_codes):
-                delay = _calculate_delay(
-                    attempt, retry_delay, retry_max_delay, retry_backoff
-                )
+                delay = _calculate_delay(attempt, retry_delay, retry_max_delay, retry_backoff)
                 time.sleep(delay)
                 continue
 
@@ -100,9 +98,7 @@ def _make_request(
                 last_exception = ConnectionError(f"Connection failed: {e}")
 
             if attempt < retries:
-                delay = _calculate_delay(
-                    attempt, retry_delay, retry_max_delay, retry_backoff
-                )
+                delay = _calculate_delay(attempt, retry_delay, retry_max_delay, retry_backoff)
                 time.sleep(delay)
                 continue
 
@@ -112,9 +108,7 @@ def _make_request(
             last_exception = e
 
             if attempt < retries:
-                delay = _calculate_delay(
-                    attempt, retry_delay, retry_max_delay, retry_backoff
-                )
+                delay = _calculate_delay(attempt, retry_delay, retry_max_delay, retry_backoff)
                 time.sleep(delay)
                 continue
 

@@ -37,9 +37,7 @@ class ReleaseNotesDialog(QDialog):
         main_layout.setSpacing(15)
 
         title = QLabel("Release History")
-        title.setStyleSheet(
-            "color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;"
-        )
+        title.setStyleSheet("color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
         main_layout.addWidget(title)
 
         self.release_browser = QTextBrowser()
@@ -118,9 +116,7 @@ class SettingsDialog(QDialog):
         general_layout.setRowWrapPolicy(QFormLayout.DontWrapRows)
 
         section_title = QLabel("Download Settings")
-        section_title.setStyleSheet(
-            "color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;"
-        )
+        section_title.setStyleSheet("color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
         general_layout.addRow("", section_title)
 
         self.download_location = QLineEdit()
@@ -190,9 +186,7 @@ class SettingsDialog(QDialog):
         general_layout.addRow("", organization_title)
 
         self.playlist_org = QComboBox()
-        self.playlist_org.addItem(
-            "Group by Playlist Name", PlaylistOrganization.BY_PLAYLIST
-        )
+        self.playlist_org.addItem("Group by Playlist Name", PlaylistOrganization.BY_PLAYLIST)
         self.playlist_org.addItem("Group by Uploader", PlaylistOrganization.BY_UPLOADER)
         self.playlist_org.setFixedHeight(25)
         index = self.playlist_org.findData(VSettings.get_playlist_organization())
@@ -201,16 +195,10 @@ class SettingsDialog(QDialog):
         general_layout.addRow("Playlist Organization", self.playlist_org)
 
         self.single_video_org = QComboBox()
-        self.single_video_org.addItem(
-            "Group in Singles Folder", SingleVideoOrganization.GROUP_SINGLES
-        )
-        self.single_video_org.addItem(
-            "Group by Uploader", SingleVideoOrganization.BY_UPLOADER
-        )
+        self.single_video_org.addItem("Group in Singles Folder", SingleVideoOrganization.GROUP_SINGLES)
+        self.single_video_org.addItem("Group by Uploader", SingleVideoOrganization.BY_UPLOADER)
         self.single_video_org.setFixedHeight(25)
-        index = self.single_video_org.findData(
-            VSettings.get_single_video_organization()
-        )
+        index = self.single_video_org.findData(VSettings.get_single_video_organization())
         if index >= 0:
             self.single_video_org.setCurrentIndex(index)
         general_layout.addRow("Single Video Organization", self.single_video_org)
@@ -226,10 +214,12 @@ class SettingsDialog(QDialog):
         section_title = QLabel("Advanced Settings")
         section_title.setStyleSheet("color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
         advanced_layout.addRow("", section_title)
-        
+
         self.cookies_browser_selector = QComboBox(self)
-        self.cookies_browser_selector.addItems(["None", "Chrome", "Firefox", "Edge", "Brave", "Opera", "Vivaldi", "Chromium"])
-        
+        self.cookies_browser_selector.addItems(
+            ["None", "Chrome", "Firefox", "Edge", "Brave", "Opera", "Vivaldi", "Chromium"]
+        )
+
         self.cookies_profile = QLineEdit()
         self.cookies_profile.setPlaceholderText("Profile name or path (optional)")
 
@@ -239,11 +229,11 @@ class SettingsDialog(QDialog):
 
         browser = VSettings.get_cookies_browser()
         profile = VSettings.get_cookies_profile()
-        
+
         index = self.cookies_browser_selector.findText(browser.capitalize())
         self.cookies_browser_selector.setCurrentIndex(index if index >= 0 else 0)
         self.cookies_browser_selector.currentTextChanged.connect(self.update_cookies_browser)
-                
+
         self.cookies_profile.setText(profile)
         self.update_cookies_browser()
 
@@ -299,7 +289,7 @@ class SettingsDialog(QDialog):
         VSettings.set_download_threads(self.threads.value())
         VSettings.set_playlist_organization(self.playlist_org.currentData())
         VSettings.set_single_video_organization(self.single_video_org.currentData())
-        
+
         browser = self.cookies_browser_selector.currentText()
         VSettings.set_cookies_browser("" if browser == "None" else browser.lower())
         VSettings.set_cookies_profile("" if browser == "None" else self.cookies_profile.text().strip())

@@ -14,9 +14,7 @@ class TestParser:
 
     def test_parse_videos_from_channel_data(self, sample_video_data):
         """Test parsing video data from a channel response."""
-        videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_video_data, VideoType.VIDEO, "testuser"
-        )
+        videos, token = Parser.parse_channel_videos_or_shorts_and_token(sample_video_data, VideoType.VIDEO, "testuser")
 
         assert len(videos) == 1
         assert videos[0].video_id == "test123"
@@ -26,9 +24,7 @@ class TestParser:
 
     def test_parse_shorts_from_channel_data(self, sample_shorts_data):
         """Test parsing shorts data from a channel response."""
-        videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_shorts_data, VideoType.SHORT, "testuser"
-        )
+        videos, token = Parser.parse_channel_videos_or_shorts_and_token(sample_shorts_data, VideoType.SHORT, "testuser")
 
         assert len(videos) == 1
         assert videos[0].video_id == "short123"
@@ -37,9 +33,7 @@ class TestParser:
 
     def test_parse_empty_data(self):
         """Test parsing empty data returns empty list."""
-        videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            {}, VideoType.VIDEO, "testuser"
-        )
+        videos, token = Parser.parse_channel_videos_or_shorts_and_token({}, VideoType.VIDEO, "testuser")
 
         assert videos == []
         assert token is None
@@ -48,27 +42,21 @@ class TestParser:
         """Test parsing malformed data doesn't crash."""
         malformed_data = {"contents": {"unexpected": "structure"}}
 
-        videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            malformed_data, VideoType.VIDEO, "testuser"
-        )
+        videos, token = Parser.parse_channel_videos_or_shorts_and_token(malformed_data, VideoType.VIDEO, "testuser")
 
         # Should return empty list, not crash
         assert videos == []
 
     def test_video_url_format(self, sample_video_data):
         """Test that video URLs are correctly formatted."""
-        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_video_data, VideoType.VIDEO, "testuser"
-        )
+        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(sample_video_data, VideoType.VIDEO, "testuser")
 
         assert len(videos) == 1
         assert videos[0].url == "https://www.youtube.com/watch?v=test123"
 
     def test_shorts_url_format(self, sample_shorts_data):
         """Test that shorts URLs are correctly formatted."""
-        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            sample_shorts_data, VideoType.SHORT, "testuser"
-        )
+        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(sample_shorts_data, VideoType.SHORT, "testuser")
 
         assert len(videos) == 1
         assert videos[0].url == "https://www.youtube.com/shorts/short123"
@@ -92,9 +80,7 @@ class TestParser:
                                                             "contentId": "abc123",
                                                             "metadata": {
                                                                 "lockupMetadataViewModel": {
-                                                                    "title": {
-                                                                        "content": "Video"
-                                                                    }
+                                                                    "title": {"content": "Video"}
                                                                 }
                                                             },
                                                         }
@@ -104,9 +90,7 @@ class TestParser:
                                             {
                                                 "continuationItemRenderer": {
                                                     "continuationEndpoint": {
-                                                        "continuationCommand": {
-                                                            "token": "next_page_token_123"
-                                                        }
+                                                        "continuationCommand": {"token": "next_page_token_123"}
                                                     }
                                                 }
                                             },
@@ -120,9 +104,7 @@ class TestParser:
             }
         }
 
-        videos, token = Parser.parse_channel_videos_or_shorts_and_token(
-            data_with_token, VideoType.VIDEO, "testuser"
-        )
+        videos, token = Parser.parse_channel_videos_or_shorts_and_token(data_with_token, VideoType.VIDEO, "testuser")
 
         assert token == "next_page_token_123"
 
@@ -145,14 +127,10 @@ class TestParser:
                                                             "contentId": "test123",
                                                             "metadata": {
                                                                 "lockupMetadataViewModel": {
-                                                                    "title": {
-                                                                        "content": "Test Video"
-                                                                    }
+                                                                    "title": {"content": "Test Video"}
                                                                 }
                                                             },
-                                                            "lengthText": {
-                                                                "simpleText": "3:45"
-                                                            },
+                                                            "lengthText": {"simpleText": "3:45"},
                                                         }
                                                     }
                                                 }
@@ -167,9 +145,7 @@ class TestParser:
             }
         }
 
-        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            data_with_duration, VideoType.VIDEO, "testuser"
-        )
+        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(data_with_duration, VideoType.VIDEO, "testuser")
 
         assert len(videos) == 1
         assert videos[0].duration == "3:45"
@@ -193,9 +169,7 @@ class TestParser:
                                                             "contentId": "video1",
                                                             "metadata": {
                                                                 "lockupMetadataViewModel": {
-                                                                    "title": {
-                                                                        "content": "Video 1"
-                                                                    }
+                                                                    "title": {"content": "Video 1"}
                                                                 }
                                                             },
                                                         }
@@ -209,9 +183,7 @@ class TestParser:
                                                             "contentId": "video2",
                                                             "metadata": {
                                                                 "lockupMetadataViewModel": {
-                                                                    "title": {
-                                                                        "content": "Video 2"
-                                                                    }
+                                                                    "title": {"content": "Video 2"}
                                                                 }
                                                             },
                                                         }
@@ -228,9 +200,7 @@ class TestParser:
             }
         }
 
-        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(
-            data_multiple, VideoType.VIDEO, "testuser"
-        )
+        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(data_multiple, VideoType.VIDEO, "testuser")
 
         assert len(videos) == 2
         assert videos[0].video_id == "video1"
@@ -278,9 +248,7 @@ class TestParserPlaylist:
                                                                 "contentId": "playlist_vid1",
                                                                 "metadata": {
                                                                     "lockupMetadataViewModel": {
-                                                                        "title": {
-                                                                            "content": "Playlist Video 1"
-                                                                        },
+                                                                        "title": {"content": "Playlist Video 1"},
                                                                         "metadata": {
                                                                             "contentMetadataViewModel": {
                                                                                 "metadataRows": [
@@ -357,9 +325,7 @@ class TestParserPlaylist:
                                                                 "contentId": "vid1",
                                                                 "metadata": {
                                                                     "lockupMetadataViewModel": {
-                                                                        "title": {
-                                                                            "content": "Video 1"
-                                                                        },
+                                                                        "title": {"content": "Video 1"},
                                                                         "metadata": {
                                                                             "contentMetadataViewModel": {
                                                                                 "metadataRows": [
@@ -439,15 +405,7 @@ class TestParserPlaylist:
                                             "metadata": {
                                                 "contentMetadataViewModel": {
                                                     "metadataRows": [
-                                                        {
-                                                            "metadataParts": [
-                                                                {
-                                                                    "text": {
-                                                                        "content": "Creator2"
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
+                                                        {"metadataParts": [{"text": {"content": "Creator2"}}]}
                                                     ]
                                                 }
                                             },
@@ -458,13 +416,7 @@ class TestParserPlaylist:
                                             "overlays": [
                                                 {
                                                     "thumbnailBottomOverlayViewModel": {
-                                                        "badges": [
-                                                            {
-                                                                "thumbnailBadgeViewModel": {
-                                                                    "text": "3:00"
-                                                                }
-                                                            }
-                                                        ]
+                                                        "badges": [{"thumbnailBadgeViewModel": {"text": "3:00"}}]
                                                     }
                                                 }
                                             ]
@@ -506,9 +458,7 @@ class TestParserPlaylist:
                                                 {
                                                     "avatarStack": {
                                                         "avatarStackViewModel": {
-                                                            "text": {
-                                                                "content": "by Unknown is Live"
-                                                            }
+                                                            "text": {"content": "by Unknown is Live"}
                                                         }
                                                     }
                                                 }
@@ -537,9 +487,7 @@ class TestParserPlaylist:
                                                                 "contentId": "playlist_vid1",
                                                                 "metadata": {
                                                                     "lockupMetadataViewModel": {
-                                                                        "title": {
-                                                                            "content": "Playlist Video 1"
-                                                                        }
+                                                                        "title": {"content": "Playlist Video 1"}
                                                                     }
                                                                 },
                                                             }
@@ -602,9 +550,7 @@ class TestParserPlaylist:
                                             {
                                                 "continuationItemRenderer": {
                                                     "continuationEndpoint": {
-                                                        "continuationCommand": {
-                                                            "token": "continuation_shorts_token"
-                                                        }
+                                                        "continuationCommand": {"token": "continuation_shorts_token"}
                                                     }
                                                 }
                                             },
@@ -638,11 +584,7 @@ class TestParserVideoDetails:
                 "title": "Detailed Video Title",
                 "lengthSeconds": "300",
             },
-            "microformat": {
-                "playerMicroformatRenderer": {
-                    "ownerProfileUrl": "https://www.youtube.com/@testcreator"
-                }
-            },
+            "microformat": {"playerMicroformatRenderer": {"ownerProfileUrl": "https://www.youtube.com/@testcreator"}},
         }
 
         video = Parser.parse_video_details(data)
@@ -698,11 +640,7 @@ class TestParserContinuationToken:
     def test_extract_simple_continuation_token(self):
         """Test extracting simple continuation token."""
         item = {
-            "continuationItemRenderer": {
-                "continuationEndpoint": {
-                    "continuationCommand": {"token": "simple_token_123"}
-                }
-            }
+            "continuationItemRenderer": {"continuationEndpoint": {"continuationCommand": {"token": "simple_token_123"}}}
         }
 
         token = Parser._extract_continuation_token(item)
@@ -713,11 +651,7 @@ class TestParserContinuationToken:
         item = {
             "continuationItemRenderer": {
                 "continuationEndpoint": {
-                    "commandExecutorCommand": {
-                        "commands": [
-                            {"continuationCommand": {"token": "nested_token_456"}}
-                        ]
-                    }
+                    "commandExecutorCommand": {"commands": [{"continuationCommand": {"token": "nested_token_456"}}]}
                 }
             }
         }

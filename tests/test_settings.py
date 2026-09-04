@@ -132,9 +132,7 @@ class TestVSettings:
         # Mock to return the default path
         from pathlib import Path
 
-        default_path = str(
-            (Path("~").expanduser() / "Downloads" / "ViDownloader").absolute()
-        )
+        default_path = str((Path("~").expanduser() / "Downloads" / "ViDownloader").absolute())
         mock_instance.value.return_value = default_path
         mock_qsettings.return_value = mock_instance
 
@@ -163,9 +161,7 @@ class TestVSettings:
         # Mock to return the default path
         from pathlib import Path
 
-        default_path = str(
-            (Path("~").expanduser() / "Documents" / "ViDownloader").absolute()
-        )
+        default_path = str((Path("~").expanduser() / "Documents" / "ViDownloader").absolute())
         mock_instance.value.return_value = default_path
         mock_qsettings.return_value = mock_instance
 
@@ -325,7 +321,3 @@ class TestVSettings:
         settings.set_cookies_profile("Profile 4")
 
         mock_instance.setValue.assert_called_once()
-
-
-
-

@@ -48,15 +48,11 @@ class VIIO:
 
         magic = data[: len(self.MAGIC)]
         if magic != self.MAGIC:
-            raise InvalidFileError(
-                f"Invalid file header. Expected {self.MAGIC!r}, got {magic!r}"
-            )
+            raise InvalidFileError(f"Invalid file header. Expected {self.MAGIC!r}, got {magic!r}")
 
         version = data[len(self.MAGIC)]
         if version > self.VERSION:
-            raise InvalidFileError(
-                f"Unsupported file version {version}. Max supported: {self.VERSION}"
-            )
+            raise InvalidFileError(f"Unsupported file version {version}. Max supported: {self.VERSION}")
 
         encrypted_payload = data[len(self.MAGIC) + 1 :]
         json_payload = self._apply_xor(encrypted_payload)

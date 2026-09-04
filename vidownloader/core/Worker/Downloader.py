@@ -30,9 +30,7 @@ class Downloader(QThread):
 
         self._download(file_path)
 
-    def _download(
-        self, file_path: Path, retries: int = 3
-    ) -> bool:  # TODO: Make retries configurable
+    def _download(self, file_path: Path, retries: int = 3) -> bool:  # TODO: Make retries configurable
         logger.debug(f"Downloading to: {file_path}")
 
         ydl_opts = {
@@ -50,7 +48,7 @@ class Downloader(QThread):
 
         browser = get_cookies_browser()
         profile = get_cookies_profile()
-        
+
         if browser:
             ydl_opts["cookiesfrombrowser"] = (browser, profile) if profile else (browser,)
 
@@ -65,9 +63,7 @@ class Downloader(QThread):
                 return True
 
             except Exception as e:
-                logger.warning(
-                    f"Download attempt {attempt + 1}/{retries + 1} failed: {e}"
-                )
+                logger.warning(f"Download attempt {attempt + 1}/{retries + 1} failed: {e}")
                 logger.debug(traceback.format_exc())
 
                 if attempt < retries:
@@ -80,11 +76,7 @@ class Downloader(QThread):
                 return False
 
     def emit_progress(self, progress: str):
-        self._event.emit(
-            DownloaderEvent(
-                event=EventType.PROGRESS, progress=progress, video_id=self.link.video_id
-            )
-        )
+        self._event.emit(DownloaderEvent(event=EventType.PROGRESS, progress=progress, video_id=self.link.video_id))
 
     def emit_status(self, status: Status, video_path: Path = None):
         self._event.emit(

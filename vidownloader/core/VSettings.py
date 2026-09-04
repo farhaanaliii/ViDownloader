@@ -3,7 +3,13 @@ from typing import Any, Optional, Type
 
 from PySide6.QtCore import QSettings
 
-from vidownloader.core.Constants import App, Author, FileName, PlaylistOrganization, SingleVideoOrganization
+from vidownloader.core.Constants import (
+    App,
+    Author,
+    FileName,
+    PlaylistOrganization,
+    SingleVideoOrganization,
+)
 
 
 class VSettings:
@@ -15,9 +21,7 @@ class VSettings:
     def _key(self, key: str) -> str:
         return f"{self.VERSION}/{key}"
 
-    def get_value(
-        self, key: str, default: Optional[Any] = None, value_type: Optional[Type] = None
-    ) -> Any:
+    def get_value(self, key: str, default: Optional[Any] = None, value_type: Optional[Type] = None) -> Any:
         key = self._key(key)
         value = self._settings.value(key, default)
         if value_type is not None and value is not None:
@@ -77,9 +81,7 @@ class VSettings:
         self.set_value("download/threads", threads)
 
     def get_playlist_organization(self):
-        value = self.get_value(
-            "playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int
-        )
+        value = self.get_value("playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int)
         try:
             return PlaylistOrganization(value)
         except ValueError:
@@ -110,10 +112,10 @@ class VSettings:
 
     def get_cookies_profile(self) -> str:
         return self.get_value("advanced/cookies_profile", "", str)
-        
+
     def set_cookies_profile(self, profile: str) -> None:
         self.set_value("advanced/cookies_profile", profile)
-    
+
 
 settings = VSettings()
 

@@ -44,10 +44,7 @@ class MainWindow(main_ui.MAIN_UI):
             lambda: setattr(
                 self,
                 "selected_links",
-                [
-                    Utils.treeitem_to_link(item)
-                    for item in self.tree_widget.selectedItems()
-                ],
+                [Utils.treeitem_to_link(item) for item in self.tree_widget.selectedItems()],
             )
         )
         self.select_all_button.clicked.connect(self.tree_widget.selectAll)
@@ -58,20 +55,12 @@ class MainWindow(main_ui.MAIN_UI):
         self.pause_button.clicked.connect(self.action_pause)
         self.resume_button.clicked.connect(self.action_resume)
 
-        self.tree_widget.customContextMenuRequested.connect(
-            self.action_show_context_menu
-        )
+        self.tree_widget.customContextMenuRequested.connect(self.action_show_context_menu)
 
     def go_back(self):
-        scraper_running = (
-            hasattr(self, "scraper_t")
-            and self.scraper_t is not None
-            and self.scraper_t.isRunning()
-        )
+        scraper_running = hasattr(self, "scraper_t") and self.scraper_t is not None and self.scraper_t.isRunning()
         downloader_running = (
-            hasattr(self, "downloader_t")
-            and self.downloader_t is not None
-            and self.downloader_t.isRunning()
+            hasattr(self, "downloader_t") and self.downloader_t is not None and self.downloader_t.isRunning()
         )
 
         if scraper_running or downloader_running:
@@ -105,9 +94,7 @@ class MainWindow(main_ui.MAIN_UI):
             QMessageBox.warning(self, "Warning", "No videos in the imported file!")
             return
 
-        self.set_status(
-            f"Imported {len(videos)} videos!", Constants.StatusColors.SUCCESS
-        )
+        self.set_status(f"Imported {len(videos)} videos!", Constants.StatusColors.SUCCESS)
         self.signal_append_videos(videos)
 
         logger.info(f"Imported {len(videos)} videos from VIIO file")
@@ -150,15 +137,11 @@ class MainWindow(main_ui.MAIN_UI):
             logger.info(f"Exported {len(videos)} videos to: {saved_path}")
 
         except VIIOError as e:
-            QMessageBox.critical(
-                self, "Export Error", f"Failed to export videos:\n\n{str(e)}"
-            )
+            QMessageBox.critical(self, "Export Error", f"Failed to export videos:\n\n{str(e)}")
             logger.error(f"Export failed: {e}")
 
         except Exception as e:
-            QMessageBox.critical(
-                self, "Error", f"An unexpected error occurred:\n\n{str(e)}"
-            )
+            QMessageBox.critical(self, "Error", f"An unexpected error occurred:\n\n{str(e)}")
             logger.error(f"Export failed with unexpected error: {e}")
 
     def action_start_scraping(self):
@@ -206,25 +189,15 @@ class MainWindow(main_ui.MAIN_UI):
 
         menu = QMenu(self)
 
-        video_path = item.data(
-            Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH
-        )
-        video_url = item.data(
-            Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_DATA
-        )[1]
+        video_path = item.data(Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_PATH)
+        video_url = item.data(Constants.TreeViewColumns.NO, Constants.TreeViewRoles.VIDEO_DATA)[1]
 
         if video_path and Path(video_path).exists():
-            self._make_menu_action(
-                menu, "Play Video", lambda: Utils.play_video(video_path)
-            )
-            self._make_menu_action(
-                menu, "Show in Explorer", lambda: Utils.show_in_explorer(video_path)
-            )
+            self._make_menu_action(menu, "Play Video", lambda: Utils.play_video(video_path))
+            self._make_menu_action(menu, "Show in Explorer", lambda: Utils.show_in_explorer(video_path))
 
         if video_url:
-            self._make_menu_action(
-                menu, "Copy URL", lambda: QApplication.clipboard().setText(video_url)
-            )
+            self._make_menu_action(menu, "Copy URL", lambda: QApplication.clipboard().setText(video_url))
 
         menu.exec(self.tree_widget.viewport().mapToGlobal(position))
 
@@ -241,16 +214,10 @@ class MainWindow(main_ui.MAIN_UI):
                 logger.warning(f"Could not find ({event.video_id}) item to update")
                 return
 
-            if (
-                event.event == Constants.EventType.PROGRESS
-                and event.progress is not None
-            ):
+            if event.event == Constants.EventType.PROGRESS and event.progress is not None:
                 self.set_video_progress(item, event.progress)
             elif event.event == Constants.EventType.STATUS and event.status is not None:
-                if (
-                    event.status == Constants.Status.COMPLETED
-                    and event.video_path is not None
-                ):
+                if event.status == Constants.Status.COMPLETED and event.video_path is not None:
                     # set video path so we can use it to play the video (and maybe for other purposes in the future)
                     item.setData(
                         Constants.TreeViewColumns.NO,

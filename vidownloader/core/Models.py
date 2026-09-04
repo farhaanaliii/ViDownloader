@@ -38,10 +38,7 @@ class Video:
         )
 
     def __repr__(self):
-        return (
-            f"<Video #{self.no} - {self.caption} "
-            f"[{self.status} - {self.percentage}]>"
-        )
+        return f"<Video #{self.no} - {self.caption} " f"[{self.status} - {self.percentage}]>"
 
     def to_dict(self):
         data = asdict(self)

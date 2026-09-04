@@ -42,9 +42,7 @@ class TestLink:
 
     def test_link_short_type(self):
         """Test creating a Link for a Short."""
-        link = Link(
-            url="https://www.youtube.com/shorts/abc123", video_type=VideoType.SHORT
-        )
+        link = Link(url="https://www.youtube.com/shorts/abc123", video_type=VideoType.SHORT)
 
         assert link.video_type == VideoType.SHORT
 
@@ -157,9 +155,7 @@ class TestVideo:
 
     def test_video_str_representation(self):
         """Test Video __str__ method."""
-        video = Video(
-            caption="Test", username="user", video_id="123", _type=VideoType.VIDEO
-        )
+        video = Video(caption="Test", username="user", video_id="123", _type=VideoType.VIDEO)
 
         str_repr = str(video)
         assert "Test" in str_repr
@@ -168,9 +164,7 @@ class TestVideo:
 
     def test_video_repr(self):
         """Test Video __repr__ method."""
-        video = Video(
-            no=1, caption="Test", username="user", video_id="123", _type=VideoType.VIDEO
-        )
+        video = Video(no=1, caption="Test", username="user", video_id="123", _type=VideoType.VIDEO)
 
         repr_str = repr(video)
         assert "Video" in repr_str
@@ -194,11 +188,7 @@ class TestBridge:
 
     def test_bridge_with_videos(self):
         """Test creating a Bridge with videos."""
-        videos = [
-            Video(
-                caption="Video 1", username="user", video_id="1", _type=VideoType.VIDEO
-            )
-        ]
+        videos = [Video(caption="Video 1", username="user", video_id="1", _type=VideoType.VIDEO)]
 
         bridge = Bridge(bridge_type=BridgeType.IMPORTED, videos=videos)
 
@@ -213,9 +203,7 @@ class TestDownloaderEvent:
         """Test creating a DownloaderEvent."""
         from pathlib import Path
 
-        event = DownloaderEvent(
-            event=EventType.PROGRESS, video_id=1, progress="50%", status="Downloading"
-        )
+        event = DownloaderEvent(event=EventType.PROGRESS, video_id=1, progress="50%", status="Downloading")
 
         assert event.event == EventType.PROGRESS
         assert event.video_id == 1
@@ -228,15 +216,9 @@ class TestScraperEvent:
 
     def test_scraper_event_creation(self):
         """Test creating a ScraperEvent."""
-        videos = [
-            Video(
-                caption="Test", username="user", video_id="123", _type=VideoType.VIDEO
-            )
-        ]
+        videos = [Video(caption="Test", username="user", video_id="123", _type=VideoType.VIDEO)]
 
-        event = ScraperEvent(
-            event=EventType.VIDEOS, videos=videos, message="Scraping complete"
-        )
+        event = ScraperEvent(event=EventType.VIDEOS, videos=videos, message="Scraping complete")
 
         assert event.event == EventType.VIDEOS
         assert len(event.videos) == 1

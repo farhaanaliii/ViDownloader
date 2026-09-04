@@ -54,9 +54,7 @@ def sample_video_data():
                                                         "contentId": "test123",
                                                         "metadata": {
                                                             "lockupMetadataViewModel": {
-                                                                "title": {
-                                                                    "content": "Test Video Title"
-                                                                }
+                                                                "title": {"content": "Test Video Title"}
                                                             }
                                                         },
                                                     }
@@ -93,9 +91,7 @@ def sample_shorts_data():
                                                     "shortsLockupViewModel": {
                                                         "entityId": "shorts-shelf-item-short123",
                                                         "overlayMetadata": {
-                                                            "primaryText": {
-                                                                "content": "Test Short Title"
-                                                            }
+                                                            "primaryText": {"content": "Test Short Title"}
                                                         },
                                                     }
                                                 }

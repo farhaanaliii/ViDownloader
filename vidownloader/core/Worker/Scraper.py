@@ -30,9 +30,7 @@ class Scraper(QObject):
     def start(self):
         logger.debug(f"Starting scraper for link: {self.link}")
 
-        if (
-            self.link.username or self.link.channel_id
-        ):  # if username or channel id exists then we'll scrap the channel
+        if self.link.username or self.link.channel_id:  # if username or channel id exists then we'll scrap the channel
             channel_id = self.link.channel_id or self._get_channel_id()
             self._scrape_channel(channel_id, self.link.video_type)
         elif self.link.playlist_id:
@@ -48,11 +46,7 @@ class Scraper(QObject):
         while not self.stop_signal:
             data = {
                 "browseId": channel_id,
-                "params": (
-                    YouTube.VIDEOS_PARAMS
-                    if video_type == VideoType.VIDEO
-                    else YouTube.SHORTS_PARAMS
-                ),
+                "params": (YouTube.VIDEOS_PARAMS if video_type == VideoType.VIDEO else YouTube.SHORTS_PARAMS),
             }
 
             if continuation_token:
@@ -63,16 +57,12 @@ class Scraper(QObject):
                 logger.error("Failed to retrieve data from YouTube API.")
                 break
 
-            videos, continuation_token = (
-                Parser.parse_channel_videos_or_shorts_and_token(
-                    response, video_type, self.link.username
-                )
+            videos, continuation_token = Parser.parse_channel_videos_or_shorts_and_token(
+                response, video_type, self.link.username
             )
             self.emit_videos(videos)
             videos_count += len(videos)
-            logger.debug(
-                f"Scraped {len(videos)} {video_type}, total so far: {videos_count}"
-            )
+            logger.debug(f"Scraped {len(videos)} {video_type}, total so far: {videos_count}")
 
             if not continuation_token:
                 break
@@ -114,9 +104,7 @@ class Scraper(QObject):
                     if self.link:
                         self.link.playlist_name = playlist_name
 
-            videos, continuation_token = Parser.parse_playlist_videos_and_token(
-                response
-            )
+            videos, continuation_token = Parser.parse_playlist_videos_and_token(response)
 
             if not videos:
                 logger.debug("No videos found in response, stopping.")
@@ -129,16 +117,12 @@ class Scraper(QObject):
 
             self.emit_videos(videos)
             videos_count += len(videos)
-            logger.debug(
-                f"Scraped {len(videos)} videos from playlist, total so far: {videos_count}"
-            )
+            logger.debug(f"Scraped {len(videos)} videos from playlist, total so far: {videos_count}")
 
             if not continuation_token:
                 break
 
-        logger.debug(
-            f"Scraping completed. Total videos found in playlist: {videos_count}"
-        )
+        logger.debug(f"Scraping completed. Total videos found in playlist: {videos_count}")
 
     def _scrape_video(self, video_id: str):
         logger.debug(f"Scraping video_id: {video_id}")
