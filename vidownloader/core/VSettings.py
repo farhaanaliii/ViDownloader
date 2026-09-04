@@ -3,7 +3,7 @@ from typing import Any, Optional, Type
 
 from PySide6.QtCore import QSettings
 
-from vidownloader.core.Constants import App, Author, FileName
+from vidownloader.core.Constants import App, Author, FileName, PlaylistOrganization, SingleVideoOrganization
 
 
 class VSettings:
@@ -77,8 +77,6 @@ class VSettings:
         self.set_value("download/threads", threads)
 
     def get_playlist_organization(self):
-        from vidownloader.core.Constants import PlaylistOrganization
-
         value = self.get_value(
             "playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int
         )
@@ -91,8 +89,6 @@ class VSettings:
         self.set_value("playlist/organization", mode.value)
 
     def get_single_video_organization(self):
-        from vidownloader.core.Constants import SingleVideoOrganization
-
         value = self.get_value(
             "single_video/organization",
             SingleVideoOrganization.GROUP_SINGLES.value,
