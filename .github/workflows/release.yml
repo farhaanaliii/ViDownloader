@@ -51,7 +51,6 @@ jobs:
           pyinstaller --onefile --windowed \
             --name="ViDownloader" \
             --icon=${{ matrix.icon }} \
-            --add-data="vidownloader/fonts${{ matrix.separator }}fonts" \
             --add-data="vidownloader/icons${{ matrix.separator }}icons" \
             --distpath=dist vidownloader/main.py
         shell: bash

@@ -21,7 +21,6 @@ test:
 build:
 	pyinstaller --onefile --windowed --name="ViDownloader" \
 		--icon=vidownloader/icons/icon.ico \
-		--add-data="vidownloader/fonts$(SEPARATOR)fonts" \
 		--add-data="vidownloader/icons$(SEPARATOR)icons" \
 		--distpath=dist vidownloader/main.py
 

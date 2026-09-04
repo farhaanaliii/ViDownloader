@@ -10,7 +10,6 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import QMessageBox, QTreeWidgetItem
 
 from vidownloader.core import Logger, VSettings
@@ -398,24 +397,6 @@ def filter_string(text: str, path: Path = Path()) -> str:
         base_name = base_name[: get_max_filename_length() - len(path) - 11]
 
     return f"{base_name} {_rand}"
-
-
-def load_fonts():
-    fonts_dir = get_assets_path("fonts")
-
-    font_resources = [
-        f"{fonts_dir}/Poppins-Regular.ttf",
-        f"{fonts_dir}/Poppins-Medium.ttf",
-        f"{fonts_dir}/Poppins-SemiBold.ttf",
-    ]
-
-    for font_path in font_resources:
-        font_id = QFontDatabase.addApplicationFont(font_path)
-        if font_id == -1:
-            logger.warning(f"Failed to load font: {font_path}")
-        else:
-            families = QFontDatabase.applicationFontFamilies(font_id)
-            logger.debug(f"Loaded font: {families}")
 
 
 def is_frozen():

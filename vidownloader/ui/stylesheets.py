@@ -1,7 +1,7 @@
 global_qss = """
 
 * {
-    font-family: "Poppins", 'Segoe UI', Arial, sans-serif;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Noto Sans", Roboto, Arial, sans-serif;
 }
 
 QMainWindow, QDialog {

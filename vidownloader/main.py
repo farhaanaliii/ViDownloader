@@ -3,7 +3,7 @@ import sys
 from PySide6.QtWidgets import QApplication
 
 from vidownloader.core.Constants import App, Author, Paths
-from vidownloader.core.Utils import exception_hook, load_fonts
+from vidownloader.core.Utils import exception_hook
 from vidownloader.ui import stylesheets
 from vidownloader.window.HomeWindow import HomeWindow
 
@@ -18,7 +18,6 @@ def main():
     app.setStyleSheet(stylesheets.global_qss)
 
     sys.excepthook = exception_hook
-    load_fonts()
 
     app.home_window = HomeWindow()
     app.home_window.show()
