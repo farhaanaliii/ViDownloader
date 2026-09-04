@@ -73,9 +73,9 @@ qt_api = "pyside6"
 
 [tool.black]
 target-version = ["py310"]
-extend-exclude = '''/(venv|build|dist|\.git|__pycache__)/'''
+extend-exclude = '''/(\.venv|venv|build|dist|\.git|__pycache__|\.pytest_cache)/'''
 
 [tool.isort]
 profile = "black"
-skip = ["venv", "build", "dist", ".git", "__pycache__"]
+skip = [".venv", "venv", "build", "dist", ".git", "__pycache__", ".pytest_cache"]
 
