@@ -106,6 +106,18 @@ class VSettings:
     def set_single_video_organization(self, mode) -> None:
         self.set_value("single_video/organization", mode.value)
 
+    def get_cookies_browser(self) -> str:
+        return self.get_value("advanced/cookies_browser", "", str)
+
+    def set_cookies_browser(self, browser: str) -> None:
+        self.set_value("advanced/cookies_browser", browser)
+
+    def get_cookies_profile(self) -> str:
+        return self.get_value("advanced/cookies_profile", "", str)
+        
+    def set_cookies_profile(self, profile: str) -> None:
+        self.set_value("advanced/cookies_profile", profile)
+    
 
 settings = VSettings()
 
@@ -126,3 +138,8 @@ set_playlist_organization = settings.set_playlist_organization
 
 get_single_video_organization = settings.get_single_video_organization
 set_single_video_organization = settings.set_single_video_organization
+
+get_cookies_browser = settings.get_cookies_browser
+set_cookies_browser = settings.set_cookies_browser
+get_cookies_profile = settings.get_cookies_profile
+set_cookies_profile = settings.set_cookies_profile

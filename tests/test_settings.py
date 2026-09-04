@@ -287,3 +287,45 @@ class TestVSettings:
         mode = settings.get_file_naming_mode()
 
         assert mode == FileName.CAPTION
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_get_cookies_browser_default(self, mock_qsettings):
+        mock_instance = Mock()
+        mock_instance.value.return_value = ""
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        assert settings.get_cookies_browser() == ""
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_set_cookies_browser(self, mock_qsettings):
+        mock_instance = Mock()
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        settings.set_cookies_browser("chrome")
+
+        mock_instance.setValue.assert_called_once()
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_get_cookies_profile_default(self, mock_qsettings):
+        mock_instance = Mock()
+        mock_instance.value.return_value = ""
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        assert settings.get_cookies_profile() == ""
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_set_cookies_profile(self, mock_qsettings):
+        mock_instance = Mock()
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        settings.set_cookies_profile("Profile 4")
+
+        mock_instance.setValue.assert_called_once()
+
+
+
+

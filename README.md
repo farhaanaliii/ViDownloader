@@ -92,6 +92,7 @@ The interface sits on top of **yt-dlp** for reliable downloads, but all the scra
 - **Multi-threaded** – Run 1–10 simultaneous downloads
 - **Pause & Resume** – Pause active downloads and resume them at any time
 - **Real-time progress** – Per-video progress bars, status indicators, file size display, and duration
+- **Browser cookies support** – Extract cookies directly from your browser or profile for authenticated downloads
 - **Export & Import** – Save your video list as a `.viio` file and reload it later without re-scraping
 - **Flexible file naming** – Name files by video title, video ID, or a random string
 - **Flexible organization** – Organize downloads by playlist name, uploader, or into a dedicated singles folder
@@ -110,6 +111,7 @@ Open **Settings** (top-right corner) to adjust:
 | **Download Threads** | Simultaneous downloads (1–10 threads) |
 | **Playlist Organization** | Group by playlist name or by uploader |
 | **Single Video Organization** | Group in a singles folder or by uploader |
+| **Cookies Browser & Profile** | Extract cookies from browser or profile for authenticated downloads |
 
 ---
 

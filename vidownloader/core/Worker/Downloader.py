@@ -8,6 +8,7 @@ from vidownloader.core.Constants import EventType, Status
 from vidownloader.core.Logger import get_logger
 from vidownloader.core.Models import DownloaderEvent, Link
 from vidownloader.core.Utils import build_download_path, build_filename
+from vidownloader.core.VSettings import get_cookies_browser, get_cookies_profile
 
 logger = get_logger("Downloader")
 
@@ -45,8 +46,13 @@ class Downloader(QThread):
             "retries": 10,
             "fragment_retries": 10,
             "continuedl": True,
-            #'cookiesfrombrowser': 'chrome' # TODO: Add browser cookie support later
         }
+
+        browser = get_cookies_browser()
+        profile = get_cookies_profile()
+        
+        if browser:
+            ydl_opts["cookiesfrombrowser"] = (browser, profile) if profile else (browser,)
 
         for attempt in range(retries + 1):
             try:

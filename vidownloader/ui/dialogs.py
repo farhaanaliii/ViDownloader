@@ -215,7 +215,46 @@ class SettingsDialog(QDialog):
             self.single_video_org.setCurrentIndex(index)
         general_layout.addRow("Single Video Organization", self.single_video_org)
 
+        advanced_tab = QWidget()
+        advanced_layout = QFormLayout(advanced_tab)
+        advanced_layout.setContentsMargins(15, 15, 15, 15)
+        advanced_layout.setSpacing(12)
+        advanced_layout.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        advanced_layout.setLabelAlignment(Qt.AlignRight)
+        advanced_layout.setRowWrapPolicy(QFormLayout.DontWrapRows)
+
+        section_title = QLabel("Advanced Settings")
+        section_title.setStyleSheet("color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
+        advanced_layout.addRow("", section_title)
+        
+        self.cookies_browser_selector = QComboBox(self)
+        self.cookies_browser_selector.addItems(["None", "Chrome", "Firefox", "Edge", "Brave", "Opera", "Vivaldi", "Chromium"])
+        
+        self.cookies_profile = QLineEdit()
+        self.cookies_profile.setPlaceholderText("Profile name or path (optional)")
+
+        self.cookies_profile_browse = QPushButton("Browse...")
+        self.cookies_profile_browse.setMaximumWidth(100)
+        self.cookies_profile_browse.clicked.connect(self.browse_cookies_profile)
+
+        browser = VSettings.get_cookies_browser()
+        profile = VSettings.get_cookies_profile()
+        
+        index = self.cookies_browser_selector.findText(browser.capitalize())
+        self.cookies_browser_selector.setCurrentIndex(index if index >= 0 else 0)
+        self.cookies_browser_selector.currentTextChanged.connect(self.update_cookies_browser)
+                
+        self.cookies_profile.setText(profile)
+        self.update_cookies_browser()
+
+        cookies_layout = QHBoxLayout()
+        cookies_layout.addWidget(self.cookies_browser_selector)
+        cookies_layout.addWidget(self.cookies_profile)
+        cookies_layout.addWidget(self.cookies_profile_browse)
+        advanced_layout.addRow("Cookies Browser", cookies_layout)
+
         tab_widget.addTab(general_tab, "General")
+        tab_widget.addTab(advanced_tab, "Advanced")
 
         main_layout.addWidget(tab_widget)
 
@@ -243,6 +282,16 @@ class SettingsDialog(QDialog):
         if folder:
             self.export_location.setText(folder)
 
+    def browse_cookies_profile(self):
+        folder = QFileDialog.getExistingDirectory(self, "Select Browser Profile Folder")
+        if folder:
+            self.cookies_profile.setText(folder)
+
+    def update_cookies_browser(self):
+        enabled = self.cookies_browser_selector.currentText() != "None"
+        self.cookies_profile.setEnabled(enabled)
+        self.cookies_profile_browse.setEnabled(enabled)
+
     def accept(self):
         VSettings.set_download_location(self.download_location.text().strip())
         VSettings.set_export_location(self.export_location.text().strip())
@@ -250,5 +299,9 @@ class SettingsDialog(QDialog):
         VSettings.set_download_threads(self.threads.value())
         VSettings.set_playlist_organization(self.playlist_org.currentData())
         VSettings.set_single_video_organization(self.single_video_org.currentData())
+        
+        browser = self.cookies_browser_selector.currentText()
+        VSettings.set_cookies_browser("" if browser == "None" else browser.lower())
+        VSettings.set_cookies_profile("" if browser == "None" else self.cookies_profile.text().strip())
 
         super().accept()
