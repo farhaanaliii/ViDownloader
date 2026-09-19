@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['vidownloader\\main.py'],
+    ['vidownloader/main.py'],
     pathex=[],
     binaries=[],
-    datas=[('vidownloader/fonts', 'fonts'), ('vidownloader/icons', 'icons')],
+    datas=[('vidownloader/icons', 'icons')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['vidownloader\\icons\\icon.ico'],
+    icon=['vidownloader/icons/icon.ico'],
 )
