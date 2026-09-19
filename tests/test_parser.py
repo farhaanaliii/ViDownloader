@@ -175,8 +175,16 @@ class TestParser:
                                                                             "metadataRows": [
                                                                                 {
                                                                                     "metadataParts": [
-                                                                                        {"text": {"content": "224K views"}},
-                                                                                        {"text": {"content": "3 days ago"}},
+                                                                                        {
+                                                                                            "text": {
+                                                                                                "content": "224K views"
+                                                                                            }
+                                                                                        },
+                                                                                        {
+                                                                                            "text": {
+                                                                                                "content": "3 days ago"
+                                                                                            }
+                                                                                        },
                                                                                     ]
                                                                                 }
                                                                             ]

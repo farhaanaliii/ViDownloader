@@ -192,7 +192,9 @@ class SettingsDialog(QDialog):
         general_layout.addRow(separator)
 
         file_title = QLabel("File Settings")
-        file_title.setStyleSheet("color: #1e293b; font-size: 11pt; font-weight: 600; margin-top: 8px; margin-bottom: 2px;")
+        file_title.setStyleSheet(
+            "color: #1e293b; font-size: 11pt; font-weight: 600; margin-top: 8px; margin-bottom: 2px;"
+        )
         general_layout.addRow(file_title)
 
         self.caption_setting = QComboBox()
@@ -223,7 +225,9 @@ class SettingsDialog(QDialog):
         general_layout.addRow(separator2)
 
         organization_title = QLabel("Organization Settings")
-        organization_title.setStyleSheet("color: #1e293b; font-size: 11pt; font-weight: 600; margin-top: 8px; margin-bottom: 2px;")
+        organization_title.setStyleSheet(
+            "color: #1e293b; font-size: 11pt; font-weight: 600; margin-top: 8px; margin-bottom: 2px;"
+        )
         general_layout.addRow(organization_title)
 
         self.playlist_org = QComboBox()
@@ -339,4 +343,3 @@ class SettingsDialog(QDialog):
         VSettings.set_cookies_profile("" if browser == "None" else self.cookies_profile.text().strip())
 
         super().accept()
-
