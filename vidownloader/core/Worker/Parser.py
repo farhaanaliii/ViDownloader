@@ -9,294 +9,222 @@ logger = Logger.get_logger("Parser")
 
 class Parser:
 
-    @staticmethod  # what a long name :(
+    @staticmethod
+    def _extract_continuation_items(data: dict) -> list[dict] | None:
+        for action in data.get("onResponseReceivedActions", []):
+            if "appendContinuationItemsAction" in action:
+                return action["appendContinuationItemsAction"].get("continuationItems")
+        return None
+
+    @staticmethod
+    def _extract_continuation_token(continuation_item: dict) -> str | None:
+        endpoint = continuation_item.get("continuationItemRenderer", {}).get("continuationEndpoint", {})
+        cmd = endpoint.get("continuationCommand")
+        if cmd and "token" in cmd:
+            return cmd["token"]
+        for exec_cmd in endpoint.get("commandExecutorCommand", {}).get("commands", []):
+            token = exec_cmd.get("continuationCommand", {}).get("token")
+            if token:
+                return token
+        return None
+
+    @staticmethod
+    def _extract_playlist_owner(data: dict) -> str | None:
+        try:
+            microformat = data.get("microformat", {})
+            owner = microformat.get("microformatDataRenderer", {}).get("courseDetails", {}).get("providerName")
+            if owner:
+                return owner
+
+            rows = (
+                data.get("header", {})
+                .get("pageHeaderRenderer", {})
+                .get("content", {})
+                .get("pageHeaderViewModel", {})
+                .get("metadata", {})
+                .get("contentMetadataViewModel", {})
+                .get("metadataRows", [])
+            )
+            if rows:
+                owner_str = (
+                    rows[0]
+                    .get("metadataParts", [{}])[0]
+                    .get("avatarStack", {})
+                    .get("avatarStackViewModel", {})
+                    .get("text", {})
+                    .get("content", "")
+                )
+                if owner_str:
+                    return owner_str.removeprefix("by ")
+        except Exception:
+            pass
+        return None
+
+    @staticmethod
+    def _parse_video_item(
+        content: dict,
+        default_username: str = "",
+        video_type: VideoType | None = None,
+    ) -> Video | None:
+        if "richItemRenderer" in content:
+            content = content["richItemRenderer"].get("content", {})
+
+        renderer = content.get("lockupViewModel") or content.get("shortsLockupViewModel")
+        if not renderer:
+            return None
+
+        raw_id = renderer.get("contentId") or renderer.get("entityId")
+        if not raw_id:
+            return None
+
+        video_id = raw_id.removeprefix("shorts-shelf-item-")
+        is_short = "shortsLockupViewModel" in content or (video_type == VideoType.SHORT)
+        resolved_type = VideoType.SHORT if is_short else (video_type or VideoType.VIDEO)
+
+        if is_short:
+            title = renderer.get("overlayMetadata", {}).get("primaryText", {}).get("content", "")
+            uploader = default_username
+            duration = None
+        else:
+            meta = renderer.get("metadata", {}).get("lockupMetadataViewModel", {})
+            title = meta.get("title", {}).get("content", "")
+            try:
+                uploader = (
+                    meta.get("metadata", {})
+                    .get("contentMetadataViewModel", {})
+                    .get("metadataRows", [])[0]
+                    .get("metadataParts", [])[0]
+                    .get("text", {})
+                    .get("content", "")
+                )
+            except (IndexError, KeyError, TypeError, AttributeError):
+                uploader = ""
+            if not uploader:
+                uploader = default_username
+
+            length_text = renderer.get("lengthText", {}).get("simpleText")
+            try:
+                badge_text = (
+                    renderer.get("contentImage", {})
+                    .get("thumbnailViewModel", {})
+                    .get("overlays", [])[0]
+                    .get("thumbnailBottomOverlayViewModel", {})
+                    .get("badges", [])[0]
+                    .get("thumbnailBadgeViewModel", {})
+                    .get("text")
+                )
+            except (IndexError, KeyError, TypeError):
+                badge_text = None
+            duration = length_text or badge_text or None
+
+        url = (
+            f"https://www.youtube.com/shorts/{video_id}"
+            if resolved_type == VideoType.SHORT
+            else f"https://www.youtube.com/watch?v={video_id}"
+        )
+
+        return Video(
+            caption=title,
+            username=uploader,
+            video_id=video_id,
+            _type=resolved_type,
+            url=url,
+            duration=duration,
+        )
+
+    @staticmethod
     def parse_channel_videos_or_shorts_and_token(
         data: dict, video_type: VideoType, username: str
-    ) -> tuple[list[Video], str]:
+    ) -> tuple[list[Video], str | None]:
         videos = []
         continuation_token = None
-        is_videos = video_type == VideoType.VIDEO
-
-        _RENDERER_ = "lockupViewModel" if is_videos else "shortsLockupViewModel"
-        _ID_ = "contentId" if is_videos else "entityId"
-        _TITLE = "metadata" if is_videos else "overlayMetadata"
 
         try:
-            raw_content_list = None
-            if data.get("onResponseReceivedActions"):
-                raw_content_list = data["onResponseReceivedActions"][0]["appendContinuationItemsAction"][
-                    "continuationItems"
-                ]
-            else:
-                tabs = data["contents"]["twoColumnBrowseResultsRenderer"]["tabs"]
+            raw_content_list = Parser._extract_continuation_items(data)
+            if raw_content_list is None:
+                tabs = data.get("contents", {}).get("twoColumnBrowseResultsRenderer", {}).get("tabs", [])
                 target_tab = None
-
                 for tab in tabs:
-                    tab = tab["tabRenderer"]
-                    if tab["title"] == video_type.capitalize():
-                        target_tab = tab
+                    renderer = tab.get("tabRenderer", {})
+                    if renderer.get("title") == video_type.capitalize():
+                        target_tab = renderer
                         break
 
                 if not target_tab:
-                    return None, None
+                    return [], None
 
-                raw_content_list = target_tab["content"]["richGridRenderer"]["contents"]
+                raw_content_list = target_tab.get("content", {}).get("richGridRenderer", {}).get("contents", [])
 
             if not raw_content_list:
-                return None, None
+                return [], None
 
-            # continuation token is usually in the last item
-            continuation_token = (
-                raw_content_list[-1]
-                .get("continuationItemRenderer", {})
-                .get("continuationEndpoint", {})
-                .get("continuationCommand", {})
-                .get("token")
-            )
             for content in raw_content_list:
-                renderer = content.get("richItemRenderer", {}).get("content", {}).get(_RENDERER_)
-                if not renderer:
+                if token := Parser._extract_continuation_token(content):
+                    continuation_token = token
                     continue
 
-                title_ = renderer[_TITLE]
-
-                if is_videos:
-                    title = title_["lockupMetadataViewModel"]["title"]["content"]
-                else:
-                    title = title_["primaryText"]["content"]
-
-                video_id = renderer[_ID_]
-                if not is_videos:
-                    video_id = video_id.replace("shorts-shelf-item-", "")
-
-                # Extract duration if available
-                duration = None
-                if is_videos:
-                    duration = renderer.get("lengthText", {}).get("simpleText", "")
-
-                videos.append(
-                    Video(
-                        caption=title,
-                        username=username,
-                        video_id=video_id,
-                        _type=video_type,
-                        url=(
-                            f"https://www.youtube.com/watch?v={video_id}"
-                            if is_videos
-                            else f"https://www.youtube.com/shorts/{video_id}"
-                        ),
-                        duration=duration,
-                    )
-                )
+                if video := Parser._parse_video_item(content, default_username=username, video_type=video_type):
+                    videos.append(video)
 
             return videos, continuation_token
         except Exception as e:
-            logger.error("Error parsing videos: %s", str(e))
+            logger.error("Error parsing channel videos: %s", str(e))
             logger.error(traceback.format_exc())
             return videos, continuation_token
 
     @staticmethod
-    def _extract_continuation_token(continuation_item: dict) -> str | None:
-        continuation_renderer = continuation_item.get("continuationItemRenderer", {})
-        continuation_endpoint = continuation_renderer.get("continuationEndpoint", {})
-
-        # Try simple path first: continuationEndpoint -> continuationCommand -> token
-        simple_token = continuation_endpoint.get("continuationCommand", {}).get("token")
-        if simple_token:
-            return simple_token
-
-        # Try nested path: continuationEndpoint -> commandExecutorCommand -> commands[] -> continuationCommand -> token
-        command_executor = continuation_endpoint.get("commandExecutorCommand", {})
-        commands = command_executor.get("commands", [])
-        for cmd in commands:
-            token = cmd.get("continuationCommand", {}).get("token")
-            if token:
-                return token
-
-        return None
-
-    @staticmethod
     def extract_playlist_name(data: dict) -> str | None:
-        """Extract playlist name from initial playlist API response"""
         try:
-            # Primary path: header -> pageHeaderRenderer -> pageTitle
-            header = data.get("header", {})
-            playlist_header = header.get("pageHeaderRenderer", {})
-            title = playlist_header.get("pageTitle", None)
-
-            # Fallback path: metadata -> playlistMetadataRenderer -> title
+            header = data.get("header", {}).get("pageHeaderRenderer", {})
+            title = header.get("pageTitle")
             if not title:
-                metadata = data.get("metadata", {})
-                playlist_metadata = metadata.get("playlistMetadataRenderer", {})
-                title = playlist_metadata.get("title", None)
-
+                metadata = data.get("metadata", {}).get("playlistMetadataRenderer", {})
+                title = metadata.get("title")
             return title
         except Exception as e:
             logger.debug(f"Error extracting playlist name: {e}")
             return None
 
     @staticmethod
-    def parse_playlist_videos_and_token(data: dict) -> tuple[list[Video], str]:
+    def parse_playlist_videos_and_token(data: dict) -> tuple[list[Video], str | None]:
         videos = []
         continuation_token = None
 
         try:
-            raw_content_list = None
+            playlist_owner = Parser._extract_playlist_owner(data) or ""
+            raw_content_list = Parser._extract_continuation_items(data)
 
-            # Extract playlist owner as fallback for videos without uploader info
-            playlist_owner = None
-            try:
-                microformat = data.get("microformat", {})
-                microformat_data = microformat.get("microformatDataRenderer", {})
-                course_details = microformat_data.get("courseDetails", {})
-                playlist_owner = course_details.get("providerName", None)
-            except Exception:
-                pass
-
-            if not playlist_owner:
-                try:
-                    header = data.get("header", {})
-                    page_header = header.get("pageHeaderRenderer", {})
-                    content = page_header.get("content", {})
-                    vm = content.get("pageHeaderViewModel", {})
-                    meta = vm.get("metadata", {}).get("contentMetadataViewModel", {})
-                    rows = meta.get("metadataRows", [])
-                    if rows:
-                        parts = rows[0].get("metadataParts", [])
-                        if parts:
-                            avatar_stack = parts[0].get("avatarStack", {})
-                            vm_text = avatar_stack.get("avatarStackViewModel", {}).get("text", {})
-                            owner_str = vm_text.get("content", "")
-                            if owner_str:
-                                if owner_str.startswith("by "):
-                                    playlist_owner = owner_str[3:]
-                                else:
-                                    playlist_owner = owner_str
-                except Exception:
-                    pass
-
-            if data.get("onResponseReceivedActions"):
-                actions = data["onResponseReceivedActions"]
-                for action in actions:
-                    if "appendContinuationItemsAction" in action:
-                        raw_content_list = action["appendContinuationItemsAction"]["continuationItems"]
+            if raw_content_list is not None:
+                for content in reversed(raw_content_list):
+                    if token := Parser._extract_continuation_token(content):
+                        continuation_token = token
                         break
-
-                # For continuation responses, token is in the content list
-                if raw_content_list:
-                    for content in reversed(raw_content_list):
-                        if "continuationItemRenderer" in content:
-                            continuation_token = Parser._extract_continuation_token(content)
-                            if continuation_token:
-                                break
             else:
-                # Initial playlist response
-                # Path: contents -> twoColumnBrowseResultsRenderer -> tabs -> tabRenderer -> content
-                #       -> sectionListRenderer -> contents -> itemSectionRenderer -> playlistVideoListRenderer
-                # The continuation token is INSIDE playlistVideoListRenderer.contents as the LAST item
                 tabs = data.get("contents", {}).get("twoColumnBrowseResultsRenderer", {}).get("tabs", [])
                 for tab in tabs:
-                    tab_content = tab.get("tabRenderer", {}).get("content", {})
-                    section_list_contents = tab_content.get("sectionListRenderer", {}).get("contents", [])
-
-                    for section in section_list_contents:
-                        if "continuationItemRenderer" in section:
-                            continuation_token = Parser._extract_continuation_token(section)
+                    contents = (
+                        tab.get("tabRenderer", {}).get("content", {}).get("sectionListRenderer", {}).get("contents", [])
+                    )
+                    for section in contents:
+                        if token := Parser._extract_continuation_token(section):
+                            continuation_token = token
                         elif "itemSectionRenderer" in section:
-                            raw_content_list = section.get("itemSectionRenderer", {}).get("contents", [])
-                            # Token is INSIDE the playlist contents as the LAST item
+                            raw_content_list = section["itemSectionRenderer"].get("contents", [])
                             if raw_content_list:
-                                last_item = raw_content_list[-1]
-                                if "continuationItemRenderer" in last_item:
-                                    continuation_token = Parser._extract_continuation_token(last_item)
+                                if token := Parser._extract_continuation_token(raw_content_list[-1]):
+                                    continuation_token = token
 
-            # Extract from nested richGridRenderer if present (e.g. playlist of Shorts)
-            if raw_content_list and len(raw_content_list) > 0:
-                first_item = raw_content_list[0]
-                if "richGridRenderer" in first_item:
-                    raw_content_list = first_item["richGridRenderer"].get("contents", [])
+            if raw_content_list and "richGridRenderer" in raw_content_list[0]:
+                raw_content_list = raw_content_list[0]["richGridRenderer"].get("contents", [])
 
             if not raw_content_list:
-                logger.debug("No raw_content_list found in playlist response")
                 return videos, continuation_token
 
-            logger.debug(
-                f"Found {len(raw_content_list)} items in raw_content_list, continuation_token: {continuation_token[:50] if continuation_token else None}..."
-            )
-
             for content in raw_content_list:
-                # If wrapped in richItemRenderer (as in richGridRenderer grids)
-                if "richItemRenderer" in content:
-                    content = content["richItemRenderer"].get("content", {})
-
-                renderer = content.get("lockupViewModel") or content.get("shortsLockupViewModel")
-                if not renderer:
-                    continue
-
-                video_id = renderer.get("contentId") or renderer.get("entityId")
-                if not video_id:
-                    continue
-
-                if video_id.startswith("shorts-shelf-item-"):
-                    video_id = video_id.replace("shorts-shelf-item-", "")
-
-                title = ""
-                uploader = ""
-
-                # Extract title and uploader based on renderer type
-                if "shortsLockupViewModel" in content:
-                    # Shorts
-                    title = renderer.get("overlayMetadata", {}).get("primaryText", {}).get("content", "")
-                else:
-                    # Videos
-                    metadata = renderer.get("metadata", {}).get("lockupMetadataViewModel")
-                    if metadata:
-                        title = metadata.get("title", {}).get("content", "")
-                        try:
-                            uploader = (
-                                metadata.get("metadata", {})
-                                .get("contentMetadataViewModel", {})
-                                .get("metadataRows", [])[0]
-                                .get("metadataParts", [])[0]
-                                .get("text", {})
-                                .get("content")
-                            )
-                        except (IndexError, KeyError, TypeError, AttributeError):
-                            uploader = ""
-
-                # Fallback: If uploader not found, use playlist owner
-                if not uploader and playlist_owner:
-                    uploader = playlist_owner
-
-                # Extract duration (eg. 1:05:14)
-                duration = None
-                content_image = renderer.get("contentImage", {})
-                if content_image:
-                    try:
-                        duration = (
-                            content_image.get("thumbnailViewModel", {})
-                            .get("overlays", [])[0]
-                            .get("thumbnailBottomOverlayViewModel", {})
-                            .get("badges", [])[0]
-                            .get("thumbnailBadgeViewModel", {})
-                            .get("text", "")
-                        )
-                    except (IndexError, KeyError, TypeError):
-                        duration = None
-
-                videos.append(
-                    Video(
-                        caption=title,
-                        username=uploader,
-                        video_id=video_id,
-                        _type=VideoType.VIDEO,
-                        url=f"https://www.youtube.com/watch?v={video_id}",
-                        duration=duration,
-                    )
-                )
+                if video := Parser._parse_video_item(content, default_username=playlist_owner):
+                    videos.append(video)
 
             return videos, continuation_token
-
         except Exception as e:
             logger.error("Error parsing playlist: %s", str(e))
             logger.error(traceback.format_exc())
@@ -305,21 +233,16 @@ class Parser:
     @staticmethod
     def parse_video_details(data: dict) -> Video | None:
         try:
-            video_renderer = data.get("videoDetails", {})
-            if not video_renderer:
+            details = data.get("videoDetails")
+            if not details:
                 return None
 
-            video_id = video_renderer.get("videoId", "")
-            title = video_renderer.get("title", "")
+            video_id = details.get("videoId", "")
+            title = details.get("title", "")
+            duration = details.get("lengthSeconds")
 
-            # Extract duration in seconds
-            duration = video_renderer.get("lengthSeconds")
-
-            # Extract username from ownerProfileUrl
             owner_url = data.get("microformat", {}).get("playerMicroformatRenderer", {}).get("ownerProfileUrl", "")
-            username = ""
-            if "/@" in owner_url:
-                username = owner_url.split("/@")[-1].rstrip("/")
+            username = owner_url.split("/@")[-1].rstrip("/") if "/@" in owner_url else ""
 
             return Video(
                 caption=title,
