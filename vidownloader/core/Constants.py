@@ -82,9 +82,10 @@ class TreeViewColumns(IntEnum):
     PROGRESS = 2
     STATUS = 3
     USERNAME = 4
-    ID = 5
-    SIZE = 6
-    DURATION = 7
+    VIEWS = 5
+    ID = 6
+    SIZE = 7
+    DURATION = 8
 
 
 class TreeViewRoles(IntEnum):

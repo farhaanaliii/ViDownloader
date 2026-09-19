@@ -172,6 +172,7 @@ class MAIN_UI(QMainWindow):
                 "Progress",
                 "Status",
                 "Username",
+                "Views",
                 "ID",
                 "Size",
                 "Duration",
@@ -185,6 +186,7 @@ class MAIN_UI(QMainWindow):
         self.tree_widget.setColumnWidth(TreeViewColumns.PROGRESS, 95)
         self.tree_widget.setColumnWidth(TreeViewColumns.STATUS, 110)
         self.tree_widget.setColumnWidth(TreeViewColumns.USERNAME, 130)
+        self.tree_widget.setColumnWidth(TreeViewColumns.VIEWS, 90)
         self.tree_widget.setColumnWidth(TreeViewColumns.ID, 140)
         self.tree_widget.setColumnWidth(TreeViewColumns.SIZE, 95)
         self.tree_widget.setColumnWidth(TreeViewColumns.DURATION, 90)

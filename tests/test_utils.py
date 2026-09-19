@@ -8,12 +8,17 @@ from unittest.mock import patch
 
 import pytest
 
-from vidownloader.core.Constants import VideoType
+from vidownloader.core.Constants import TreeViewColumns, VideoType
+from vidownloader.core.Models import Link, Video
 from vidownloader.core.Utils import (
+    format_view_count,
     gen_uid,
     parse_links,
     sanitize_filename,
+    treeitem_to_link,
+    treeitem_to_video,
     truncate_text,
+    video_to_treeitem,
 )
 
 
@@ -458,3 +463,93 @@ class TestBuildFilename:
         filename = build_filename(link, tmp_path)
         assert filename.endswith(".webm")
         assert len(filename) > 5
+
+
+class TestFormatViewCount:
+    """Tests for format_view_count function."""
+
+    def test_format_none_and_empty(self):
+        assert format_view_count(None) is None
+        assert format_view_count("") is None
+
+    def test_format_formatted_string(self):
+        assert format_view_count("224K views") == "224K views"
+        assert format_view_count("1.2M views") == "1.2M views"
+
+    def test_format_numeric_views(self):
+        assert format_view_count(500) == "500 views"
+        assert format_view_count("1000") == "1K views"
+        assert format_view_count(1500000) == "1.5M views"
+        assert format_view_count("1000000000") == "1B views"
+
+
+class TestTreeItemConversions:
+    """Tests for tree item conversion utilities."""
+
+    def test_video_to_treeitem_and_back(self):
+        video = Video(
+            no=1,
+            caption="Test Video Caption",
+            percentage="25%",
+            status="Downloading",
+            username="testuser",
+            views="224K views",
+            video_id="abc12345",
+            _type=VideoType.VIDEO,
+            url="https://www.youtube.com/watch?v=abc12345",
+            duration=125,
+        )
+
+        item = video_to_treeitem(video)
+
+        assert item.text(TreeViewColumns.NO) == "1"
+        assert item.text(TreeViewColumns.CAPTION) == "Test Video Caption"
+        assert item.text(TreeViewColumns.PROGRESS) == "25%"
+        assert item.text(TreeViewColumns.STATUS) == "Downloading"
+        assert item.text(TreeViewColumns.USERNAME) == "testuser"
+        assert item.text(TreeViewColumns.VIEWS) == "224K views"
+        assert item.text(TreeViewColumns.ID) == "abc12345"
+        assert item.text(TreeViewColumns.DURATION) == "2:05"
+
+        restored = treeitem_to_video(item)
+        assert restored.no == 1
+        assert restored.caption == "Test Video Caption"
+        assert restored.username == "testuser"
+        assert restored.views == "224K views"
+        assert restored.video_id == "abc12345"
+        assert restored.duration == 125
+
+    def test_video_to_treeitem_without_views(self):
+        video = Video(
+            no=2,
+            caption="No Views Video",
+            username="testuser",
+            video_id="xyz987",
+            _type=VideoType.SHORT,
+            url="https://www.youtube.com/shorts/xyz987",
+        )
+
+        item = video_to_treeitem(video)
+        assert item.text(TreeViewColumns.VIEWS) == "-"
+
+        restored = treeitem_to_video(item)
+        assert restored.views is None
+
+    def test_treeitem_to_link_with_views(self):
+        video = Video(
+            no=1,
+            caption="Link Test",
+            username="testuser",
+            views="1.2M views",
+            video_id="link123",
+            _type=VideoType.VIDEO,
+            url="https://www.youtube.com/watch?v=link123",
+        )
+
+        item = video_to_treeitem(video)
+        link = treeitem_to_link(item)
+
+        assert link.username == "testuser"
+        assert link.video_id == "link123"
+        assert link.views == "1.2M views"
+        assert link.url == "https://www.youtube.com/watch?v=link123"

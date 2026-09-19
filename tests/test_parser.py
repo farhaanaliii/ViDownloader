@@ -150,6 +150,99 @@ class TestParser:
         assert len(videos) == 1
         assert videos[0].duration == "3:45"
 
+    def test_parse_with_views(self):
+        """Test parsing videos with view count information."""
+        data_with_views = {
+            "contents": {
+                "twoColumnBrowseResultsRenderer": {
+                    "tabs": [
+                        {
+                            "tabRenderer": {
+                                "title": "Videos",
+                                "content": {
+                                    "richGridRenderer": {
+                                        "contents": [
+                                            {
+                                                "richItemRenderer": {
+                                                    "content": {
+                                                        "lockupViewModel": {
+                                                            "contentId": "test123",
+                                                            "metadata": {
+                                                                "lockupMetadataViewModel": {
+                                                                    "title": {"content": "Test Video"},
+                                                                    "metadata": {
+                                                                        "contentMetadataViewModel": {
+                                                                            "metadataRows": [
+                                                                                {
+                                                                                    "metadataParts": [
+                                                                                        {"text": {"content": "224K views"}},
+                                                                                        {"text": {"content": "3 days ago"}},
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                }
+                                                            },
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(data_with_views, VideoType.VIDEO, "testuser")
+
+        assert len(videos) == 1
+        assert videos[0].views == "224K views"
+
+    def test_parse_shorts_with_views(self):
+        """Test parsing shorts with view count information."""
+        data_shorts = {
+            "contents": {
+                "twoColumnBrowseResultsRenderer": {
+                    "tabs": [
+                        {
+                            "tabRenderer": {
+                                "title": "Shorts",
+                                "content": {
+                                    "richGridRenderer": {
+                                        "contents": [
+                                            {
+                                                "richItemRenderer": {
+                                                    "content": {
+                                                        "shortsLockupViewModel": {
+                                                            "entityId": "shorts-shelf-item-short123",
+                                                            "overlayMetadata": {
+                                                                "primaryText": {"content": "Short Title"},
+                                                                "secondaryText": {"content": "1.5M views"},
+                                                            },
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        videos, _ = Parser.parse_channel_videos_or_shorts_and_token(data_shorts, VideoType.SHORT, "testuser")
+
+        assert len(videos) == 1
+        assert videos[0].views == "1.5M views"
+
     def test_multiple_videos_parsing(self):
         """Test parsing multiple videos from channel."""
         data_multiple = {
@@ -583,6 +676,7 @@ class TestParserVideoDetails:
                 "videoId": "detail_vid1",
                 "title": "Detailed Video Title",
                 "lengthSeconds": "300",
+                "viewCount": "1500000",
             },
             "microformat": {"playerMicroformatRenderer": {"ownerProfileUrl": "https://www.youtube.com/@testcreator"}},
         }
@@ -594,6 +688,7 @@ class TestParserVideoDetails:
         assert video.caption == "Detailed Video Title"
         assert video.username == "testcreator"
         assert video.duration == "300"
+        assert video.views == "1.5M views"
         assert video.url == "https://www.youtube.com/watch?v=detail_vid1"
 
     def test_parse_video_details_no_username(self):

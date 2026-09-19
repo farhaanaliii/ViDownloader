@@ -91,11 +91,11 @@ def truncate_text(text: str, width: int) -> str:
     return text if len(text) <= width else text[: width - 3] + "..."
 
 
-def format_duration(duration: str) -> str:
+def format_duration(duration: str | int | None) -> str:
     if not duration:
         return ""
 
-    if ":" in duration:
+    if isinstance(duration, str) and ":" in duration:
         return duration  # already formatted
 
     try:
@@ -103,7 +103,7 @@ def format_duration(duration: str) -> str:
     except (ValueError, TypeError):
         return ""
 
-    if duration is None or duration < 0:
+    if duration < 0:
         return ""
 
     hours = duration // 3600
@@ -116,8 +116,26 @@ def format_duration(duration: str) -> str:
         return f"{minutes}:{secs:02d}"
 
 
+def format_view_count(views: str | int | None) -> str | None:
+    if views is None:
+        return None
+    views_str = str(views).strip()
+    if not views_str:
+        return None
+    if views_str.isdigit():
+        count = int(views_str)
+        for threshold, suffix in ((1_000_000_000, "B"), (1_000_000, "M"), (1_000, "K")):
+            if count >= threshold:
+                val = count / threshold
+                return f"{val:.1f}".rstrip("0").rstrip(".") + f"{suffix} views"
+        return "1 view" if count == 1 else f"{count} views"
+    return views_str
+
+
 def treeitem_to_link(item: QTreeWidgetItem) -> Link:
     username = item.text(TreeViewColumns.USERNAME)
+    views_text = item.text(TreeViewColumns.VIEWS)
+    views = views_text if views_text and views_text != "-" else None
     video_id = item.text(TreeViewColumns.ID)
 
     # The visible caption is truncated, so a tooltip is used to display the full text.
@@ -135,6 +153,7 @@ def treeitem_to_link(item: QTreeWidgetItem) -> Link:
         username=username,
         video_id=video_id,
         caption=caption,
+        views=views,
         playlist_id=playlist_id,
         playlist_name=playlist_name,
     )
@@ -148,6 +167,7 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
             video.percentage,
             video.status,
             video.username,
+            video.views or "-",
             video.video_id,
             "",
             format_duration(video.duration),
@@ -192,12 +212,16 @@ def treeitem_to_video(item: QTreeWidgetItem) -> Video:
         except (ValueError, IndexError):
             duration = None
 
+    views_text = item.text(TreeViewColumns.VIEWS)
+    views = views_text if views_text and views_text != "-" else None
+
     return Video(
         no=no,
         caption=caption,
         percentage=item.text(TreeViewColumns.PROGRESS),
         status=item.text(TreeViewColumns.STATUS),
         username=item.text(TreeViewColumns.USERNAME),
+        views=views,
         video_id=item.text(TreeViewColumns.ID),
         _type=vtype,
         url=video_url,

@@ -14,6 +14,7 @@ class Link:
     playlist_name: str = None
     channel_id: str = None
     caption: str = None
+    views: str = None
 
 
 @dataclass(kw_only=True)
@@ -27,13 +28,14 @@ class Video:
     _type: VideoType
     url: str = None
     duration: str = None
+    views: str = None
     playlist_id: str = None
     playlist_name: str = None
 
     def __str__(self):
         return (
             f"Video(no={self.no}, caption='{self.caption}', percentage='{self.percentage}', "
-            f"status='{self.status}', username='{self.username}', id='{self.video_id}', "
+            f"status='{self.status}', username='{self.username}', views='{self.views}', id='{self.video_id}', "
             f"url='{self.url}', type='{self._type}')"
         )
 

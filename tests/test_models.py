@@ -78,6 +78,7 @@ class TestVideo:
             _type=VideoType.VIDEO,
             url="https://www.youtube.com/watch?v=test123",
             duration="180",
+            views="1.2M views",
             playlist_id="PLtest",
             playlist_name="Test Playlist",
         )
@@ -86,6 +87,7 @@ class TestVideo:
         assert video.percentage == "50%"
         assert video.status == "Downloading"
         assert video.duration == "180"
+        assert video.views == "1.2M views"
         assert video.playlist_id == "PLtest"
 
     def test_video_to_dict(self):
@@ -96,6 +98,7 @@ class TestVideo:
             video_id="test123",
             _type=VideoType.VIDEO,
             duration="120",
+            views="224K views",
         )
 
         video_dict = video.to_dict()
@@ -106,6 +109,7 @@ class TestVideo:
         assert video_dict["video_id"] == "test123"
         assert video_dict["_type"] == VideoType.VIDEO.value
         assert video_dict["duration"] == "120"
+        assert video_dict["views"] == "224K views"
 
     def test_video_from_dict(self):
         """Test Video deserialization from dictionary."""
@@ -119,6 +123,7 @@ class TestVideo:
             "_type": VideoType.SHORT.value,
             "url": "https://www.youtube.com/shorts/test123",
             "duration": "60",
+            "views": "50K views",
             "playlist_id": None,
             "playlist_name": None,
         }
@@ -131,6 +136,7 @@ class TestVideo:
         assert video.status == "Complete"
         assert video._type == VideoType.SHORT
         assert video.duration == "60"
+        assert video.views == "50K views"
 
     def test_video_roundtrip(self):
         """Test Video serialization and deserialization roundtrip."""
@@ -141,6 +147,7 @@ class TestVideo:
             video_id="roundtrip123",
             _type=VideoType.VIDEO,
             duration="300",
+            views="500 views",
         )
 
         video_dict = original.to_dict()
@@ -152,15 +159,17 @@ class TestVideo:
         assert restored.video_id == original.video_id
         assert restored._type == original._type
         assert restored.duration == original.duration
+        assert restored.views == original.views
 
     def test_video_str_representation(self):
         """Test Video __str__ method."""
-        video = Video(caption="Test", username="user", video_id="123", _type=VideoType.VIDEO)
+        video = Video(caption="Test", username="user", video_id="123", _type=VideoType.VIDEO, views="10K views")
 
         str_repr = str(video)
         assert "Test" in str_repr
         assert "user" in str_repr
         assert "123" in str_repr
+        assert "10K views" in str_repr
 
     def test_video_repr(self):
         """Test Video __repr__ method."""

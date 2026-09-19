@@ -4,6 +4,7 @@ import traceback
 from vidownloader.core import Logger
 from vidownloader.core.Constants import VideoType
 from vidownloader.core.Models import Video
+from vidownloader.core.Utils import format_view_count
 
 logger = Logger.get_logger("Parser")
 
@@ -86,27 +87,23 @@ class Parser:
             title = renderer.get("overlayMetadata", {}).get("primaryText", {}).get("content", "")
             uploader = default_username
             duration = None
+            views = renderer.get("overlayMetadata", {}).get("secondaryText", {}).get("content")
         else:
             meta = renderer.get("metadata", {}).get("lockupMetadataViewModel", {})
             title = meta.get("title", {}).get("content", "")
-            if default_username:
-                uploader = default_username
-            else:
-                uploader = ""
-                try:
-                    rows = meta.get("metadata", {}).get("contentMetadataViewModel", {}).get("metadataRows", [])
-                    for row in rows:
-                        for part in row.get("metadataParts", []):
-                            text = part.get("text", {}).get("content", "")
-                            if text and not re.search(r"\b(views|ago|watching|streamed)\b", text, re.IGNORECASE):
-                                uploader = text
-                                break
-                        if uploader:
-                            break
-                    if not uploader and rows:
-                        uploader = rows[0].get("metadataParts", [{}])[0].get("text", {}).get("content", "")
-                except (IndexError, KeyError, TypeError, AttributeError):
-                    uploader = ""
+            views = None
+            uploader = default_username
+
+            rows = meta.get("metadata", {}).get("contentMetadataViewModel", {}).get("metadataRows", [])
+            for row in rows:
+                for part in row.get("metadataParts", []):
+                    text = part.get("text", {}).get("content", "")
+                    if not text:
+                        continue
+                    if re.search(r"\b(views|view|watching|streamed)\b", text, re.IGNORECASE):
+                        views = views or text
+                    elif not uploader and not re.search(r"\bago\b", text, re.IGNORECASE):
+                        uploader = text
 
             length_text = renderer.get("lengthText", {}).get("simpleText")
             try:
@@ -136,6 +133,7 @@ class Parser:
             _type=resolved_type,
             url=url,
             duration=duration,
+            views=views,
         )
 
     @staticmethod
@@ -271,6 +269,8 @@ class Parser:
             video_id = details.get("videoId", "")
             title = details.get("title", "")
             duration = details.get("lengthSeconds")
+            raw_views = details.get("viewCount")
+            views = format_view_count(raw_views) if raw_views else None
 
             owner_url = data.get("microformat", {}).get("playerMicroformatRenderer", {}).get("ownerProfileUrl", "")
             username = owner_url.split("/@")[-1].rstrip("/") if "/@" in owner_url else ""
@@ -282,6 +282,7 @@ class Parser:
                 _type=VideoType.VIDEO,
                 url=f"https://www.youtube.com/watch?v={video_id}",
                 duration=duration,
+                views=views,
             )
         except Exception as e:
             logger.error("Error parsing video details: %s", str(e))
