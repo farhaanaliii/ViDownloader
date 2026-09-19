@@ -6,7 +6,7 @@
 
 A PySide6 desktop app for bulk downloading YouTube videos.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Status: Beta](https://img.shields.io/badge/Status-Beta-orange.svg?style=flat-square)](https://github.com/farhaanaliii/vidownloader)
 [![PyPI Version](https://img.shields.io/pypi/v/vidownloader?color=blue&style=flat-square)](https://pypi.org/project/vidownloader/)
@@ -214,7 +214,7 @@ pytest
 
 ## License
 
-Released under the **[MIT License](https://opensource.org/licenses/MIT)**. Use it, modify it, share it.
+Released under the **[GNU General Public License v3.0](LICENSE)**.
 
 ---
 

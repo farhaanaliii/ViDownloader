@@ -7,17 +7,17 @@ name = "vidownloader"
 version = "0.5.0"
 description = "A modern YouTube video downloader with a beautiful PySide6 interface"
 readme = "README.md"
-license = "MIT"
+license = "GPL-3.0-or-later"
 requires-python = ">=3.10"
 authors = [
-    { name = "Farhan Ali", email = "i.farhanali.de@gmail.com" }
+    { name = "Farhan Ali", email = "i.farhanali.dev@gmail.com" }
 ]
 keywords = ["youtube", "downloader", "video", "pyside6", "qt6", "yt-dlp"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: X11 Applications :: Qt",
     "Intended Audience :: End Users/Desktop",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",

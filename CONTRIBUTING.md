@@ -134,7 +134,7 @@ If you have questions, feel free to:
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the GNU General Public License v3.0.
 
 ---
 
