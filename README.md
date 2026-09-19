@@ -1,8 +1,8 @@
 <div align="center">
 
-# ViDownloader
-
 <img src="https://raw.githubusercontent.com/farhaanaliii/ViDownloader/main/assets/icon.svg" alt="ViDownloader Logo" width="128" height="128">
+
+# ViDownloader
 
 A PySide6 desktop app for bulk downloading YouTube videos.
 
