@@ -164,7 +164,8 @@ class MAIN_UI(QMainWindow):
         self.tree_widget.setAlternatingRowColors(True)
         self.tree_widget.setMinimumHeight(300)
         self.tree_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.tree_widget.setColumnCount(8)
+        self.tree_widget.setColumnCount(len(TreeViewColumns))
+        self.tree_widget.setTextElideMode(Qt.ElideRight)
         self.tree_widget.setHeaderLabels(
             [
                 "No #",

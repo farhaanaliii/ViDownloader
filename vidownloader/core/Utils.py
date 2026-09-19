@@ -85,12 +85,6 @@ def parse_links(links: str) -> list[Link]:
     return parsed_links
 
 
-def truncate_text(text: str, width: int) -> str:
-    if not isinstance(text, str):
-        return ""
-    return text if len(text) <= width else text[: width - 3] + "..."
-
-
 def format_duration(duration: str | int | None) -> str:
     if not duration:
         return ""
@@ -163,7 +157,7 @@ def video_to_treeitem(video: Video) -> QTreeWidgetItem:
     item = QTreeWidgetItem(
         [
             str(video.no),
-            truncate_text(video.caption, 50),
+            video.caption,
             video.percentage,
             video.status,
             video.username,

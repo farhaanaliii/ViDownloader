@@ -17,7 +17,6 @@ from vidownloader.core.Utils import (
     sanitize_filename,
     treeitem_to_link,
     treeitem_to_video,
-    truncate_text,
     video_to_treeitem,
 )
 
@@ -109,34 +108,6 @@ class TestParseLinks:
         assert len(result) == 1
         assert result[0].playlist_id is None
         assert result[0].video_id == "LK8i91u92oc"
-
-
-class TestTruncateText:
-    """Tests for the truncate_text function."""
-
-    def test_short_text_unchanged(self):
-        """Text shorter than width should remain unchanged."""
-        result = truncate_text("Hello", 10)
-        assert result == "Hello"
-
-    def test_long_text_truncated(self):
-        """Text longer than width should be truncated with ellipsis."""
-        result = truncate_text("Hello World!", 8)
-        assert result == "Hello..."
-        assert len(result) == 8
-
-    def test_exact_width(self):
-        """Text exactly at width should remain unchanged."""
-        result = truncate_text("Hello", 5)
-        assert result == "Hello"
-
-    def test_non_string_input(self):
-        """Non-string input should return empty string."""
-        result = truncate_text(None, 10)
-        assert result == ""
-
-        result = truncate_text(123, 10)
-        assert result == ""
 
 
 class TestGenUid:
