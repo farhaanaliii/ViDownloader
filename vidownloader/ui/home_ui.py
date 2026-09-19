@@ -41,48 +41,36 @@ class HOME_UI(QMainWindow):
         header_layout.setSpacing(15)
 
         logo_label = QLabel()
-        logo_label.setFixedSize(60, 60)
-        logo_label.setStyleSheet(
-            "background-color: transparent !important; margin-top: 0px !important; margin-bottom: 0px !important;"
-        )
+        logo_label.setFixedSize(56, 56)
         pixmap = QPixmap(get_assets_path(f"icons/{App.ICON}"))
-        pixmap = pixmap.scaled(60, 60, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        pixmap = pixmap.scaled(56, 56, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         logo_label.setPixmap(pixmap)
         header_layout.addWidget(logo_label)
 
         title_label = QLabel(f"{App.NAME} v{App.VERSION}")
-        title_label.setStyleSheet(
-            "color: #007bff; margin-left: 5px !important; background-color: transparent !important; font-size: 22pt; font-weight: bold;"
-        )
+        title_label.setStyleSheet("color: #2563eb; font-size: 20pt; font-weight: bold;")
         header_layout.addWidget(title_label)
 
         header_layout.addStretch()
 
-        self.settings_button = QPushButton()
-        self.settings_button.setText("Settings")
-        self.settings_button.setStyleSheet("font-size: 9pt;")
-        self.settings_button.setFixedSize(100, 30)
+        self.settings_button = QPushButton("Settings")
+        self.settings_button.setFixedSize(96, 32)
         self.settings_button.clicked.connect(self.open_settings)
         header_layout.addWidget(self.settings_button)
 
         main_layout.addLayout(header_layout)
 
-        subtitle = QLabel("Download videos easily")
-        subtitle.setStyleSheet(
-            "color: #6c757d; margin-bottom: 15px; background-color: transparent !important; font-size: 14pt;"
-        )
+        subtitle = QLabel("Download videos, playlists, and channels effortlessly.")
+        subtitle.setStyleSheet("color: #64748b; font-size: 11pt;")
         main_layout.addWidget(subtitle)
 
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
-        separator.setFrameShadow(QFrame.Sunken)
-        separator.setStyleSheet("background-color: #dee2e6; margin: 10px 0;")
+        separator.setFrameShadow(QFrame.Plain)
         main_layout.addWidget(separator)
 
-        instructions = QLabel("Enter video or profile links below, one per line:")
-        instructions.setStyleSheet(
-            "color: #495057; margin-bottom: 8px; background-color: transparent !important; font-size: 12pt;"
-        )
+        instructions = QLabel("Enter video, shorts, playlist, or channel links (one per line):")
+        instructions.setStyleSheet("color: #334155; font-size: 10pt; font-weight: 600;")
         main_layout.addWidget(instructions)
 
         self.text_area = QTextEdit()
@@ -94,7 +82,7 @@ class HOME_UI(QMainWindow):
         main_layout.addWidget(self.text_area)
 
         buttons_layout = self.create_buttons_layout()
-        main_layout.addSpacing(10)
+        main_layout.addSpacing(6)
         main_layout.addLayout(buttons_layout)
 
         self.statusBar = QStatusBar()
@@ -103,61 +91,29 @@ class HOME_UI(QMainWindow):
 
     def create_buttons_layout(self):
         buttons_layout = QHBoxLayout()
-        buttons_layout.setSpacing(15)
+        buttons_layout.setSpacing(12)
 
         self.import_button = QPushButton("Import")
-        self.import_button.setStyleSheet("font-size: 9pt;")
-        self.import_button.setMinimumWidth(80)
-        self.import_button.setMaximumWidth(100)
-        self.import_button.setFixedHeight(30)
+        self.import_button.setMinimumWidth(85)
+        self.import_button.setFixedHeight(32)
         buttons_layout.addWidget(self.import_button)
 
         buttons_layout.addStretch()
 
-        self.updates_button = QPushButton("Check update")
-        self.updates_button.setFixedSize(115, 30)
-        self.updates_button.setStyleSheet("""
-            QPushButton {
-                color: #28a745;
-                font-size: 9pt;
-            }
-        """)
+        self.updates_button = QPushButton("Check Update")
+        self.updates_button.setProperty("success", "true")
+        self.updates_button.setFixedSize(115, 32)
         buttons_layout.addWidget(self.updates_button)
 
-        buttons_layout.addSpacing(5)
-
         self.release_notes_button = QPushButton("Release Notes")
-        self.release_notes_button.setFixedSize(115, 30)
-        self.release_notes_button.setStyleSheet("""
-            QPushButton {
-                color: #007bff;
-                font-size: 9pt;
-            }
-        """)
+        self.release_notes_button.setFixedSize(115, 32)
         self.release_notes_button.clicked.connect(self.show_release_notes)
         buttons_layout.addWidget(self.release_notes_button)
 
-        buttons_layout.addSpacing(5)
-
         self.start_button = QPushButton("Start")
-        self.start_button.setMinimumWidth(80)
-        self.start_button.setMaximumWidth(100)
-        self.start_button.setFixedHeight(30)
-        self.start_button.setStyleSheet("""
-            QPushButton {
-                background-color: #007bff;
-                border: none;
-                color: white;
-                font-size: 9pt;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #0069d9;
-            }
-            QPushButton:pressed {
-                background-color: #0062cc;
-            }
-        """)
+        self.start_button.setProperty("primary", "true")
+        self.start_button.setMinimumWidth(90)
+        self.start_button.setFixedHeight(32)
         buttons_layout.addWidget(self.start_button)
 
         return buttons_layout
@@ -174,7 +130,7 @@ class HOME_UI(QMainWindow):
         QMessageBox.about(
             self,
             f"About {App.NAME}",
-            f"""<h2>f"{App.NAME} v{App.VERSION}"</h2>
+            f"""<h2>{App.NAME} v{App.VERSION}</h2>
         <p>A modern application for downloading videos.</p>
-        <p>&copy; {datetime.now().year} {App.NAME} Team</p>""",
+        <p>&copy; {datetime.now().year} {Author.NAME}</p>""",
         )

@@ -244,9 +244,13 @@ class MainWindow(main_ui.MAIN_UI):
         elif status == Constants.Status.FAILED:
             self.change_item_color(item, Constants.StatusColors.ERROR)
         elif status == Constants.Status.DOWNLOADING:
-            self.change_item_color(item, Constants.StatusColors.WARNING)
+            self.change_item_color(item, Constants.StatusColors.DOWNLOADING)
         elif status == Constants.Status.STARTING:
-            self.change_item_color(item, Constants.StatusColors.INFO)
+            self.change_item_color(item, Constants.StatusColors.STARTING)
+        elif status == Constants.Status.PENDING:
+            self.change_item_color(item, Constants.StatusColors.PENDING)
+        elif status in (Constants.Status.RETRYING, Constants.Status.SKIPPED):
+            self.change_item_color(item, Constants.StatusColors.WARNING)
 
         item.setText(Constants.TreeViewColumns.STATUS, status.value)
 

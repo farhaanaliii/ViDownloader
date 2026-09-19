@@ -93,16 +93,13 @@ class TreeViewRoles(IntEnum):
 
 
 class StatusColors:
-    SUCCESS = QColor(46, 204, 113, 100)
-    "#2ECC71"
-    ERROR = QColor(231, 76, 60, 120)
-    "#E74C3C"
-    WARNING = QColor(241, 196, 15, 110)
-    "#F1C40F"
-    INFO = QColor(52, 152, 219, 100)
-    "#3498DB"
-    PENDING = QColor(149, 165, 166, 90)
-    "#95A5A6"
+    SUCCESS = QColor(16, 185, 129, 45)
+    DOWNLOADING = QColor(59, 130, 246, 45)
+    STARTING = QColor(99, 102, 241, 40)
+    PENDING = QColor(148, 163, 184, 40)
+    WARNING = QColor(245, 158, 11, 45)
+    ERROR = QColor(239, 68, 68, 45)
+    INFO = QColor(59, 130, 246, 45)
 
 
 class Status(StringEnum):
