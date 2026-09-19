@@ -19,8 +19,10 @@ from PySide6.QtWidgets import (
 from vidownloader.core import VSettings
 from vidownloader.core.Constants import (
     FileName,
+    OutputFormat,
     PlaylistOrganization,
     SingleVideoOrganization,
+    VideoQuality,
 )
 
 
@@ -162,6 +164,25 @@ class SettingsDialog(QDialog):
 
         general_layout.addRow("Download Threads", threads_layout)
 
+        self.quality = QComboBox()
+        self.quality.addItem("Best Quality", VideoQuality.BEST.value)
+        self.quality.addItem("4K (2160p)", VideoQuality.P2160.value)
+        self.quality.addItem("2K (1440p)", VideoQuality.P1440.value)
+        self.quality.addItem("1080p (Full HD)", VideoQuality.P1080.value)
+        self.quality.addItem("720p (HD)", VideoQuality.P720.value)
+        self.quality.addItem("480p", VideoQuality.P480.value)
+        self.quality.addItem("360p", VideoQuality.P360.value)
+        self.quality.addItem("240p", VideoQuality.P240.value)
+        self.quality.addItem("144p", VideoQuality.P144.value)
+        self.quality.addItem("Audio Only", VideoQuality.AUDIO_ONLY.value)
+        self.quality.setFixedHeight(25)
+
+        index = self.quality.findData(VSettings.get_download_quality())
+        if index >= 0:
+            self.quality.setCurrentIndex(index)
+
+        general_layout.addRow("Video Quality", self.quality)
+
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
         separator.setFrameShadow(QFrame.Sunken)
@@ -185,6 +206,18 @@ class SettingsDialog(QDialog):
             self.caption_setting.setCurrentIndex(index)
 
         general_layout.addRow("File Naming", self.caption_setting)
+
+        self.output_format = QComboBox()
+        self.output_format.addItem("MP4 (.mp4)", OutputFormat.MP4.value)
+        self.output_format.addItem("MKV (.mkv)", OutputFormat.MKV.value)
+        self.output_format.addItem("WebM (.webm)", OutputFormat.WEBM.value)
+        self.output_format.setFixedHeight(25)
+
+        index = self.output_format.findData(VSettings.get_output_format())
+        if index >= 0:
+            self.output_format.setCurrentIndex(index)
+
+        general_layout.addRow("Output Format", self.output_format)
 
         separator2 = QFrame()
         separator2.setFrameShape(QFrame.HLine)
@@ -301,6 +334,8 @@ class SettingsDialog(QDialog):
         VSettings.set_file_naming_mode(self.caption_setting.currentData())
         VSettings.set_download_threads(self.threads.value())
         VSettings.set_download_retries(self.retries.value())
+        VSettings.set_download_quality(self.quality.currentData())
+        VSettings.set_output_format(self.output_format.currentData())
         VSettings.set_playlist_organization(self.playlist_org.currentData())
         VSettings.set_single_video_organization(self.single_video_org.currentData())
 

@@ -7,8 +7,10 @@ from vidownloader.core.Constants import (
     App,
     Author,
     FileName,
+    OutputFormat,
     PlaylistOrganization,
     SingleVideoOrganization,
+    VideoQuality,
 )
 
 
@@ -86,6 +88,18 @@ class VSettings:
     def set_download_retries(self, retries: int) -> None:
         self.set_value("download/retries", retries)
 
+    def get_download_quality(self) -> str:
+        return self.get_value("download/quality", VideoQuality.BEST.value, str)
+
+    def set_download_quality(self, quality: str) -> None:
+        self.set_value("download/quality", quality)
+
+    def get_output_format(self) -> str:
+        return self.get_value("download/output_format", OutputFormat.MP4.value, str)
+
+    def set_output_format(self, output_format: str) -> None:
+        self.set_value("download/output_format", output_format)
+
     def get_playlist_organization(self):
         value = self.get_value("playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int)
         try:
@@ -139,6 +153,12 @@ set_download_threads = settings.set_download_threads
 
 get_download_retries = settings.get_download_retries
 set_download_retries = settings.set_download_retries
+
+get_download_quality = settings.get_download_quality
+set_download_quality = settings.set_download_quality
+
+get_output_format = settings.get_output_format
+set_output_format = settings.set_output_format
 
 get_playlist_organization = settings.get_playlist_organization
 set_playlist_organization = settings.set_playlist_organization

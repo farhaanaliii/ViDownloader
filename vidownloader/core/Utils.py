@@ -263,14 +263,15 @@ def build_download_path(link: Link) -> Path:
 
 def build_filename(link: Link, dl_path: Path) -> str:
     file_name_type = VSettings.get_file_naming_mode()
+    ext = VSettings.get_output_format()
 
     if file_name_type == FileName.VIDEO_ID:
-        return f"{link.video_id}.mp4"
+        return f"{link.video_id}.{ext}"
     elif file_name_type == FileName.CAPTION:
         cleaned_caption = sanitize_filename(link.caption, dl_path)
-        return f"{cleaned_caption}.mp4"
+        return f"{cleaned_caption}.{ext}"
     else:
-        return f"{gen_uid()}.mp4"
+        return f"{gen_uid()}.{ext}"
 
 
 def get_system_drive():

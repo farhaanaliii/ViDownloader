@@ -131,4 +131,23 @@ class SingleVideoOrganization(IntEnum):
     BY_UPLOADER = 1
 
 
+class VideoQuality(StringEnum):
+    BEST = "bv*+ba/b"
+    P2160 = "bv*[height<=2160]+ba/bv*[width<=2160]+ba/b"
+    P1440 = "bv*[height<=1440]+ba/bv*[width<=1440]+ba/b"
+    P1080 = "bv*[height<=1080]+ba/bv*[width<=1080]+ba/b"
+    P720 = "bv*[height<=720]+ba/bv*[width<=720]+ba/b"
+    P480 = "bv*[height<=480]+ba/bv*[width<=480]+ba/b"
+    P360 = "bv*[height<=360]+ba/bv*[width<=360]+ba/b"
+    P240 = "bv*[height<=240]+ba/bv*[width<=240]+ba/b"
+    P144 = "bv*[height<=144]+ba/bv*[width<=144]+ba/b"
+    AUDIO_ONLY = "ba/b"
+
+
+class OutputFormat(StringEnum):
+    MP4 = "mp4"
+    MKV = "mkv"
+    WEBM = "webm"
+
+
 DISALLOWED_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1F]')

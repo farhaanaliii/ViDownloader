@@ -4,6 +4,7 @@ Tests URL parsing, filename sanitization, and utility functions.
 """
 
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -393,3 +394,67 @@ class TestGenerateExportFilename:
 
         filename = generate_export_filename()
         assert "export" in filename.lower() or "vidownloader" in filename.lower()
+
+
+class TestBuildFilename:
+    """Tests for the build_filename function."""
+
+    @patch("vidownloader.core.VSettings.VSettings.get_file_naming_mode")
+    @patch("vidownloader.core.VSettings.VSettings.get_output_format")
+    def test_build_filename_caption(self, mock_get_output_format, mock_get_naming_mode, tmp_path):
+        from vidownloader.core.Constants import FileName, VideoType
+        from vidownloader.core.Models import Link
+        from vidownloader.core.Utils import build_filename
+
+        mock_get_naming_mode.return_value = FileName.CAPTION
+        mock_get_output_format.return_value = "mp4"
+
+        link = Link(
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            video_type=VideoType.VIDEO,
+            video_id="dQw4w9WgXcQ",
+            caption="Never Gonna Give You Up",
+        )
+
+        filename = build_filename(link, tmp_path)
+        assert filename == "Never Gonna Give You Up.mp4"
+
+    @patch("vidownloader.core.VSettings.VSettings.get_file_naming_mode")
+    @patch("vidownloader.core.VSettings.VSettings.get_output_format")
+    def test_build_filename_video_id(self, mock_get_output_format, mock_get_naming_mode, tmp_path):
+        from vidownloader.core.Constants import FileName, VideoType
+        from vidownloader.core.Models import Link
+        from vidownloader.core.Utils import build_filename
+
+        mock_get_naming_mode.return_value = FileName.VIDEO_ID
+        mock_get_output_format.return_value = "mkv"
+
+        link = Link(
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            video_type=VideoType.VIDEO,
+            video_id="dQw4w9WgXcQ",
+            caption="Never Gonna Give You Up",
+        )
+
+        filename = build_filename(link, tmp_path)
+        assert filename == "dQw4w9WgXcQ.mkv"
+
+    @patch("vidownloader.core.VSettings.VSettings.get_file_naming_mode")
+    @patch("vidownloader.core.VSettings.VSettings.get_output_format")
+    def test_build_filename_random(self, mock_get_output_format, mock_get_naming_mode, tmp_path):
+        from vidownloader.core.Constants import FileName, VideoType
+        from vidownloader.core.Models import Link
+        from vidownloader.core.Utils import build_filename
+
+        mock_get_naming_mode.return_value = FileName.RANDOM
+        mock_get_output_format.return_value = "webm"
+
+        link = Link(
+            url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            video_type=VideoType.VIDEO,
+            video_id="dQw4w9WgXcQ",
+        )
+
+        filename = build_filename(link, tmp_path)
+        assert filename.endswith(".webm")
+        assert len(filename) > 5

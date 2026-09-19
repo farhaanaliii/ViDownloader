@@ -11,7 +11,9 @@ from vidownloader.core.Utils import build_download_path, build_filename
 from vidownloader.core.VSettings import (
     get_cookies_browser,
     get_cookies_profile,
+    get_download_quality,
     get_download_retries,
+    get_output_format,
 )
 
 logger = get_logger("Downloader")
@@ -38,9 +40,9 @@ class Downloader(QThread):
         logger.debug(f"Downloading to: {file_path}")
 
         ydl_opts = {
-            "format": "bv*+ba/b",  # TODO: Make format configurable
+            "format": get_download_quality(),
             "outtmpl": file_path.__fspath__(),
-            "merge_output_format": "mp4",  # TODO: Make format configurable
+            "merge_output_format": get_output_format(),
             "progress_hooks": [self._progress_hook],
             "quiet": True,
             "no_warnings": True,

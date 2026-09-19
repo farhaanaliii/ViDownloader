@@ -242,6 +242,48 @@ class TestVSettings:
         mock_instance.setValue.assert_called_once()
 
     @patch("vidownloader.core.VSettings.QSettings")
+    def test_get_download_quality_default(self, mock_qsettings):
+        """Test getting default download quality."""
+        mock_instance = Mock()
+        mock_instance.value.return_value = "bv*+ba/b"
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        assert settings.get_download_quality() == "bv*+ba/b"
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_set_download_quality(self, mock_qsettings):
+        """Test setting download quality."""
+        mock_instance = Mock()
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        settings.set_download_quality("bv*[height<=1080]+ba/bv*[width<=1080]+ba/b")
+
+        mock_instance.setValue.assert_called_once()
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_get_output_format_default(self, mock_qsettings):
+        """Test getting default output format."""
+        mock_instance = Mock()
+        mock_instance.value.return_value = "mp4"
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        assert settings.get_output_format() == "mp4"
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_set_output_format(self, mock_qsettings):
+        """Test setting output format."""
+        mock_instance = Mock()
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        settings.set_output_format("mkv")
+
+        mock_instance.setValue.assert_called_once()
+
+    @patch("vidownloader.core.VSettings.QSettings")
     def test_get_playlist_organization_default(self, mock_qsettings):
         """Test getting default playlist organization."""
         mock_instance = Mock()
