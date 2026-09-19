@@ -21,7 +21,7 @@ A PySide6 desktop app for bulk downloading YouTube videos.
 > [!WARNING]
 > **Heads up**: This is currently in **Beta** phase. It works, but there might be rough edges and unexpected behavior. Your feedback will help shape the stable release.
 
-![ViDownloader Screenshot](https://github.com/farhaanaliii/ViDownloader/raw/main/assets/image1.png)
+![ViDownloader Screenshot](https://github.com/farhaanaliii/ViDownloader/raw/main/assets/main.png)
 
 ---
 
