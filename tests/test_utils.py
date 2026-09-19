@@ -399,8 +399,8 @@ class TestGenerateExportFilename:
 class TestBuildFilename:
     """Tests for the build_filename function."""
 
-    @patch("vidownloader.core.VSettings.VSettings.get_file_naming_mode")
-    @patch("vidownloader.core.VSettings.VSettings.get_output_format")
+    @patch("vidownloader.core.Utils.VSettings.get_file_naming_mode")
+    @patch("vidownloader.core.Utils.VSettings.get_output_format")
     def test_build_filename_caption(self, mock_get_output_format, mock_get_naming_mode, tmp_path):
         from vidownloader.core.Constants import FileName, VideoType
         from vidownloader.core.Models import Link
@@ -419,8 +419,8 @@ class TestBuildFilename:
         filename = build_filename(link, tmp_path)
         assert filename == "Never Gonna Give You Up.mp4"
 
-    @patch("vidownloader.core.VSettings.VSettings.get_file_naming_mode")
-    @patch("vidownloader.core.VSettings.VSettings.get_output_format")
+    @patch("vidownloader.core.Utils.VSettings.get_file_naming_mode")
+    @patch("vidownloader.core.Utils.VSettings.get_output_format")
     def test_build_filename_video_id(self, mock_get_output_format, mock_get_naming_mode, tmp_path):
         from vidownloader.core.Constants import FileName, VideoType
         from vidownloader.core.Models import Link
@@ -439,8 +439,8 @@ class TestBuildFilename:
         filename = build_filename(link, tmp_path)
         assert filename == "dQw4w9WgXcQ.mkv"
 
-    @patch("vidownloader.core.VSettings.VSettings.get_file_naming_mode")
-    @patch("vidownloader.core.VSettings.VSettings.get_output_format")
+    @patch("vidownloader.core.Utils.VSettings.get_file_naming_mode")
+    @patch("vidownloader.core.Utils.VSettings.get_output_format")
     def test_build_filename_random(self, mock_get_output_format, mock_get_naming_mode, tmp_path):
         from vidownloader.core.Constants import FileName, VideoType
         from vidownloader.core.Models import Link

@@ -1,3 +1,4 @@
+import re
 import traceback
 
 from vidownloader.core import Logger
@@ -88,19 +89,24 @@ class Parser:
         else:
             meta = renderer.get("metadata", {}).get("lockupMetadataViewModel", {})
             title = meta.get("title", {}).get("content", "")
-            try:
-                uploader = (
-                    meta.get("metadata", {})
-                    .get("contentMetadataViewModel", {})
-                    .get("metadataRows", [])[0]
-                    .get("metadataParts", [])[0]
-                    .get("text", {})
-                    .get("content", "")
-                )
-            except (IndexError, KeyError, TypeError, AttributeError):
-                uploader = ""
-            if not uploader:
+            if default_username:
                 uploader = default_username
+            else:
+                uploader = ""
+                try:
+                    rows = meta.get("metadata", {}).get("contentMetadataViewModel", {}).get("metadataRows", [])
+                    for row in rows:
+                        for part in row.get("metadataParts", []):
+                            text = part.get("text", {}).get("content", "")
+                            if text and not re.search(r"\b(views|ago|watching|streamed)\b", text, re.IGNORECASE):
+                                uploader = text
+                                break
+                        if uploader:
+                            break
+                    if not uploader and rows:
+                        uploader = rows[0].get("metadataParts", [{}])[0].get("text", {}).get("content", "")
+                except (IndexError, KeyError, TypeError, AttributeError):
+                    uploader = ""
 
             length_text = renderer.get("lengthText", {}).get("simpleText")
             try:
@@ -133,6 +139,29 @@ class Parser:
         )
 
     @staticmethod
+    def extract_channel_name(data: dict) -> str | None:
+        try:
+            header = data.get("header", {})
+            page_header = header.get("pageHeaderRenderer", {}).get("content", {}).get("pageHeaderViewModel", {})
+            if title := page_header.get("title", {}).get("dynamicTextViewModel", {}).get("text", {}).get("content"):
+                return title
+
+            c4 = header.get("c4TabbedHeaderRenderer", {})
+            if title := c4.get("title"):
+                return title
+
+            meta = data.get("metadata", {}).get("channelMetadataRenderer", {})
+            if title := meta.get("title"):
+                return title
+
+            micro = data.get("microformat", {}).get("microformatDataRenderer", {})
+            if title := micro.get("title"):
+                return title
+        except Exception as e:
+            logger.debug(f"Error extracting channel name: {e}")
+        return None
+
+    @staticmethod
     def parse_channel_videos_or_shorts_and_token(
         data: dict, video_type: VideoType, username: str
     ) -> tuple[list[Video], str | None]:
@@ -140,6 +169,8 @@ class Parser:
         continuation_token = None
 
         try:
+            if not username:
+                username = Parser.extract_channel_name(data) or ""
             raw_content_list = Parser._extract_continuation_items(data)
             if raw_content_list is None:
                 tabs = data.get("contents", {}).get("twoColumnBrowseResultsRenderer", {}).get("tabs", [])

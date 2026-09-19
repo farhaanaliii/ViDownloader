@@ -42,6 +42,7 @@ class Scraper(QObject):
         logger.debug(f"Scraping {video_type} for channel_id: {channel_id}")
         continuation_token = None
         videos_count = 0
+        channel_name = self.link.username
 
         while not self.stop_signal:
             data = {
@@ -57,8 +58,11 @@ class Scraper(QObject):
                 logger.error("Failed to retrieve data from YouTube API.")
                 break
 
+            if not channel_name:
+                channel_name = Parser.extract_channel_name(response) or ""
+
             videos, continuation_token = Parser.parse_channel_videos_or_shorts_and_token(
-                response, video_type, self.link.username
+                response, video_type, channel_name
             )
             self.emit_videos(videos)
             videos_count += len(videos)
