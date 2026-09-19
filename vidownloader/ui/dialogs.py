@@ -117,7 +117,7 @@ class SettingsDialog(QDialog):
 
         section_title = QLabel("Download Settings")
         section_title.setStyleSheet("color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
-        general_layout.addRow("", section_title)
+        general_layout.addRow(section_title)
 
         self.download_location = QLineEdit()
         self.download_location.setText(VSettings.get_download_location())
@@ -143,17 +143,36 @@ class SettingsDialog(QDialog):
 
         general_layout.addRow("Export Links Location", export_layout)
 
+        self.threads = QSpinBox()
+        self.threads.setRange(1, 10)
+        self.threads.setValue(VSettings.get_download_threads())
+        self.threads.setFixedHeight(25)
+
+        self.retries = QSpinBox()
+        self.retries.setRange(0, 10)
+        self.retries.setValue(VSettings.get_download_retries())
+        self.retries.setFixedHeight(25)
+
+        threads_layout = QHBoxLayout()
+        threads_layout.addWidget(self.threads)
+        threads_layout.addSpacing(20)
+        threads_layout.addWidget(QLabel("Download Retries"))
+        threads_layout.addWidget(self.retries)
+        threads_layout.addStretch()
+
+        general_layout.addRow("Download Threads", threads_layout)
+
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
         separator.setFrameShadow(QFrame.Sunken)
         separator.setStyleSheet("background-color: #e0e0e0;")
-        general_layout.addRow("", separator)
+        general_layout.addRow(separator)
 
         file_title = QLabel("File Settings")
         file_title.setStyleSheet(
             "color: #007bff; margin-top: 12px; margin-bottom: 8px; font-size: 12pt; font-weight: bold;"
         )
-        general_layout.addRow("", file_title)
+        general_layout.addRow(file_title)
 
         self.caption_setting = QComboBox()
         self.caption_setting.addItem("Use video title", FileName.CAPTION)
@@ -167,29 +186,17 @@ class SettingsDialog(QDialog):
 
         general_layout.addRow("File Naming", self.caption_setting)
 
-        self.threads = QSpinBox()
-        self.threads.setRange(1, 10)
-        self.threads.setValue(VSettings.get_download_threads())
-        self.threads.setFixedHeight(25)
-        general_layout.addRow("Download Threads", self.threads)
-
-        self.retries = QSpinBox()
-        self.retries.setRange(0, 10)
-        self.retries.setValue(VSettings.get_download_retries())
-        self.retries.setFixedHeight(25)
-        general_layout.addRow("Download Retries", self.retries)
-
         separator2 = QFrame()
         separator2.setFrameShape(QFrame.HLine)
         separator2.setFrameShadow(QFrame.Sunken)
         separator2.setStyleSheet("background-color: #e0e0e0;")
-        general_layout.addRow("", separator2)
+        general_layout.addRow(separator2)
 
         organization_title = QLabel("Organization Settings")
         organization_title.setStyleSheet(
             "color: #007bff; margin-top: 12px; margin-bottom: 8px; font-size: 12pt; font-weight: bold;"
         )
-        general_layout.addRow("", organization_title)
+        general_layout.addRow(organization_title)
 
         self.playlist_org = QComboBox()
         self.playlist_org.addItem("Group by Playlist Name", PlaylistOrganization.BY_PLAYLIST)
@@ -219,7 +226,7 @@ class SettingsDialog(QDialog):
 
         section_title = QLabel("Advanced Settings")
         section_title.setStyleSheet("color: #007bff; margin-bottom: 8px; font-size: 12pt; font-weight: bold;")
-        advanced_layout.addRow("", section_title)
+        advanced_layout.addRow(section_title)
 
         self.cookies_browser_selector = QComboBox(self)
         self.cookies_browser_selector.addItems(
