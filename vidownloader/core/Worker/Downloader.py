@@ -8,7 +8,11 @@ from vidownloader.core.Constants import EventType, Status
 from vidownloader.core.Logger import get_logger
 from vidownloader.core.Models import DownloaderEvent, Link
 from vidownloader.core.Utils import build_download_path, build_filename
-from vidownloader.core.VSettings import get_cookies_browser, get_cookies_profile
+from vidownloader.core.VSettings import (
+    get_cookies_browser,
+    get_cookies_profile,
+    get_download_retries,
+)
 
 logger = get_logger("Downloader")
 
@@ -30,7 +34,7 @@ class Downloader(QThread):
 
         self._download(file_path)
 
-    def _download(self, file_path: Path, retries: int = 3) -> bool:  # TODO: Make retries configurable
+    def _download(self, file_path: Path) -> bool:
         logger.debug(f"Downloading to: {file_path}")
 
         ydl_opts = {
@@ -52,6 +56,7 @@ class Downloader(QThread):
         if browser:
             ydl_opts["cookiesfrombrowser"] = (browser, profile) if profile else (browser,)
 
+        retries = get_download_retries()
         for attempt in range(retries + 1):
             try:
                 self.emit_status(Status.DOWNLOADING)

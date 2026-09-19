@@ -173,6 +173,12 @@ class SettingsDialog(QDialog):
         self.threads.setFixedHeight(25)
         general_layout.addRow("Download Threads", self.threads)
 
+        self.retries = QSpinBox()
+        self.retries.setRange(0, 10)
+        self.retries.setValue(VSettings.get_download_retries())
+        self.retries.setFixedHeight(25)
+        general_layout.addRow("Download Retries", self.retries)
+
         separator2 = QFrame()
         separator2.setFrameShape(QFrame.HLine)
         separator2.setFrameShadow(QFrame.Sunken)
@@ -287,6 +293,7 @@ class SettingsDialog(QDialog):
         VSettings.set_export_location(self.export_location.text().strip())
         VSettings.set_file_naming_mode(self.caption_setting.currentData())
         VSettings.set_download_threads(self.threads.value())
+        VSettings.set_download_retries(self.retries.value())
         VSettings.set_playlist_organization(self.playlist_org.currentData())
         VSettings.set_single_video_organization(self.single_video_org.currentData())
 

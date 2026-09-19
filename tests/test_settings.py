@@ -219,6 +219,29 @@ class TestVSettings:
         mock_instance.setValue.assert_called_once()
 
     @patch("vidownloader.core.VSettings.QSettings")
+    def test_get_download_retries_default(self, mock_qsettings):
+        """Test getting default download retries."""
+        mock_instance = Mock()
+        mock_instance.value.return_value = 3
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        retries = settings.get_download_retries()
+
+        assert retries == 3
+
+    @patch("vidownloader.core.VSettings.QSettings")
+    def test_set_download_retries(self, mock_qsettings):
+        """Test setting download retries."""
+        mock_instance = Mock()
+        mock_qsettings.return_value = mock_instance
+
+        settings = VSettings()
+        settings.set_download_retries(5)
+
+        mock_instance.setValue.assert_called_once()
+
+    @patch("vidownloader.core.VSettings.QSettings")
     def test_get_playlist_organization_default(self, mock_qsettings):
         """Test getting default playlist organization."""
         mock_instance = Mock()

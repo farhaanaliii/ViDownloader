@@ -80,6 +80,12 @@ class VSettings:
     def set_download_threads(self, threads: int) -> None:
         self.set_value("download/threads", threads)
 
+    def get_download_retries(self) -> int:
+        return self.get_value("download/retries", 3, int)
+
+    def set_download_retries(self, retries: int) -> None:
+        self.set_value("download/retries", retries)
+
     def get_playlist_organization(self):
         value = self.get_value("playlist/organization", PlaylistOrganization.BY_PLAYLIST.value, int)
         try:
@@ -130,6 +136,9 @@ set_file_naming_mode = settings.set_file_naming_mode
 
 get_download_threads = settings.get_download_threads
 set_download_threads = settings.set_download_threads
+
+get_download_retries = settings.get_download_retries
+set_download_retries = settings.set_download_retries
 
 get_playlist_organization = settings.get_playlist_organization
 set_playlist_organization = settings.set_playlist_organization
